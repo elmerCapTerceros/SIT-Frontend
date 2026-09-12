@@ -1,0 +1,184 @@
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  padding: 0 40px;
+  height: 90px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/*LOGO + TEXTO */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px; 
+}
+
+.brand-logo {
+  height: 55px; 
+  width: auto;  
+  object-fit: contain; 
+  display: block;
+}
+
+/* Línea vertical separadora */
+.brand-divider {
+  width: 3px;
+  height: 50px; 
+  background-color: #00AEEF; 
+  border-radius: 2px;
+}
+
+/* Texto institucional */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.brand-text span {
+  font-size: 13px;
+  font-weight: 800; 
+  color: #00AEEF; 
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ENLACES CENTRALES*/
+.navbar-links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 0;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #19ABE3; 
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #19ABE3;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/*PERFIL DE USUARIO */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.navbar-user:hover {
+  background-color: #F5F7FA;
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  background-color: #005B82;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 0 2px rgba(0, 91, 130, 0.15);
+}
+
+.user-avatar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1.1;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.user-role {
+  font-size: 9px;
+  font-weight: 700;
+  color: #00AEEF;
+  background-color: #E6F7FE;
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/*RESPONSIVE*/
+@media (max-width: 1200px) {
+  .brand-text span {
+    font-size: 11px; 
+  }
+  .navbar-links {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .navbar {
+    padding: 0 20px;
+  }
+
+  .brand-text, .brand-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 15px;
+    gap: 15px;
+  }
+  .navbar-links {
+    width: 100%;
+    justify-content: space-around;
+  }
+  .navbar-user {
+    width: 100%;
+    justify-content: center;
+  }
+}
