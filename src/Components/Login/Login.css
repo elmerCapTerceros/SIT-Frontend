@@ -330,22 +330,6 @@
   opacity: 0.92;
 }
 
-.remember-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #4B5563;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.remember-row input[type="checkbox"] {
-  width: 15px;
-  height: 15px;
-  accent-color: #00AEEF;
-  cursor: pointer;
-}
 
 .login-footer {
   text-align: center;

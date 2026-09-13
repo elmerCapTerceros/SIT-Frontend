@@ -172,14 +172,7 @@ const Login = () => {
               Iniciar Sesión
             </button>
 
-            <label className="remember-row">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-              />
-              Mantener sesión iniciada
-            </label>
+          
           </form>
         </div>
 
