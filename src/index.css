@@ -110,3 +110,18 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+.login-page,
+.login-page * {
+  text-align: left;
+}
+
+.card-title,
+.card-subtitle,
+.side-title,
+.side-subtitle,
+.login-footer p,
+.side-pill,
+.side-badge,
+.submit-btn {
+  text-align: center;
+}
