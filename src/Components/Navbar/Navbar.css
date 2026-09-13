@@ -1,4 +1,3 @@
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -14,47 +13,49 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/*LOGO + TEXTO */
+/* LOGO + TEXTO */
 .navbar-brand {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 15px; 
+  gap: 15px;
+  min-width: 0;
 }
 
 .brand-logo {
-  height: 55px; 
-  width: auto;  
-  object-fit: contain; 
+  height: 55px;
+  width: auto;
+  object-fit: contain;
   display: block;
+  flex-shrink: 0;
 }
 
-/* Línea vertical separadora */
 .brand-divider {
   width: 3px;
-  height: 50px; 
-  background-color: #00AEEF; 
+  height: 50px;
+  background-color: #00AEEF;
   border-radius: 2px;
+  flex-shrink: 0;
 }
 
-/* Texto institucional */
 .brand-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   line-height: 1.1;
+  white-space: nowrap;
 }
 
 .brand-text span {
   font-size: 13px;
-  font-weight: 800; 
-  color: #00AEEF; 
+  font-weight: 800;
+  color: #00AEEF;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
-/* ENLACES CENTRALES*/
+/* ENLACES CENTRALES */
 .navbar-links {
   display: flex;
   gap: 40px;
@@ -72,7 +73,7 @@
 }
 
 .nav-link:hover {
-  color: #19ABE3; 
+  color: #19ABE3;
 }
 
 .nav-link::after {
@@ -90,7 +91,14 @@
   width: 100%;
 }
 
-/*PERFIL DE USUARIO */
+/* CONTENEDOR DERECHO: usuario + hamburguesa */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* PERFIL DE USUARIO */
 .navbar-user {
   display: flex;
   align-items: center;
@@ -119,6 +127,7 @@
 .user-avatar svg {
   width: 18px;
   height: 18px;
+  color: white;
 }
 
 .user-info {
@@ -146,10 +155,30 @@
   text-transform: uppercase;
 }
 
-/*RESPONSIVE*/
+/* BOTÓN HAMBURGUESA (oculto en desktop) */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: #005B82;
+}
+
+.menu-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.navbar-overlay {
+  display: none;
+}
+
+/* ============ RESPONSIVE ============ */
+
 @media (max-width: 1200px) {
   .brand-text span {
-    font-size: 11px; 
+    font-size: 11px;
   }
   .navbar-links {
     gap: 20px;
@@ -160,25 +189,84 @@
   .navbar {
     padding: 0 20px;
   }
-
-  .brand-text, .brand-divider {
+  .brand-text,
+  .brand-divider {
     display: none;
+  }
+  .navbar-links {
+    gap: 24px;
   }
 }
 
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
-    height: auto;
-    padding: 15px;
-    gap: 15px;
+    height: 70px;
+    padding: 0 16px;
   }
-  .navbar-links {
-    width: 100%;
-    justify-content: space-around;
+  .brand-logo {
+    height: 42px;
   }
+
+  /* Ocultamos el nombre/rol en pantallas chicas, dejamos solo el avatar */
+  .user-info {
+    display: none;
+  }
+
   .navbar-user {
-    width: 100%;
+    padding: 4px;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
     justify-content: center;
+  }
+
+  /* Los links se convierten en panel desplegable, separado del usuario */
+  .navbar-links {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background-color: #FFFFFF;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.06);
+    z-index: 1001;
+  }
+
+  .navbar-links.open {
+    max-height: min(70vh, 420px);
+    padding: 10px 0;
+    overflow-y: auto;
+  }
+
+  .nav-link {
+    padding: 14px 24px;
+    width: 100%;
+  }
+
+  .nav-link::after {
+    display: none;
+  }
+
+  .nav-link:active {
+    background-color: #F5F7FA;
+  }
+
+  .navbar-overlay {
+    display: block;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    z-index: 999;
   }
 }
