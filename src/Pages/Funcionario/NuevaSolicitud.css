@@ -129,7 +129,7 @@
   width: 66%;
   height: 100%; /* Aseguramos que ocupe todo el alto */
   background-color: #ffffff;
-  padding: 24px 38px;
+  padding: 24px 138px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -158,7 +158,8 @@
   padding: 18px;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
   overflow-y: auto; 
-  max-height: 100%; /* Asegura que la tarjeta no desborde la pantalla */
+  max-height: 100%; 
+  max-width: 850px;
 }
 
 .form-field {
@@ -317,6 +318,7 @@
 
   .form-card {
     padding: 14px;
+    
   }
 }
 
@@ -389,6 +391,7 @@
 
   .form-card {
     padding: 12px;
+    
   }
 
   .form-field {
