@@ -34,7 +34,7 @@ const Navbar = () => {
       {/* SECCIÓN ENLACES */}
       <div className="navbar-links">
         <Link to="/" className="nav-link">Inicio</Link>
-        <a href="#" className="nav-link">Nueva Solicitud</a>
+        <a href="/nuevaSolicitud" className="nav-link">Nueva Solicitud</a>
         <a href="#" className="nav-link">Ver solicitudes</a>
       </div>
       
