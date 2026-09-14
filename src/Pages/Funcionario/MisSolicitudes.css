@@ -1,4 +1,4 @@
-.requests-page { min-height: calc(100svh - 90px); padding: 52px max(24px, 7vw); background: #f4f8fa; text-align: left; font-family: inherit; }
+.requests-page { min-height: calc(100svh - 90px); padding: 52px max(24px, 7vw); background: #ffffff; text-align: left; font-family: inherit; }
 .requests-header { max-width: 1040px; margin: 0 auto 28px; display: flex; justify-content: space-between; align-items: end; gap: 24px; }
 .page-kicker, .request-id { color: #00aeef; font-size: 12px; font-weight: 800; letter-spacing: .9px; margin: 0 0 8px; }
 .requests-header h1 { color: #005b82; font-size: clamp(28px, 4vw, 40px); font-weight: 800; line-height: 1.15; margin: 0 0 8px; }

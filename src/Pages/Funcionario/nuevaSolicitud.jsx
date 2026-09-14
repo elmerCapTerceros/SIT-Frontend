@@ -124,7 +124,7 @@ const NuevaSolicitud = () => {
       <main className="solicitud-right">
         <section className="requests-header">
           <div>
-            <p className="page-kicker">NUEVA SOLICITUD</p>
+            <p className="page-kicker">SOLICITUD</p>
             <h1>Nueva Solicitud Técnica</h1>
             <p>Registre una nueva solicitud de soporte técnico para su equipo o departamento.</p>
           </div>
