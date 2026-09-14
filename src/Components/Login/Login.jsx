@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
+
+const API_URL = 'http://localhost:8080/api';
 
 const UserIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="input-icon">
@@ -48,17 +51,46 @@ const ShieldIcon = () => (
 );
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(false);
   const [form, setForm] = useState({ usuario: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // lógica de autenticación aquí
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userLogin: form.usuario.trim(),
+          password: form.password,
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Usuario o contraseña incorrectos.');
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userLogin', data.userLogin);
+      localStorage.setItem('rol', data.rol || '');
+      navigate('/nuevaSolicitud');
+    } catch (requestError) {
+      setError(requestError.message || 'No se pudo iniciar sesión.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -168,11 +200,11 @@ const Login = () => {
               </div>
             </div>
 
-            <button type="submit" className="submit-btn">
-              Iniciar Sesión
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? 'Ingresando...' : 'Iniciar Sesión'}
             </button>
 
-          
+            {error && <p className="login-error" role="alert">{error}</p>}
           </form>
         </div>
 

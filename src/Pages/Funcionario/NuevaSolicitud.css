@@ -248,6 +248,14 @@
   margin-bottom: 10px;
 }
 
+.api-error {
+  margin: 4px 0 10px;
+  padding: 8px 10px;
+  background-color: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 5px;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -290,6 +298,11 @@
 .btn-submit:hover {
   background-color: #0098d6;
   box-shadow: 0 3px 8px rgba(0, 174, 239, 0.4);
+}
+
+.btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .btn:active {

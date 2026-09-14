@@ -330,6 +330,23 @@
   opacity: 0.92;
 }
 
+.submit-btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.login-error {
+  margin: 0;
+  padding: 9px 10px;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  background-color: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
 
 .login-footer {
   text-align: center;
