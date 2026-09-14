@@ -1,7 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap");
-
 .solicitud-container {
-  font-family: "Inter", sans-serif;
+  font-family: inherit;
   display: flex;
   width: 100%;
   min-height: calc(100vh - 90px);
@@ -138,16 +136,18 @@
 }
 
 .form-heading {
-  color: #0f172a;
-  font-size: 27px;
+  color: #005b82;
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 800;
+  line-height: 1.15;
   margin-bottom: 5px;
   text-align: left;
 }
 
 .form-subheading {
-  color: #475569;
-  font-size: 12px;
+  color: #526a78;
+  font-size: 14px;
+  line-height: 1.5;
   margin-bottom: 16px;
   text-align: left;
 }
@@ -326,7 +326,7 @@
   }
 
   .form-heading {
-    font-size: 24px;
+    font-size: 32px;
   }
 
   .form-card {
@@ -395,11 +395,11 @@
   }
 
   .form-heading {
-    font-size: 21px;
+    font-size: 28px;
   }
 
   .form-subheading {
-    font-size: 11px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 
