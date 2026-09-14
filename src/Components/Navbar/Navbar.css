@@ -91,12 +91,31 @@
   width: 100%;
 }
 
+.nav-link.active {
+  color: #005b82;
+  font-weight: 700;
+}
+
+.nav-link.active::after { width: 100%; }
+
 /* CONTENEDOR DERECHO: usuario + hamburguesa */
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
+.logout-button {
+  border: 1px solid #b8ddeb;
+  border-radius: 7px;
+  background: #fff;
+  color: #005b82;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 11px;
+}
+
+.logout-button:hover { background: #e6f7fe; }
 
 /* PERFIL DE USUARIO */
 .navbar-user {
@@ -215,6 +234,8 @@
   .navbar-user {
     padding: 4px;
   }
+
+  .logout-button { display: none; }
 
   .menu-toggle {
     display: flex;

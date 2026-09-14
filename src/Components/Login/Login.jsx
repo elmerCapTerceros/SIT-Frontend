@@ -85,7 +85,7 @@ const Login = () => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('userLogin', data.userLogin);
       localStorage.setItem('rol', data.rol || '');
-      navigate('/nuevaSolicitud');
+      navigate('/home', { replace: true });
     } catch (requestError) {
       setError(requestError.message || 'No se pudo iniciar sesión.');
     } finally {

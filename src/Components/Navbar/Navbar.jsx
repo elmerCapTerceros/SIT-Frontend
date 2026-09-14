@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 const UserIcon = () => (
@@ -32,7 +32,16 @@ const MenuIcon = ({ open }) => (
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const closeMenu = () => setMenuOpen(false);
+  const userLogin = localStorage.getItem('userLogin') || 'Usuario';
+  const rol = localStorage.getItem('rol') || 'FUNCIONARIO';
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userLogin');
+    localStorage.removeItem('rol');
+    navigate('/login', { replace: true });
+  };
 
   return (
     <nav className="navbar">
@@ -52,9 +61,9 @@ const Navbar = () => {
 
       {/* Enlaces */}
       <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-        <Link to="/" className="nav-link" onClick={closeMenu}>Inicio</Link>
-        <a href="/nuevaSolicitud" className="nav-link" onClick={closeMenu}>Nueva Solicitud</a>
-        <a href="#" className="nav-link" onClick={closeMenu}>Ver solicitudes</a>
+        <NavLink to="/home" className="nav-link" onClick={closeMenu}>Inicio</NavLink>
+        <NavLink to="/nueva-solicitud" className="nav-link" onClick={closeMenu}>Nueva solicitud</NavLink>
+        <NavLink to="/mis-solicitudes" className="nav-link" onClick={closeMenu}>Mis solicitudes</NavLink>
       </div>
 
       {/* Perfil de usuario*/}
@@ -64,10 +73,12 @@ const Navbar = () => {
             <UserIcon />
           </div>
           <div className="user-info">
-            <span className="user-name">Lic. Elena Rostova</span>
-            <span className="user-role">FUNCIONARIO</span>
+            <span className="user-name">{userLogin}</span>
+            <span className="user-role">{rol}</span>
           </div>
         </div>
+
+        <button className="logout-button" type="button" onClick={logout}>Salir</button>
 
         <button
           className="menu-toggle"

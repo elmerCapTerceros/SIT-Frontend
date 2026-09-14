@@ -1,8 +1,10 @@
 
 import { FaEnvelope, FaFileAlt, FaLink, FaMapMarkerAlt, FaPhone, FaPlay } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
+  const navigate = useNavigate();
   return (
     <>
       <section className="hero-section">
@@ -21,11 +23,11 @@ const Home = () => {
             </h1>
 
             <div className="hero-buttons">
-              <button className="btn btn-primary">
+              <button className="btn btn-primary" type="button" onClick={() => navigate('/nueva-solicitud')}>
                 NUEVA SOLICITUD
               </button>
 
-              <button className="btn btn-secondary">
+              <button className="btn btn-secondary" type="button" onClick={() => navigate('/mis-solicitudes')}>
                 ÚLTIMAS NOTICIAS
               </button>
             </div>
@@ -53,19 +55,17 @@ const Home = () => {
             </div>
 
             <div className="card-content">
-              <h2>Normativas</h2>
+              <h2>Nueva solicitud</h2>
               <p>
                 Consulta las normativas y documentos oficiales
                 relacionados con la asistencia técnica.
               </p>
 
               <a
-                href="/documentos/normativas.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/nueva-solicitud"
                 className="card-button"
               >
-                VER NORMATIVAS
+                CREAR SOLICITUD
               </a>
             </div>
           </div>
@@ -85,9 +85,7 @@ const Home = () => {
               </p>
 
               <a
-                href="/documentos/contactos.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/mis-solicitudes"
                 className="card-button"
               >
                 VER INFORMACIÓN
@@ -127,7 +125,7 @@ const Home = () => {
               </div>
             </a>
 
-            <a href="#" className="channel-link">
+            <a href="https://gobernaciondecochabamba.bo" target="_blank" rel="noopener noreferrer" className="channel-link">
               <div className="channel-icon">
                 <FaLink aria-hidden="true" />
               </div>

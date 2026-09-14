@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
 import Modlas from "../../Components/Modlas/Modlas";
 
 const API_URL = "http://localhost:8080/api";
 
 const NuevaSolicitud = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     titulo: "",
     tipoEquipo: "PC",
@@ -210,7 +212,7 @@ const NuevaSolicitud = () => {
         </form>
       </main>
 
-      <Modlas open={modalAbierto} onClose={() => setModalAbierto(false)} />
+      <Modlas open={modalAbierto} onClose={() => navigate('/mis-solicitudes')} />
     </div>
   );
 };
