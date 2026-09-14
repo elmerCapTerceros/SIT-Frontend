@@ -91,6 +91,13 @@
   width: 100%;
 }
 
+.nav-link.active {
+  color: #005b82;
+  font-weight: 700;
+}
+
+.nav-link.active::after { width: 100%; }
+
 /* CONTENEDOR DERECHO: usuario + hamburguesa */
 .navbar-right {
   display: flex;
@@ -98,11 +105,24 @@
   gap: 12px;
 }
 
+.logout-button {
+  border: 1px solid #b8ddeb;
+  border-radius: 7px;
+  background: #fff;
+  color: #005b82;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 11px;
+}
+
+.logout-button:hover { background: #e6f7fe; }
+
 /* PERFIL DE USUARIO */
 .navbar-user {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
   padding: 4px 8px;
   border-radius: 10px;
   transition: background-color 0.2s ease;
@@ -135,17 +155,28 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  min-width: 0;
+  max-width: 150px;
   line-height: 1.1;
 }
 
 .user-name {
+  display: block;
+  max-width: 100%;
   font-size: 13px;
   font-weight: 600;
   color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-role {
-  font-size: 9px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
   font-weight: 700;
   color: #00AEEF;
   background-color: #E6F7FE;
@@ -215,6 +246,8 @@
   .navbar-user {
     padding: 4px;
   }
+
+  .logout-button { display: none; }
 
   .menu-toggle {
     display: flex;

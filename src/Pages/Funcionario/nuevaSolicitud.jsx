@@ -1,7 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
+import Modlas from "../../Components/Modlas/Modlas";
+
+const API_URL = "http://localhost:8080/api";
 
 const NuevaSolicitud = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     titulo: "",
     tipoEquipo: "PC",
@@ -9,7 +14,9 @@ const NuevaSolicitud = () => {
   });
 
   const [errores, setErrores] = useState({});
-  const [enviada, setEnviada] = useState(false);
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [errorApi, setErrorApi] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   const TIPOS_EQUIPO = ["PC", "Laptop", "Impresora", "Otros"];
 
@@ -17,10 +24,10 @@ const NuevaSolicitud = () => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setErrores((prev) => ({ ...prev, [name]: undefined }));
-    setEnviada(false);
+    setErrorApi("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const nuevosErrores = {};
@@ -35,25 +42,60 @@ const NuevaSolicitud = () => {
       nuevosErrores.tipoEquipo = "Debe seleccionar un tipo de equipo.";
     }
 
-    if (form.descripcion.trim()) {
-      if (form.descripcion.trim().length < 10) {
-        nuevosErrores.descripcion =
-          "La descripción debe tener al menos 10 caracteres.";
-      }
+    if (!form.descripcion.trim()) {
+      nuevosErrores.descripcion = "La descripción es obligatoria.";
+    } else if (form.descripcion.trim().length < 10) {
+      nuevosErrores.descripcion =
+        "La descripción debe tener al menos 10 caracteres.";
     }
 
     setErrores(nuevosErrores);
+    setErrorApi("");
 
     if (Object.keys(nuevosErrores).length === 0) {
-      setForm({ titulo: "", tipoEquipo: "PC", descripcion: "" });
-      setEnviada(true);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setErrorApi("Su sesión no está activa. Inicie sesión para enviar la solicitud.");
+        return;
+      }
+
+      setEnviando(true);
+
+      try {
+        const response = await fetch(`${API_URL}/solicitudes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            titulo: form.titulo.trim(),
+            tipo: form.tipoEquipo,
+            descripcion: form.descripcion.trim(),
+          }),
+        });
+
+        if (!response.ok) {
+          const body = await response.json().catch(() => null);
+          throw new Error(body?.message || "No se pudo registrar la solicitud.");
+        }
+
+        setForm({ titulo: "", tipoEquipo: "PC", descripcion: "" });
+        setErrores({});
+        setModalAbierto(true);
+      } catch (error) {
+        setErrorApi(error.message || "Ocurrió un error al enviar la solicitud.");
+      } finally {
+        setEnviando(false);
+      }
     }
   };
 
   const handleCancelar = () => {
     setForm({ titulo: "", tipoEquipo: "PC", descripcion: "" });
     setErrores({});
-    setEnviada(false);
+    setErrorApi("");
   };
 
   return (
@@ -153,11 +195,7 @@ const NuevaSolicitud = () => {
             )}
           </div>
 
-          {enviada && (
-            <div className="success-msg">
-              Su solicitud fue enviada correctamente.
-            </div>
-          )}
+          {errorApi && <div className="error-msg api-error">{errorApi}</div>}
 
           <div className="form-actions">
             <button
@@ -167,12 +205,14 @@ const NuevaSolicitud = () => {
             >
               Cancelar
             </button>
-            <button type="submit" className="btn btn-submit">
-              Enviar Solicitud
+            <button type="submit" className="btn btn-submit" disabled={enviando}>
+              {enviando ? "Enviando..." : "Enviar Solicitud"}
             </button>
           </div>
         </form>
       </main>
+
+      <Modlas open={modalAbierto} onClose={() => navigate('/mis-solicitudes')} />
     </div>
   );
 };
