@@ -4,6 +4,7 @@ import Login from './Components/Login/Login';
 import Home from './Home/Home';
 import NuevaSolicitud from './Pages/Funcionario/nuevaSolicitud';
 import MisSolicitudes from './Pages/Funcionario/MisSolicitudes';
+import RegistroDeUsuario from './Pages/RegistroDeUsuario/RegistroDeUsuario';
 import NotFound from './Pages/NotFound/NotFound';
 
 const ProtectedRoute = ({ children }) => (
@@ -11,11 +12,13 @@ const ProtectedRoute = ({ children }) => (
 );
 
 const PrivateLayout = ({ children }) => <><Navbar />{children}</>;
+const defaultRoute = localStorage.getItem('primerIngreso') === 'true' ? '/registro-usuario' : '/home';
 
 const RoutesApp = () => (
   <Routes>
-    <Route path="/" element={<Navigate to={localStorage.getItem('token') ? '/home' : '/login'} replace />} />
+    <Route path="/" element={<Navigate to={localStorage.getItem('token') ? defaultRoute : '/login'} replace />} />
     <Route path="/login" element={<Login />} />
+    <Route path="/registro-usuario" element={<ProtectedRoute><RegistroDeUsuario /></ProtectedRoute>} />
     <Route path="/Iniciar_Sesion" element={<Navigate to="/login" replace />} />
     <Route path="/home" element={<ProtectedRoute><PrivateLayout><Home /></PrivateLayout></ProtectedRoute>} />
     <Route path="/nueva-solicitud" element={<ProtectedRoute><PrivateLayout><NuevaSolicitud /></PrivateLayout></ProtectedRoute>} />
