@@ -42,11 +42,9 @@ const NuevaSolicitud = () => {
       nuevosErrores.tipoEquipo = "Debe seleccionar un tipo de equipo.";
     }
 
-    if (!form.descripcion.trim()) {
-      nuevosErrores.descripcion = "La descripción es obligatoria.";
-    } else if (form.descripcion.trim().length < 10) {
+    if (form.descripcion.trim().length > 500) {
       nuevosErrores.descripcion =
-        "La descripción debe tener al menos 10 caracteres.";
+        "La descripción no puede superar los 500 caracteres.";
     }
 
     setErrores(nuevosErrores);
@@ -185,6 +183,7 @@ const NuevaSolicitud = () => {
               className={`form-input form-textarea ${errores.descripcion ? "input-error" : ""}`}
               placeholder="Ej. Al intentar enviar un documento a imprimir en la unidad del piso 3, el programa se congela y muestra un código de error 0x8821..."
               rows={4}
+              maxLength={500}
               value={form.descripcion}
               onChange={handleChange}
             />
@@ -192,7 +191,7 @@ const NuevaSolicitud = () => {
               <span className="error-msg">{errores.descripcion}</span>
             ) : (
               <span className="hint-msg">
-                Describa los síntomas y pasos para replicar el problema
+                Opcional. Máximo 500 caracteres.
               </span>
             )}
           </div>
