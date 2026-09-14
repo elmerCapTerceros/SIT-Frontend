@@ -122,11 +122,13 @@ const NuevaSolicitud = () => {
       </aside>
 
       <main className="solicitud-right">
-        <h1 className="form-heading">Nueva Solicitud Técnica</h1>
-        <p className="form-subheading">
-          Registre una nueva solicitud de soporte técnico para su equipo o
-          departamento.
-        </p>
+        <section className="requests-header">
+          <div>
+            <p className="page-kicker">SOLICITUD</p>
+            <h1>Nueva Solicitud Técnica</h1>
+            <p>Registre una nueva solicitud de soporte técnico para su equipo o departamento.</p>
+          </div>
+        </section>
 
         <form className="form-card" onSubmit={handleSubmit} noValidate>
           <div className="form-field">

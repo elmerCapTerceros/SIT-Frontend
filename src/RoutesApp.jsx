@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Navbar from './Components/Navbar/Navbar';
 import Login from './Components/Login/Login';
 import Home from './Home/Home';
-import NuevaSolicitud from './Pages/Funcionario/NuevaSolicitud';
+import NuevaSolicitud from './Pages/Funcionario/nuevaSolicitud';
 import MisSolicitudes from './Pages/Funcionario/MisSolicitudes';
 import NotFound from './Pages/NotFound/NotFound';
 

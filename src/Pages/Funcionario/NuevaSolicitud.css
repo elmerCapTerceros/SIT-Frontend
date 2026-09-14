@@ -98,6 +98,36 @@
   font-size: 10px;
 }
 
+.solicitud-right .requests-header {
+  margin: 0;
+  text-align: left;
+}
+
+.solicitud-right .page-kicker {
+  color: #00aeef;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  margin: 0 0 8px;
+  
+}
+
+.solicitud-right .requests-header h1 {
+  color: #005b82;
+  font-size: clamp(24px, 2.8vw, 36px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 8px;
+  
+}
+.solicitud-right .requests-header > div > p:last-child {
+  color: #526a78;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  padding-bottom: 22px;
+}
+
 /* ===== HORARIOS ===== */
 
 .tiempos-card {
@@ -127,7 +157,7 @@
   width: 66%;
   min-height: calc(100vh - 90px);
   background-color: #ffffff;
-  padding: 24px 138px;
+  padding: 24px 138px 24px 48px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -372,6 +402,14 @@
     font-size: 9px;
   }
 
+  .solicitud-right .requests-header h1 {
+    font-size: 24px;
+  }
+
+  .solicitud-right .requests-header > div > p:last-child {
+    font-size: 12px;
+  }
+
   .tiempos-card {
     padding: 8px 10px;
   }
@@ -393,10 +431,18 @@
     justify-content: center;
     overflow: hidden;
   }
-
-  .form-heading {
-    font-size: 28px;
+.requests-head { 
+  max-width: 1040px; 
+  margin: 0 auto 28px; 
+  display: flex; 
+  justify-content: left; 
+  align-items: end;
+   gap: 24px; 
   }
+
+.page-kick, .request-id { color: #00aeef; font-size: 12px; font-weight: 800; letter-spacing: .9px; margin: 0 0 8px; }
+.requests-head h1 { color: #005b82; font-size: clamp(28px, 4vw, 40px); font-weight: 800; line-height: 1.15; margin: 0 0 8px; }
+.requests-head > div > p:last-child { color: #526a78; font-size: 14px; line-height: 1.5; margin: 0; }
 
   .form-subheading {
     font-size: 14px;
