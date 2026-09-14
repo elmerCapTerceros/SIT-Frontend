@@ -35,10 +35,15 @@ const Navbar = () => {
   const navigate = useNavigate();
   const closeMenu = () => setMenuOpen(false);
   const userLogin = localStorage.getItem('userLogin') || 'Usuario';
+  const nombre = localStorage.getItem('nombre') || '';
+  const apellido = localStorage.getItem('apellido') || '';
+  const nombreCompleto = `${nombre} ${apellido}`.trim() || userLogin;
   const rol = localStorage.getItem('rol') || 'FUNCIONARIO';
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userLogin');
+    localStorage.removeItem('nombre');
+    localStorage.removeItem('apellido');
     localStorage.removeItem('rol');
     navigate('/login', { replace: true });
   };
@@ -73,7 +78,7 @@ const Navbar = () => {
             <UserIcon />
           </div>
           <div className="user-info">
-            <span className="user-name">{userLogin}</span>
+            <span className="user-name" title={nombreCompleto}>{nombreCompleto}</span>
             <span className="user-role">{rol}</span>
           </div>
         </div>

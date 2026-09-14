@@ -85,6 +85,8 @@ const Login = () => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('userLogin', data.userLogin);
       localStorage.setItem('rol', data.rol || '');
+      localStorage.setItem('nombre', data.nombre || '');
+      localStorage.setItem('apellido', data.apellido || '');
       localStorage.setItem('primerIngreso', String(Boolean(data.primerIngreso)));
       navigate(data.primerIngreso ? '/registro-usuario' : '/home', { replace: true });
     } catch (requestError) {

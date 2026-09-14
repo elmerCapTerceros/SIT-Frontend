@@ -7,7 +7,7 @@ const SuccessIcon = () => (
   </svg>
 );
 
-const Modlas = ({ open, onClose }) => {
+const Modlas = ({ open, onClose, title = 'Solicitud realizada', message = 'Su solicitud fue registrada correctamente.', buttonLabel = 'Aceptar' }) => {
   if (!open) {
     return null;
   }
@@ -22,10 +22,10 @@ const Modlas = ({ open, onClose }) => {
         onMouseDown={(event) => event.stopPropagation()}
       >
         <SuccessIcon />
-        <h2 id="success-modal-title">Solicitud realizada</h2>
-        <p>Su solicitud fue registrada correctamente.</p>
+        <h2 id="success-modal-title">{title}</h2>
+        <p>{message}</p>
         <button type="button" className="success-modal-button" onClick={onClose}>
-          Aceptar
+          {buttonLabel}
         </button>
       </div>
     </div>

@@ -27,6 +27,16 @@
   gap: 7px;
 }
 
+.registro-grid .form-group label {
+  color: #333333;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.required-mark {
+  color: #dc2626;
+}
+
 .registro-grid input {
   width: 100%;
   height: 46px;
@@ -43,6 +53,24 @@
 .registro-grid input:focus {
   border-color: #00AEEF;
   box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.1);
+}
+
+.registro-grid input.input-invalid,
+.registro-grid input.input-invalid:hover,
+.registro-grid input.input-invalid:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+  background: #fff7f7;
+}
+
+.registro-grid input.input-invalid:hover {
+  cursor: help;
+}
+
+.field-error {
+  color: #b91c1c;
+  font-size: 11px;
+  line-height: 1.3;
 }
 
 .registro-grid input[readonly] {

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../Components/Login/Login.css';
+import '../../Components/Modlas/Modlas.css';
+import Modlas from '../../Components/Modlas/Modlas';
 import './RegistroDeUsuario.css';
 
 const API_URL = 'http://localhost:8080/api';
@@ -19,18 +21,55 @@ const RegistroDeUsuario = () => {
     ubicacionOficina: '',
   });
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const uppercaseFields = ['nombre', 'apellido', 'cargo', 'area', 'ubicacionOficina'];
+
   const handleChange = (event) => {
-    setForm((currentForm) => ({ ...currentForm, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+    const nextValue = uppercaseFields.includes(name) ? value.toLocaleUpperCase('es-BO') : value;
+    setForm((currentForm) => ({ ...currentForm, [name]: nextValue }));
+    setFieldErrors((currentErrors) => ({ ...currentErrors, [name]: '' }));
+    setError('');
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const requiredFields = {
+      nombre: 'Ingrese su nombre.',
+      apellido: 'Ingrese su apellido.',
+      password: 'Ingrese una contraseña.',
+      confirmarPassword: 'Confirme su contraseña.',
+      cargo: 'Ingrese su cargo.',
+      telefono: 'Ingrese su teléfono.',
+      area: 'Ingrese su área.',
+      ubicacionOficina: 'Ingrese la ubicación de su oficina.',
+    };
+
+    Object.entries(requiredFields).forEach(([field, message]) => {
+      if (!form[field].trim()) errors[field] = message;
+    });
+    if (form.password && form.password.length < 8) {
+      errors.password = 'La contraseña debe tener al menos 8 caracteres.';
+    }
+    if (form.confirmarPassword && form.password !== form.confirmarPassword) {
+      errors.confirmarPassword = 'Las contraseñas no coinciden.';
+    }
+    if (form.telefono && !/^\d{7,8}$/.test(form.telefono)) {
+      errors.telefono = 'El teléfono debe tener 7 u 8 dígitos.';
+    }
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
 
-    if (form.password !== form.confirmarPassword) {
-      setError('Las contraseñas no coinciden.');
+    if (!validateForm()) {
+      setError('Revise los campos marcados antes de continuar.');
       return;
     }
 
@@ -58,14 +97,22 @@ const RegistroDeUsuario = () => {
         throw new Error(data?.message || 'No se pudo guardar el registro.');
       }
 
+      localStorage.setItem('nombre', data.nombre || form.nombre);
+      localStorage.setItem('apellido', data.apellido || form.apellido);
       localStorage.removeItem('primerIngreso');
-      navigate('/home', { replace: true });
+      setSuccess(true);
     } catch (requestError) {
       setError(requestError.message || 'No se pudo guardar el registro.');
     } finally {
       setLoading(false);
     }
   };
+
+  const inputProps = (name) => ({
+    'aria-invalid': Boolean(fieldErrors[name]),
+    title: fieldErrors[name] || '',
+    className: fieldErrors[name] ? 'input-invalid' : '',
+  });
 
   return (
     <div className="login-page registro-page">
@@ -109,43 +156,51 @@ const RegistroDeUsuario = () => {
           <h2 className="card-title">Registro de usuario</h2>
           <p className="card-subtitle">Complete sus datos para ingresar al sistema</p>
 
-          <form className="registro-form" onSubmit={handleSubmit}>
+          <form className="registro-form" onSubmit={handleSubmit} noValidate>
             <div className="registro-grid">
               <div className="form-group">
-                <label htmlFor="nombre">Nombre</label>
-                <input id="nombre" name="nombre" type="text" value={form.nombre} onChange={handleChange} required maxLength="100" />
+                <label htmlFor="nombre">Nombre <span className="required-mark">*</span></label>
+                <input id="nombre" name="nombre" type="text" value={form.nombre} onChange={handleChange} maxLength="100" {...inputProps('nombre')} />
+                {fieldErrors.nombre && <span className="field-error">{fieldErrors.nombre}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="apellido">Apellido</label>
-                <input id="apellido" name="apellido" type="text" value={form.apellido} onChange={handleChange} required maxLength="100" />
+                <label htmlFor="apellido">Apellido <span className="required-mark">*</span></label>
+                <input id="apellido" name="apellido" type="text" value={form.apellido} onChange={handleChange} maxLength="100" {...inputProps('apellido')} />
+                {fieldErrors.apellido && <span className="field-error">{fieldErrors.apellido}</span>}
               </div>
               <div className="form-group registro-full-width">
                 <label htmlFor="userLogin">Usuario</label>
                 <input id="userLogin" name="userLogin" type="text" value={userLogin} readOnly aria-readonly="true" />
               </div>
               <div className="form-group">
-                <label htmlFor="password">Nueva contraseña</label>
-                <input id="password" name="password" type="password" value={form.password} onChange={handleChange} required minLength="8" maxLength="100" />
+                <label htmlFor="password">Nueva contraseña <span className="required-mark">*</span></label>
+                <input id="password" name="password" type="password" value={form.password} onChange={handleChange} minLength="8" maxLength="100" {...inputProps('password')} />
+                {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="confirmarPassword">Confirmar contraseña</label>
-                <input id="confirmarPassword" name="confirmarPassword" type="password" value={form.confirmarPassword} onChange={handleChange} required minLength="8" maxLength="100" />
+                <label htmlFor="confirmarPassword">Confirmar contraseña <span className="required-mark">*</span></label>
+                <input id="confirmarPassword" name="confirmarPassword" type="password" value={form.confirmarPassword} onChange={handleChange} minLength="8" maxLength="100" {...inputProps('confirmarPassword')} />
+                {fieldErrors.confirmarPassword && <span className="field-error">{fieldErrors.confirmarPassword}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="cargo">Cargo</label>
-                <input id="cargo" name="cargo" type="text" value={form.cargo} onChange={handleChange} required maxLength="20" />
+                <label htmlFor="cargo">Cargo <span className="required-mark">*</span></label>
+                <input id="cargo" name="cargo" type="text" value={form.cargo} onChange={handleChange} maxLength="20" {...inputProps('cargo')} />
+                {fieldErrors.cargo && <span className="field-error">{fieldErrors.cargo}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="telefono">Teléfono</label>
-                <input id="telefono" name="telefono" type="tel" inputMode="numeric" pattern="[0-9]{7,8}" value={form.telefono} onChange={handleChange} required maxLength="8" />
+                <label htmlFor="telefono">Teléfono <span className="required-mark">*</span></label>
+                <input id="telefono" name="telefono" type="tel" inputMode="numeric" value={form.telefono} onChange={handleChange} maxLength="8" {...inputProps('telefono')} />
+                {fieldErrors.telefono && <span className="field-error">{fieldErrors.telefono}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="area">Área</label>
-                <input id="area" name="area" type="text" value={form.area} onChange={handleChange} required maxLength="40" />
+                <label htmlFor="area">Área <span className="required-mark">*</span></label>
+                <input id="area" name="area" type="text" value={form.area} onChange={handleChange} maxLength="40" {...inputProps('area')} />
+                {fieldErrors.area && <span className="field-error">{fieldErrors.area}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="ubicacionOficina">Ubicación de su oficina</label>
-                <input id="ubicacionOficina" name="ubicacionOficina" type="text" value={form.ubicacionOficina} onChange={handleChange} required maxLength="40" />
+                <label htmlFor="ubicacionOficina">Ubicación de su oficina <span className="required-mark">*</span></label>
+                <input id="ubicacionOficina" name="ubicacionOficina" type="text" value={form.ubicacionOficina} onChange={handleChange} maxLength="40" {...inputProps('ubicacionOficina')} />
+                {fieldErrors.ubicacionOficina && <span className="field-error">{fieldErrors.ubicacionOficina}</span>}
               </div>
             </div>
 
@@ -160,6 +215,13 @@ const RegistroDeUsuario = () => {
           <p>Sistema de Solicitudes TI · Todos los derechos reservados</p>
         </div>
       </div>
+      <Modlas
+        open={success}
+        title="Registro completado"
+        message="Sus datos fueron guardados correctamente. Ya puede ingresar al sistema."
+        buttonLabel="Ir al inicio"
+        onClose={() => navigate('/home', { replace: true })}
+      />
     </div>
   );
 };
