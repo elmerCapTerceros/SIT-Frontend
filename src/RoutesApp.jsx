@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => (
 );
 
 const PrivateLayout = ({ children }) => <><Navbar />{children}</>;
-const defaultRoute = localStorage.getItem('primerIngreso') === 'true' ? '/registro-usuario' : '/home';
+const defaultRoute = localStorage.getItem('primerIngreso') === 'true' ? '/login' : '/home';
 
 const RoutesApp = () => (
   <Routes>
