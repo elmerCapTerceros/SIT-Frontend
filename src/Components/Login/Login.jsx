@@ -170,6 +170,7 @@ const Login = () => {
                   id="usuario"
                   name="usuario"
                   type="text"
+                  maxLength={16}
                   placeholder="Usuario"
                   value={form.usuario}
                   onChange={handleChange}
@@ -188,6 +189,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
+                  maxLength={8}
                   placeholder="Contraseña"
                   value={form.password}
                   onChange={handleChange}
