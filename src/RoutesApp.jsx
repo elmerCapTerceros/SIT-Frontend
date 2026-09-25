@@ -5,6 +5,7 @@ import Home from './Home/Home';
 import NuevaSolicitud from './Pages/Funcionario/nuevaSolicitud';
 import MisSolicitudes from './Pages/Funcionario/MisSolicitudes';
 import RegistroDeUsuario from './Pages/RegistroDeUsuario/RegistroDeUsuario';
+import SolicitudesRecibidas from './Pages/Supervisor/SolicitudesRecividas';
 import NotFound from './Pages/NotFound/NotFound';
 
 const ProtectedRoute = ({ children }) => (
@@ -24,6 +25,7 @@ const RoutesApp = () => (
     <Route path="/nueva-solicitud" element={<ProtectedRoute><PrivateLayout><NuevaSolicitud /></PrivateLayout></ProtectedRoute>} />
     <Route path="/mis-solicitudes" element={<ProtectedRoute><PrivateLayout><MisSolicitudes /></PrivateLayout></ProtectedRoute>} />
     <Route path="/nuevaSolicitud" element={<Navigate to="/nueva-solicitud" replace />} />
+    <Route path="/solicitudes-tecnico" element={<ProtectedRoute><PrivateLayout><SolicitudesRecibidas /></PrivateLayout></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );

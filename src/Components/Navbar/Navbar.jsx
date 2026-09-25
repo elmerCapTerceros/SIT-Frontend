@@ -43,7 +43,7 @@ const navLinksByRole = {
   ],
   SUPERVISOR: [
     { label: 'Inicio', to: '/home' },
-    { label: 'Solicitudes', to: '/mis-solicitudes' },
+    { label: 'Solicitudes', to: '/solicitudes-tecnico' },
     { label: 'Técnicos', to: '/tecnicos' },
     { label: 'Avisos', to: '/avisos' },
     { label: 'Reportes', to: '/reportes' },
