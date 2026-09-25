@@ -70,7 +70,7 @@ const RegistroDeUsuario = () => {
     };
     Object.entries(maxLengthFields).forEach(([field, message]) => {
       if (form[field].trim().length > 20) errors[field] = message;
-    }
+    });
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -171,12 +171,12 @@ const RegistroDeUsuario = () => {
             <div className="registro-grid">
               <div className="form-group">
                 <label htmlFor="nombre">Nombre <span className="required-mark">*</span></label>
-                <input id="nombre" name="nombre" type="text" value={form.nombre} onChange={handleChange} maxLength="100" {...inputProps('nombre')} />
+                <input id="nombre" name="nombre" type="text" value={form.nombre} onChange={handleChange} maxLength="20" {...inputProps('nombre')} />
                 {fieldErrors.nombre && <span className="field-error">{fieldErrors.nombre}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="apellido">Apellido <span className="required-mark">*</span></label>
-                <input id="apellido" name="apellido" type="text" value={form.apellido} onChange={handleChange} maxLength="100" {...inputProps('apellido')} />
+                <input id="apellido" name="apellido" type="text" value={form.apellido} onChange={handleChange} maxLength="20" {...inputProps('apellido')} />
                 {fieldErrors.apellido && <span className="field-error">{fieldErrors.apellido}</span>}
               </div>
               <div className="form-group registro-full-width">
@@ -185,12 +185,12 @@ const RegistroDeUsuario = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="password">Nueva contraseña <span className="required-mark">*</span></label>
-                <input id="password" name="password" type="password" value={form.password} onChange={handleChange} minLength="8" maxLength="100" {...inputProps('password')} />
+                <input id="password" name="password" type="password" value={form.password} onChange={handleChange} minLength="8" maxLength="8" {...inputProps('password')} />
                 {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="confirmarPassword">Confirmar contraseña <span className="required-mark">*</span></label>
-                <input id="confirmarPassword" name="confirmarPassword" type="password" value={form.confirmarPassword} onChange={handleChange} minLength="8" maxLength="100" {...inputProps('confirmarPassword')} />
+                <input id="confirmarPassword" name="confirmarPassword" type="password" value={form.confirmarPassword} onChange={handleChange} minLength="8" maxLength="8" {...inputProps('confirmarPassword')} />
                 {fieldErrors.confirmarPassword && <span className="field-error">{fieldErrors.confirmarPassword}</span>}
               </div>
               <div className="form-group">
@@ -205,12 +205,12 @@ const RegistroDeUsuario = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="area">Área <span className="required-mark">*</span></label>
-                <input id="area" name="area" type="text" value={form.area} onChange={handleChange} maxLength="40" {...inputProps('area')} />
+                <input id="area" name="area" type="text" value={form.area} onChange={handleChange} maxLength="20" {...inputProps('area')} />
                 {fieldErrors.area && <span className="field-error">{fieldErrors.area}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="ubicacionOficina">Ubicación de su oficina <span className="required-mark">*</span></label>
-                <input id="ubicacionOficina" name="ubicacionOficina" type="text" value={form.ubicacionOficina} onChange={handleChange} maxLength="40" {...inputProps('ubicacionOficina')} />
+                <input id="ubicacionOficina" name="ubicacionOficina" type="text" value={form.ubicacionOficina} onChange={handleChange} maxLength="20" {...inputProps('ubicacionOficina')} />
                 {fieldErrors.ubicacionOficina && <span className="field-error">{fieldErrors.ubicacionOficina}</span>}
               </div>
             </div>

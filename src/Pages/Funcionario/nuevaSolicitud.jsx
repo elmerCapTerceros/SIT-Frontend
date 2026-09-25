@@ -34,8 +34,8 @@ const NuevaSolicitud = () => {
 
     if (!form.titulo.trim()) {
       nuevosErrores.titulo = "El título de la solicitud es obligatorio.";
-    } else if (form.titulo.trim().length < 5) {
-      nuevosErrores.titulo = "El título debe tener al menos 5 caracteres.";
+    } else if (form.titulo.trim().length < 5 || form.titulo.trim().length > 200) {
+      nuevosErrores.titulo = "El título debe tener entre 5 y 200 caracteres.";
     }
 
     if (!form.tipoEquipo) {
@@ -141,6 +141,8 @@ const NuevaSolicitud = () => {
               placeholder="Ej. Error de conexión a la impresora de red"
               value={form.titulo}
               onChange={handleChange}
+              minLength={5}
+              maxLength={200}
             />
             {errores.titulo ? (
               <span className="error-msg">{errores.titulo}</span>
