@@ -51,14 +51,25 @@ const RegistroDeUsuario = () => {
     Object.entries(requiredFields).forEach(([field, message]) => {
       if (!form[field].trim()) errors[field] = message;
     });
-    if (form.password && form.password.length < 8) {
-      errors.password = 'La contraseña debe tener al menos 8 caracteres.';
+    if (form.password && form.password.length !== 8) {
+      errors.password = 'La contraseña debe tener exactamente 8 caracteres.';
     }
     if (form.confirmarPassword && form.password !== form.confirmarPassword) {
       errors.confirmarPassword = 'Las contraseñas no coinciden.';
     }
-    if (form.telefono && !/^\d{7,8}$/.test(form.telefono)) {
-      errors.telefono = 'El teléfono debe tener 7 u 8 dígitos.';
+    if (form.telefono && !/^\d{8}$/.test(form.telefono)) {
+      errors.telefono = 'El teléfono debe tener exactamente 8 dígitos.';
+    }
+
+    const maxLengthFields = {
+      nombre: 'El nombre no puede superar los 20 caracteres.',
+      apellido: 'El apellido no puede superar los 20 caracteres.',
+      cargo: 'El cargo no puede superar los 20 caracteres.',
+      area: 'El área no puede superar los 20 caracteres.',
+      ubicacionOficina: 'La ubicación de oficina no puede superar los 20 caracteres.',
+    };
+    Object.entries(maxLengthFields).forEach(([field, message]) => {
+      if (form[field].trim().length > 20) errors[field] = message;
     }
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
