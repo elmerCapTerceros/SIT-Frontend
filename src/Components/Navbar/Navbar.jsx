@@ -30,6 +30,26 @@ const MenuIcon = ({ open }) => (
   </svg>
 );
 
+const navLinksByRole = {
+  FUNCIONARIO: [
+    { label: 'Inicio', to: '/home' },
+    { label: 'Nueva solicitud', to: '/nueva-solicitud' },
+    { label: 'Mis solicitudes', to: '/mis-solicitudes' },
+  ],
+  TECNICO: [
+    { label: 'Inicio', to: '/home' },
+    { label: 'Solicitudes', to: '/mis-solicitudes' },
+    { label: 'Reportes', to: '/reportes' },
+  ],
+  SUPERVISOR: [
+    { label: 'Inicio', to: '/home' },
+    { label: 'Solicitudes', to: '/mis-solicitudes' },
+    { label: 'Técnicos', to: '/tecnicos' },
+    { label: 'Avisos', to: '/avisos' },
+    { label: 'Reportes', to: '/reportes' },
+  ],
+};
+
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -38,7 +58,8 @@ const Navbar = () => {
   const nombre = localStorage.getItem('nombre') || '';
   const apellido = localStorage.getItem('apellido') || '';
   const nombreCompleto = `${nombre} ${apellido}`.trim() || userLogin;
-  const rol = localStorage.getItem('rol') || 'FUNCIONARIO';
+  const rol = (localStorage.getItem('rol') || 'FUNCIONARIO').trim().toUpperCase();
+  const navLinks = navLinksByRole[rol] || navLinksByRole.FUNCIONARIO;
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userLogin');
@@ -66,9 +87,9 @@ const Navbar = () => {
 
       {/* Enlaces */}
       <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-        <NavLink to="/home" className="nav-link" onClick={closeMenu}>Inicio</NavLink>
-        <NavLink to="/nueva-solicitud" className="nav-link" onClick={closeMenu}>Nueva solicitud</NavLink>
-        <NavLink to="/mis-solicitudes" className="nav-link" onClick={closeMenu}>Mis solicitudes</NavLink>
+        {navLinks.map(({ label, to }) => (
+          <NavLink key={to} to={to} className="nav-link" onClick={closeMenu}>{label}</NavLink>
+        ))}
       </div>
 
       {/* Perfil de usuario*/}
