@@ -7,6 +7,8 @@ import MisSolicitudes from './Pages/Funcionario/MisSolicitudes';
 import RegistroDeUsuario from './Pages/RegistroDeUsuario/RegistroDeUsuario';
 import SolicitudesRecibidas from './Pages/Supervisor/SolicitudesRecividas';
 import NotFound from './Pages/NotFound/NotFound';
+import InfoTecnicos from './Pages/Supervisor/InfoTecnicos';
+
 
 const ProtectedRoute = ({ children }) => (
   localStorage.getItem('token') ? children : <Navigate to="/login" replace />
@@ -27,6 +29,7 @@ const RoutesApp = () => (
     <Route path="/nuevaSolicitud" element={<Navigate to="/nueva-solicitud" replace />} />
     <Route path="/solicitudes-tecnico" element={<ProtectedRoute><PrivateLayout><SolicitudesRecibidas /></PrivateLayout></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
+    <Route path="/tecnicos" element={<ProtectedRoute><PrivateLayout><InfoTecnicos /></PrivateLayout></ProtectedRoute>} />
   </Routes>
 );
 
