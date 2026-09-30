@@ -52,9 +52,9 @@ const MisSolicitudes = () => {
               <button className="secondary-action" type="button" onClick={() => navigate('/nueva-solicitud')}>Registrar solicitud</button>
             </div>
           ) : solicitudes.map((solicitud) => (
-            <article className="request-item" key={solicitud.id}>
+            <article className="request-item" key={solicitud.codigo}>
               <div>
-                <p className="request-id">SOLICITUD #{solicitud.id}</p>
+                <p className="request-id">{solicitud.codigo}</p>
                 <h2>{solicitud.titulo}</h2>
                 <p>{solicitud.tipo || solicitud.categoria} · {new Date(solicitud.createdAt).toLocaleDateString('es-BO')}</p>
               </div>
