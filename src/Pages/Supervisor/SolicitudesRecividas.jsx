@@ -450,7 +450,7 @@ const SolicitudesRecibidas = () => {
 											}}
 										>
 											<td className="col-id" data-label="ID" title={formatId(solicitud.id)}>
-												<span className="request-id">{formatId(solicitud.id)}</span>
+												<span className="request-id">{formatId(solicitud.codigo)}</span>
 											</td>
 											<td className="col-title request-title-cell" data-label="Título" title={solicitud.titulo}>
 												{getValue(solicitud.titulo)}
