@@ -38,7 +38,7 @@ const navLinksByRole = {
   ],
   TECNICO: [
     { label: 'Inicio', to: '/home' },
-    { label: 'Solicitudes', to: '/mis-solicitudes' },
+    { label: 'Solicitudes asignadas', to: '/asignacion-tecnico' },
     { label: 'Reportes', to: '/reportes' },
   ],
   SUPERVISOR: [
@@ -62,6 +62,7 @@ const Navbar = () => {
   const navLinks = navLinksByRole[rol] || navLinksByRole.FUNCIONARIO;
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
     localStorage.removeItem('userLogin');
     localStorage.removeItem('nombre');
     localStorage.removeItem('apellido');
