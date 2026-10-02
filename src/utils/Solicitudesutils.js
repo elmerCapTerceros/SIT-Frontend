@@ -26,6 +26,14 @@ export const formatDate = (value) => {
 	return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString('es-BO');
 };
 
+export const formatDateTime = (value) => {
+	if (!value) return '-';
+	const date = new Date(value);
+	return Number.isNaN(date.getTime())
+		? '-'
+		: date.toLocaleString('es-BO', { dateStyle: 'medium', timeStyle: 'short' });
+};
+
 export const toSearchText = (value) =>
 	(value ?? '')
 		.toString()

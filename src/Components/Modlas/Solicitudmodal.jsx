@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaCheck, FaCopy, FaSearch, FaSpinner, FaTimes } from 'react-icons/fa';
-import { formatDate, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
+import { formatDateTime, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
 import './Solicitudmodal.css';
 
 const PRIORIDADES = [
@@ -22,6 +22,7 @@ const FOCUSABLE = 'button:not([disabled]), select:not([disabled]), input:not([di
 const SolicitudModal = ({ solicitud, tecnicos, onClose, onSave }) => {
 	const dialogRef = useRef(null);
 	const fullId = formatId(solicitud.id);
+	const tecnicoAsignado = tecnicos.find((tecnico) => tecnico.id === String(solicitud.tecnicoId));
 
 	const initialForm = useMemo(() => {
 		const prioridad = normalize(solicitud.prioridad);
@@ -171,11 +172,31 @@ const SolicitudModal = ({ solicitud, tecnicos, onClose, onSave }) => {
 						</div>
 						<div>
 							<dt>Solicitante</dt>
-							<dd>{getValue(solicitud.solicitanteNombre || solicitud.solicitanteId)}</dd>
+							<dd>{getValue(solicitud.solicitanteNombre)}</dd>
 						</div>
 						<div>
-							<dt>Fecha</dt>
-							<dd>{formatDate(solicitud.createdAt)}</dd>
+							<dt>Área</dt>
+							<dd>{getValue(solicitud.area)}</dd>
+						</div>
+						<div>
+							<dt>Categoría</dt>
+							<dd>{getValue(solicitud.categoria)}</dd>
+						</div>
+						<div>
+							<dt>Creada</dt>
+							<dd>{formatDateTime(solicitud.createdAt)}</dd>
+						</div>
+						<div>
+							<dt>Última actualización</dt>
+							<dd>{formatDateTime(solicitud.updatedAt)}</dd>
+						</div>
+						<div>
+							<dt>Técnico asignado</dt>
+							<dd>{getValue(tecnicoAsignado?.nombre || solicitud.tecnicoNombre)}</dd>
+						</div>
+						<div>
+							<dt>Verificada por el usuario</dt>
+							<dd>{solicitud.verificadoPorUsuario ? 'Sí' : 'No'}</dd>
 						</div>
 					</dl>
 

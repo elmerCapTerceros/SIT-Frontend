@@ -18,6 +18,7 @@ import {
 import SolicitudModal from '../../Components/Modlas/Solicitudmodal';
 import {
 	formatDate,
+	formatDateTime,
 	formatId,
 	getValue,
 	humanize,
@@ -42,7 +43,6 @@ const COLUMNS = [
 	{ key: 'area', label: 'Área', className: 'col-area', sortValue: (s) => toSearchText(s.area) },
 	{ key: 'prioridad', label: 'Prioridad', className: 'col-priority', sortValue: (s) => PRIORITY_RANK[normalize(s.prioridad)] ?? -1 },
 	{ key: 'estado', label: 'Estado', className: 'col-status', sortValue: (s) => toSearchText(s.estado) },
-	{ key: 'solicitante', label: 'Solicitante', className: 'col-requester', sortValue: (s) => toSearchText(s.solicitanteNombre || s.solicitanteId) },
 	{ key: 'asignado', label: 'Asignado a', className: 'col-assignee', sortValue: (s) => toSearchText(s.tecnicoNombre || s.tecnicoId) },
 	{ key: 'fecha', label: 'Fecha', className: 'col-date', sortValue: (s) => new Date(s.createdAt).getTime() || 0 },
 ];
@@ -451,13 +451,16 @@ const SolicitudesRecibidas = () => {
 													{humanize(solicitud.estado)}
 												</span>
 											</td>
-											<td className="col-requester" data-label="Solicitante">
-												{getValue(solicitud.solicitanteNombre || solicitud.solicitanteId)}
-											</td>
 											<td className={`col-assignee ${asignado ? '' : 'cell-muted'}`} data-label="Asignado a">
 												{asignado || 'Sin asignar'}
 											</td>
-											<td className="col-date cell-muted" data-label="Fecha">{formatDate(solicitud.createdAt)}</td>
+											<td
+												className="col-date cell-muted"
+												data-label="Fecha"
+												title={formatDateTime(solicitud.createdAt)}
+											>
+												{formatDateTime(solicitud.createdAt)}
+											</td>
 										</tr>
 									);
 								})}
