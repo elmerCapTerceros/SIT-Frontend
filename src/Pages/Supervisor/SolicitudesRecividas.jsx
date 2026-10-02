@@ -30,14 +30,11 @@ import './SolicitudesRecividas.css';
 const API_URL = 'http://localhost:8080/api';
 const PAGE_SIZE_OPTIONS = [8, 15, 25];
 const SKELETON_ROWS = 6;
-const TECNICOS_ENDPOINT = '/usuarios/tecnicos'; // ajusta a tu backend
+const TECNICOS_ENDPOINT = '/usuarios/tecnicos'; // Backend: endpoint para obtener técnicos.
 const CLOSED_STATES = ['resuelta', 'concluida', 'cerrada'];
-
-/* ---------- Helpers ---------- */
 
 const PRIORITY_RANK = { alta: 3, media: 2, baja: 1, 'sin-definir': 0 };
 
-/* Columnas de la tabla: `sortValue` define cómo se ordena cada una */
 const COLUMNS = [
 	{ key: 'id', label: 'ID', className: 'col-id', sortValue: (s) => Number(s.id) || toSearchText(s.id) },
 	{ key: 'titulo', label: 'Título', className: 'col-title', sortValue: (s) => toSearchText(s.titulo) },
@@ -50,7 +47,6 @@ const COLUMNS = [
 	{ key: 'fecha', label: 'Fecha', className: 'col-date', sortValue: (s) => new Date(s.createdAt).getTime() || 0 },
 ];
 
-/* Opciones únicas para un filtro, tomadas de los datos reales */
 const optionsFor = (list, field, labelFn = (value) => value) => {
 	const map = new Map();
 	list.forEach((item) => {
@@ -60,7 +56,6 @@ const optionsFor = (list, field, labelFn = (value) => value) => {
 	return [...map].sort((a, b) => a[1].localeCompare(b[1], 'es'));
 };
 
-/* Números de página con puntos suspensivos: 1 … 4 5 6 … 12 */
 const buildPages = (current, total) => {
 	if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
 	const pages = new Set([1, total, current - 1, current, current + 1]);
@@ -74,8 +69,6 @@ const buildPages = (current, total) => {
 };
 
 const INITIAL_FILTERS = { search: '', estado: '', categoria: '', prioridad: '' };
-
-/* ---------- Componente ---------- */
 
 const SolicitudesRecibidas = () => {
 	const navigate = useNavigate();
@@ -117,7 +110,6 @@ const SolicitudesRecibidas = () => {
 		return () => window.clearTimeout(timer);
 	}, [cargarSolicitudes]);
 
-	/* Lista de técnicos (si el endpoint falla, se usan los que ya aparecen en las solicitudes) */
 	useEffect(() => {
 		let cancelled = false;
 		fetch(`${API_URL}${TECNICOS_ENDPOINT}`, { headers: authHeaders() })
@@ -131,14 +123,12 @@ const SolicitudesRecibidas = () => {
 		};
 	}, [authHeaders]);
 
-	/* El aviso de éxito desaparece solo */
 	useEffect(() => {
 		if (!toast) return undefined;
 		const timer = window.setTimeout(() => setToast(''), 3500);
 		return () => window.clearTimeout(timer);
 	}, [toast]);
 
-	/* Filtros */
 	const updateFilter = (key, value) => {
 		setFilters((prev) => ({ ...prev, [key]: value }));
 		setCurrentPage(1);
@@ -160,7 +150,6 @@ const SolicitudesRecibidas = () => {
 	const categoriaOptions = useMemo(() => optionsFor(solicitudes, 'categoria'), [solicitudes]);
 	const prioridadOptions = useMemo(() => optionsFor(solicitudes, 'prioridad', humanize), [solicitudes]);
 
-	/* Orden */
 	const handleSort = (key) => {
 		setSort((prev) =>
 			prev.key === key
@@ -201,7 +190,6 @@ const SolicitudesRecibidas = () => {
 		});
 	}, [solicitudes, filters, sort]);
 
-	/* Paginación */
 	const totalPages = Math.max(1, Math.ceil(processed.length / pageSize));
 	const safePage = Math.min(currentPage, totalPages);
 	const visibleSolicitudes = useMemo(() => {
@@ -212,7 +200,6 @@ const SolicitudesRecibidas = () => {
 	const rangeStart = processed.length === 0 ? 0 : (safePage - 1) * pageSize + 1;
 	const rangeEnd = rangeStart === 0 ? 0 : rangeStart + visibleSolicitudes.length - 1;
 
-	/* Resumen */
 	const countByStatus = (status) => solicitudes.filter((s) => normalize(s.estado) === status).length;
 	const resueltasHoy = solicitudes.filter((s) => {
 		if (!['resuelta', 'concluida'].includes(normalize(s.estado)) || !s.updatedAt) return false;
@@ -226,7 +213,6 @@ const SolicitudesRecibidas = () => {
 		{ label: 'Resueltas hoy', value: resueltasHoy, color: 'resolved', icon: FaCheck },
 	];
 
-	/* Datos para el modal de asignación */
 	const tecnicos = useMemo(() => {
 		const base = new Map();
 		tecnicosApi.forEach((t) => {
@@ -251,7 +237,6 @@ const SolicitudesRecibidas = () => {
 			.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
 	}, [tecnicosApi, solicitudes]);
 
-	/* Modal */
 	const openRequest = (solicitud) => setSelected(solicitud);
 
 	const guardarAsignacion = async ({ payload, local }) => {
@@ -286,7 +271,6 @@ const SolicitudesRecibidas = () => {
 
 	return (
 		<main className="received-requests-page">
-			{/* Resumen */}
 			<section className="requests-summary" aria-label="Resumen de solicitudes">
 				{summaryCards.map((card) => {
 					const Icon = card.icon;
@@ -321,7 +305,6 @@ const SolicitudesRecibidas = () => {
 				})}
 			</section>
 
-			{/* Filtros */}
 			<section className="requests-filters" aria-label="Filtros de solicitudes">
 				<div className="search-field">
 					<FaSearch aria-hidden="true" />
@@ -374,7 +357,6 @@ const SolicitudesRecibidas = () => {
 				</button>
 			</section>
 
-			{/* Tabla */}
 			<section className="requests-table-container">
 				{error && (
 					<div className="requests-error" role="alert">
@@ -483,7 +465,6 @@ const SolicitudesRecibidas = () => {
 					</table>
 				</div>
 
-				{/* Paginación */}
 				<footer className="requests-pagination">
 					<div className="pagination-info">
 						<span aria-live="polite">
