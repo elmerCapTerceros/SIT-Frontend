@@ -1,0 +1,27 @@
+.at-request-card { gap: 0; }
+
+.at-request-top {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.at-request-card .it-card-name {
+	margin-bottom: 12px;
+	font-size: 16px;
+}
+
+.at-request-card .it-card-role {
+	margin-bottom: 12px;
+}
+
+.at-request-requester {
+	margin: auto 0 0;
+	padding-top: 14px;
+	color: #64748B;
+	font-size: 12px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
