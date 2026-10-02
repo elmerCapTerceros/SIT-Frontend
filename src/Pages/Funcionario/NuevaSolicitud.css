@@ -5,10 +5,8 @@
   min-height: calc(100vh - 90px);
   min-height: calc(100svh - 90px);
   overflow: auto;
-  background-color: #BCD4DE; /* Color de fondo para evitar espacios blancos */
+  background-color: #BCD4DE;
 }
-
-/* ===== COLUMNA IZQUIERDA ===== */
 
 .solicitud-left {
   width: 34%;
@@ -128,8 +126,6 @@
   padding-bottom: 22px;
 }
 
-/* ===== HORARIOS ===== */
-
 .tiempos-card {
   background-color: #ffffff;
   border-radius: 10px;
@@ -150,8 +146,6 @@
   font-size: 12px;
   line-height: 1.45;
 }
-
-/* ===== COLUMNA DERECHA ===== */
 
 .solicitud-right {
   width: 66%;
@@ -339,8 +333,6 @@
   transform: scale(0.97);
 }
 
-/* ===== PANTALLAS PEQUEÑAS ===== */
-
 @media (max-width: 900px) and (min-width: 769px) {
   .solicitud-left {
     padding: 16px;
@@ -364,8 +356,6 @@
     
   }
 }
-
-/* ===== CELULAR ===== */
 
 @media (max-width: 768px) {
   .solicitud-container {
