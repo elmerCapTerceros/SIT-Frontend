@@ -49,7 +49,6 @@ const MisSolicitudes = () => {
             <div className="empty-state">
               <h2>Aún no tiene solicitudes</h2>
               <p>Cuando registre una, podrá consultar su seguimiento aquí.</p>
-              <button className="secondary-action" type="button" onClick={() => navigate('/nueva-solicitud')}>Registrar solicitud</button>
             </div>
           ) : solicitudes.map((solicitud) => (
             <article className="request-item" key={solicitud.codigo}>

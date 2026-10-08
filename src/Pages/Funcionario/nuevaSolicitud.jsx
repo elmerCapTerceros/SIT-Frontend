@@ -15,6 +15,7 @@ const NuevaSolicitud = () => {
 
   const [errores, setErrores] = useState({});
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [cancelModalAbierto, setCancelModalAbierto] = useState(false);
   const [errorApi, setErrorApi] = useState("");
   const [enviando, setEnviando] = useState(false);
 
@@ -91,9 +92,16 @@ const NuevaSolicitud = () => {
   };
 
   const handleCancelar = () => {
+    setCancelModalAbierto(true);
+  };
+
+  const confirmarCancelar = () => {
     setForm({ titulo: "", tipoEquipo: "PC", descripcion: "" });
     setErrores({});
     setErrorApi("");
+    setModalAbierto(false);
+    setCancelModalAbierto(false);
+    navigate('/home', { replace: true });
   };
 
   return (
@@ -214,6 +222,30 @@ const NuevaSolicitud = () => {
           </div>
         </form>
       </main>
+
+      {cancelModalAbierto && (
+        <div className="cancel-modal-backdrop" role="presentation" onMouseDown={() => setCancelModalAbierto(false)}>
+          <div
+            className="cancel-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancel-modal-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="cancel-modal-icon" aria-hidden="true">!</div>
+            <h2 id="cancel-modal-title">Cancelar solicitud</h2>
+            <p>Si sales ahora, se perderán los datos ingresados y no se enviará ninguna solicitud.</p>
+            <div className="cancel-modal-actions">
+              <button type="button" className="btn btn-secondary-modal" onClick={() => setCancelModalAbierto(false)}>
+                Seguir editando
+              </button>
+              <button type="button" className="btn btn-danger-modal" onClick={confirmarCancelar}>
+                Sí, salir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Modlas open={modalAbierto} onClose={() => navigate('/mis-solicitudes')} />
     </div>

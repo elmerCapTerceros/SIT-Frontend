@@ -27,7 +27,7 @@ const Home = () => {
                 NUEVA SOLICITUD
               </button>
 
-              <button className="btn btn-secondary" type="button" onClick={() => navigate('/mis-solicitudes')}>
+              <button className="btn btn-secondary" type="button" onClick={() => navigate('/not-found')}>
                 ÚLTIMAS NOTICIAS
               </button>
             </div>
@@ -55,17 +55,19 @@ const Home = () => {
             </div>
 
             <div className="card-content">
-              <h2>Nueva solicitud</h2>
+              <h2>Normativas</h2>
               <p>
                 Consulta las normativas y documentos oficiales
                 relacionados con la asistencia técnica.
               </p>
 
               <a
-                href="/nueva-solicitud"
+                href="https://gobernaciondecochabamba.bo/web/gaceta/5"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="card-button"
               >
-                CREAR SOLICITUD
+                VER NORMATIVAS
               </a>
             </div>
           </div>
@@ -85,7 +87,9 @@ const Home = () => {
               </p>
 
               <a
-                href="/mis-solicitudes"
+                href="/Documentos/1728268694.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="card-button"
               >
                 VER INFORMACIÓN
