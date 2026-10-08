@@ -27,7 +27,7 @@ const Home = () => {
                 NUEVA SOLICITUD
               </button>
 
-              <button className="btn btn-secondary" type="button" onClick={() => navigate('/mis-solicitudes')}>
+              <button className="btn btn-secondary" type="button" onClick={() => navigate('/not-found')}>
                 ÚLTIMAS NOTICIAS
               </button>
             </div>
