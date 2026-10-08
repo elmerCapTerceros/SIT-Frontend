@@ -55,7 +55,7 @@ const Home = () => {
             </div>
 
             <div className="card-content">
-              <h2>Nueva solicitud</h2>
+              <h2>Normativas</h2>
               <p>
                 Consulta las normativas y documentos oficiales
                 relacionados con la asistencia técnica.
@@ -65,7 +65,7 @@ const Home = () => {
                 href="/nueva-solicitud"
                 className="card-button"
               >
-                CREAR SOLICITUD
+                VER NORMATIVAS
               </a>
             </div>
           </div>
