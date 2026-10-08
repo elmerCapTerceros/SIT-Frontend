@@ -333,6 +333,74 @@
   transform: scale(0.97);
 }
 
+.cancel-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.cancel-modal {
+  width: min(100%, 420px);
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+  padding: 28px 24px 22px;
+  text-align: center;
+}
+
+.cancel-modal-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff2e6;
+  color: #d97706;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.cancel-modal h2 {
+  margin: 0 0 10px;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.cancel-modal p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.cancel-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.btn-secondary-modal {
+  background: #ffffff;
+  border: 1px solid #94a3b8;
+  color: #333333;
+}
+
+.btn-danger-modal {
+  background: #ef4444;
+  border: none;
+  color: #ffffff;
+}
+
+.btn-danger-modal:hover {
+  background: #dc2626;
+}
+
 @media (max-width: 900px) and (min-width: 769px) {
   .solicitud-left {
     padding: 16px;
