@@ -62,7 +62,9 @@ const Home = () => {
               </p>
 
               <a
-                href="/nueva-solicitud"
+                href="https://gobernaciondecochabamba.bo/web/gaceta/5"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="card-button"
               >
                 VER NORMATIVAS
@@ -85,7 +87,9 @@ const Home = () => {
               </p>
 
               <a
-                href="/mis-solicitudes"
+                href="/Documentos/1728268694.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="card-button"
               >
                 VER INFORMACIÓN
