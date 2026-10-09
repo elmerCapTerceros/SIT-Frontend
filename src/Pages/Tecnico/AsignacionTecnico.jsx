@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
 	FaBolt,
 	FaCheckCircle,
@@ -29,6 +30,7 @@ import './AsignacionTecnico.css';
 
 const API_URL = 'http://localhost:8080/api';
 const CLOSED_STATES = ['resuelta', 'concluida', 'cerrada'];
+const ACCEPTABLE_STATES = ['asignada', 'pendiente'];
 const SKELETON_CARDS = 6;
 
 const STATUS_ICONS = {
@@ -115,6 +117,28 @@ const useSolicitudesAsignadas = () => {
 		}
 	}, []);
 
+	const aceptar = useCallback(async (id) => {
+		const response = await fetch(`${API_URL}/asignaciones/solicitudes/${id}/aceptar`, {
+			method: 'PATCH',
+			headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+		});
+		if (!response.ok) {
+			let message = '';
+			try {
+				message = (await response.json()).message;
+			} catch {
+				/* sin cuerpo */
+			}
+			throw new Error(message || `No se pudo aceptar la solicitud (HTTP ${response.status}).`);
+		}
+		const updated = await response.json();
+		setState((prev) => ({
+			...prev,
+			solicitudes: prev.solicitudes.map((s) => (s.id === updated.id ? { ...s, ...updated } : s)),
+		}));
+		return updated;
+	}, []);
+
 	useEffect(() => {
 		const timer = window.setTimeout(cargar, 0);
 		return () => {
@@ -123,53 +147,238 @@ const useSolicitudesAsignadas = () => {
 		};
 	}, [cargar]);
 
-	return { ...state, cargar };
+	return { ...state, cargar, aceptar };
 };
 
 /* ==========================================================
    Componentes
    ========================================================== */
 
-const SolicitudCard = ({ solicitud, index }) => {
+const SolicitudCard = ({ solicitud, index, onAccept }) => {
 	const prioridad = normalize(solicitud.prioridad) || 'sin-definir';
 	const estado = statusClass(solicitud.estado);
 	const StatusIcon = STATUS_ICONS[estado] ?? FaRegCircle;
 	const done = !isActive(solicitud);
+	const porAceptar = ACCEPTABLE_STATES.includes(estado);
+	const [showDetails, setShowDetails] = useState(false);
+	const openDetails = () => setShowDetails(true);
+	const closeDetails = useCallback(() => setShowDetails(false), []);
+	const handleKeyDown = (event) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			openDetails();
+		}
+	};
 
 	return (
-		<article className={`at-card at-card-${prioridad}${done ? ' is-done' : ''}`} style={{ '--i': Math.min(index, 8) }}>
-			<div className="at-card-top">
-				<span className="at-id">#{formatId(solicitud.codigo ?? solicitud.id)}</span>
-				<span className="at-date">
-					<FaRegCalendarAlt aria-hidden="true" /> {formatDate(solicitud.createdAt)}
-				</span>
-			</div>
+		<>
+			<article
+				className={`at-card at-card-${prioridad}${done ? ' is-done' : ''}`}
+				style={{ '--i': Math.min(index, 8) }}
+				role="button"
+				tabIndex={0}
+				aria-haspopup="dialog"
+				aria-label={`Ver detalle de solicitud ${formatId(solicitud.codigo ?? solicitud.id)}: ${getValue(solicitud.titulo)}`}
+				onClick={openDetails}
+				onKeyDown={handleKeyDown}
+			>
+				<div className="at-card-top">
+					<span className="at-id">#{formatId(solicitud.codigo ?? solicitud.id)}</span>
+					<span className="at-date">
+						<FaRegCalendarAlt aria-hidden="true" /> {formatDate(solicitud.createdAt)}
+					</span>
+				</div>
 
-			<h2 className="at-title">{getValue(solicitud.titulo)}</h2>
+				<h2 className="at-title">{getValue(solicitud.titulo)}</h2>
 
-			<p className="at-category">
-				<FaTag aria-hidden="true" /> {getValue(solicitud.categoria || solicitud.tipo)}
-			</p>
+				<p className="at-category">
+					<FaTag aria-hidden="true" /> {getValue(solicitud.categoria || solicitud.tipo)}
+				</p>
 
-			<div className="at-badges">
-				<span className={`at-badge at-status-${estado}`}>
-					<StatusIcon aria-hidden="true" /> {humanize(solicitud.estado)}
-				</span>
-				<span className={`at-badge at-priority-${prioridad}`}>
-					<FaFlag aria-hidden="true" /> {humanize(solicitud.prioridad)}
-				</span>
-			</div>
+				<div className="at-badges">
+					<span className={`at-badge at-status-${estado}`}>
+						<StatusIcon aria-hidden="true" /> {humanize(solicitud.estado)}
+					</span>
+					<span className={`at-badge at-priority-${prioridad}`}>
+						<FaFlag aria-hidden="true" /> {humanize(solicitud.prioridad)}
+					</span>
+					{porAceptar && <span className="at-badge at-badge-action">Por aceptar</span>}
+				</div>
 
-			<footer className="at-requester">
-				<span className="at-requester-avatar" aria-hidden="true">
-					{solicitud.solicitanteNombre ? getInitials(solicitud.solicitanteNombre) : <FaUser />}
-				</span>
-				<span className="at-requester-text">
-					<small>Solicitante</small>
-					{getValue(solicitud.solicitanteNombre || solicitud.solicitanteId)}
-				</span>
-			</footer>
-		</article>
+				<footer className="at-requester">
+					<span className="at-requester-avatar" aria-hidden="true">
+						{solicitud.solicitanteNombre ? getInitials(solicitud.solicitanteNombre) : <FaUser />}
+					</span>
+					<span className="at-requester-text">
+						<small>Solicitante</small>
+						{getValue(solicitud.solicitanteNombre || solicitud.solicitanteId)}
+					</span>
+				</footer>
+				<div className="at-requester-details">
+					<span>
+						<strong>Cargo:</strong> {getValue(solicitud.solicitanteCargo)}
+						<span aria-hidden="true"> · </span>
+						<strong>Área:</strong> {getValue(solicitud.solicitanteArea)}
+					</span>
+					<span>
+						<strong>Teléfono:</strong> {getValue(solicitud.solicitanteTelefono)}
+						<span aria-hidden="true"> · </span>
+						<strong>Oficina:</strong> {getValue(solicitud.solicitanteUbicacionOficina)}
+					</span>
+				</div>
+			</article>
+			{showDetails && <SolicitudDetalle solicitud={solicitud} onClose={closeDetails} onAccept={onAccept} />}
+		</>
+	);
+};
+
+const DetailField = ({ label, value }) => (
+	<div className="at-detail-field">
+		<dt>{label}</dt>
+		<dd>{getValue(value)}</dd>
+	</div>
+);
+
+const SolicitudDetalle = ({ solicitud, onClose, onAccept }) => {
+	const dialogRef = useRef(null);
+	const [read, setRead] = useState(false);
+	const [saving, setSaving] = useState(false);
+	const [error, setError] = useState('');
+
+	const estado = statusClass(solicitud.estado);
+	const prioridad = normalize(solicitud.prioridad) || 'sin-definir';
+	const StatusIcon = STATUS_ICONS[estado] ?? FaRegCircle;
+	const canAccept = ACCEPTABLE_STATES.includes(estado);
+
+	useEffect(() => {
+		const previousFocus = document.activeElement;
+		const previousOverflow = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+		dialogRef.current?.focus();
+		const handleEscape = (event) => {
+			if (event.key === 'Escape') onClose();
+		};
+		document.addEventListener('keydown', handleEscape);
+		return () => {
+			document.body.style.overflow = previousOverflow;
+			document.removeEventListener('keydown', handleEscape);
+			previousFocus?.focus?.();
+		};
+	}, [onClose]);
+
+	const handleAccept = async () => {
+		setSaving(true);
+		setError('');
+		try {
+			await onAccept(solicitud.id);
+			onClose();
+		} catch (acceptError) {
+			setError(acceptError.message);
+			setSaving(false);
+		}
+	};
+
+	return createPortal(
+		<div className="at-detail-overlay" onMouseDown={(event) => event.target === event.currentTarget && !saving && onClose()}>
+			<section
+				ref={dialogRef}
+				className={`at-detail-dialog at-card-${prioridad}`}
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="at-detail-title"
+				tabIndex={-1}
+			>
+				<header className="at-detail-header">
+					<div className="at-detail-heading">
+						<span className="at-detail-id">#{formatId(solicitud.codigo ?? solicitud.id)}</span>
+						<h2 id="at-detail-title">{getValue(solicitud.titulo)}</h2>
+						<div className="at-badges">
+							<span className={`at-badge at-status-${estado}`}>
+								<StatusIcon aria-hidden="true" /> {humanize(solicitud.estado)}
+							</span>
+							<span className={`at-badge at-priority-${prioridad}`}>
+								<FaFlag aria-hidden="true" /> {humanize(solicitud.prioridad)}
+							</span>
+						</div>
+					</div>
+					<button type="button" className="at-detail-close" onClick={onClose} disabled={saving} aria-label="Cerrar detalle">
+						<FaTimes aria-hidden="true" />
+					</button>
+				</header>
+
+				<div className="at-detail-body">
+					<div className="at-detail-description">
+						<h4>Descripción del problema</h4>
+						<p>{getValue(solicitud.descripcion)}</p>
+					</div>
+
+					<section className="at-detail-section" aria-labelledby="at-detail-problem">
+						<h3 id="at-detail-problem">
+							<FaTools aria-hidden="true" /> Información del problema
+						</h3>
+						<dl className="at-detail-grid">
+							<DetailField label="Categoría" value={solicitud.categoria || solicitud.tipo} />
+							<DetailField label="Área" value={solicitud.area} />
+							<DetailField label="Equipo afectado" value={solicitud.equipoDanado} />
+							<DetailField label="Ubicación del problema" value={solicitud.ubicacion} />
+							<DetailField label="Verificada por el usuario" value={solicitud.verificadoPorUsuario ? 'Sí' : 'No'} />
+							<DetailField label="Fecha de creación" value={formatDate(solicitud.createdAt)} />
+							<DetailField label="Última actualización" value={formatDate(solicitud.updatedAt)} />
+						</dl>
+					</section>
+
+					<section className="at-detail-section" aria-labelledby="at-detail-requester">
+						<h3 id="at-detail-requester">
+							<FaUser aria-hidden="true" /> Información del solicitante
+						</h3>
+						<dl className="at-detail-grid">
+							<DetailField label="Nombre" value={solicitud.solicitanteNombre} />
+							<DetailField label="Cargo" value={solicitud.solicitanteCargo} />
+							<DetailField label="Teléfono" value={solicitud.solicitanteTelefono} />
+							<DetailField label="Área" value={solicitud.solicitanteArea} />
+							<DetailField label="Ubicación de oficina" value={solicitud.solicitanteUbicacionOficina} />
+						</dl>
+					</section>
+				</div>
+
+				<footer className="at-detail-footer">
+					{canAccept ? (
+						<>
+							<label className="at-confirm">
+								<input type="checkbox" checked={read} onChange={(e) => setRead(e.target.checked)} disabled={saving} />
+								<span>He leído la información y me comprometo a atender esta solicitud.</span>
+							</label>
+							{error && (
+								<p className="at-detail-error" role="alert">
+									{error}
+								</p>
+							)}
+							<div className="at-detail-actions">
+								<button type="button" className="at-btn-outline" onClick={onClose} disabled={saving}>
+									Cancelar
+								</button>
+								<button type="button" className="at-btn-primary" onClick={handleAccept} disabled={!read || saving}>
+									{saving ? <FaSyncAlt className="at-spin" aria-hidden="true" /> : <FaCheckCircle aria-hidden="true" />}
+									{saving ? 'Aceptando…' : 'Aceptar y comenzar'}
+								</button>
+							</div>
+						</>
+					) : (
+						<div className="at-detail-actions">
+							<span className="at-detail-note">
+								{CLOSED_STATES.includes(normalize(solicitud.estado))
+									? 'Esta solicitud ya fue finalizada.'
+									: 'Ya aceptaste esta solicitud.'}
+							</span>
+							<button type="button" className="at-btn-outline" onClick={onClose}>
+								Cerrar
+							</button>
+						</div>
+					)}
+				</footer>
+			</section>
+		</div>,
+		document.body
 	);
 };
 
@@ -188,7 +397,7 @@ const SkeletonCard = () => (
    ========================================================== */
 
 const AsignacionTecnico = () => {
-	const { solicitudes, tecnicoNombre, loading, error, cargar } = useSolicitudesAsignadas();
+	const { solicitudes, tecnicoNombre, loading, error, cargar, aceptar } = useSolicitudesAsignadas();
 	const [query, setQuery] = useState('');
 	const [view, setView] = useState('todas');
 	const [sort, setSort] = useState('recientes');
@@ -325,7 +534,12 @@ const AsignacionTecnico = () => {
 				{!firstLoad &&
 					!error &&
 					visible.map((solicitud, index) => (
-						<SolicitudCard key={solicitud.id ?? solicitud.codigo} solicitud={solicitud} index={index} />
+						<SolicitudCard
+							key={solicitud.id ?? solicitud.codigo}
+							solicitud={solicitud}
+							index={index}
+							onAccept={aceptar}
+						/>
 					))}
 			</section>
 
