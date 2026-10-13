@@ -197,7 +197,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  maxLength={8}
+                  maxLength={30}
                   placeholder="Contraseña"
                   value={form.password}
                   onChange={handleChange}
