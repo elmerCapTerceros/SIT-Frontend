@@ -51,8 +51,8 @@ const RegistroDeUsuario = () => {
     Object.entries(requiredFields).forEach(([field, message]) => {
       if (!form[field].trim()) errors[field] = message;
     });
-    if (form.password && form.password.length !== 8) {
-      errors.password = 'La contraseña debe tener exactamente 8 caracteres.';
+    if (form.password && (form.password.length < 3 || form.password.length > 30)) {
+      errors.password = 'La contraseña debe tener entre 3 y 30 caracteres.';
     }
     if (form.confirmarPassword && form.password !== form.confirmarPassword) {
       errors.confirmarPassword = 'Las contraseñas no coinciden.';
@@ -185,12 +185,12 @@ const RegistroDeUsuario = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="password">Nueva contraseña <span className="required-mark">*</span></label>
-                <input id="password" name="password" type="password" value={form.password} onChange={handleChange} minLength="8" maxLength="8" {...inputProps('password')} />
+                <input id="password" name="password" type="password" value={form.password} onChange={handleChange} minLength="3" maxLength="30" {...inputProps('password')} />
                 {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="confirmarPassword">Confirmar contraseña <span className="required-mark">*</span></label>
-                <input id="confirmarPassword" name="confirmarPassword" type="password" value={form.confirmarPassword} onChange={handleChange} minLength="8" maxLength="8" {...inputProps('confirmarPassword')} />
+                <input id="confirmarPassword" name="confirmarPassword" type="password" value={form.confirmarPassword} onChange={handleChange} minLength="3" maxLength="30" {...inputProps('confirmarPassword')} />
                 {fieldErrors.confirmarPassword && <span className="field-error">{fieldErrors.confirmarPassword}</span>}
               </div>
               <div className="form-group">
