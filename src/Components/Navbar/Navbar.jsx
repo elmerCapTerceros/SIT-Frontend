@@ -39,7 +39,7 @@ const navLinksByRole = {
   TECNICO: [
     { label: 'Inicio', to: '/home' },
     { label: 'Solicitudes asignadas', to: '/asignacion-tecnico' },
-    { label: 'Reportes', to: '/reportes' },
+    { label: 'Mis reportes', to: '/Reportes' },
   ],
   SUPERVISOR: [
     { label: 'Inicio', to: '/home' },
