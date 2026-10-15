@@ -9,6 +9,7 @@ import SolicitudesRecibidas from './Pages/Supervisor/SolicitudesRecividas';
 import AsignacionTecnico from './Pages/Tecnico/AsignacionTecnico';
 import NotFound from './Pages/NotFound/NotFound';
 import InfoTecnicos from './Pages/Supervisor/InfoTecnicos';
+import Reportes from './Pages/Tecnico/Reportes';
 
 
 const ProtectedRoute = ({ children }) => (
@@ -30,6 +31,7 @@ const RoutesApp = () => (
     <Route path="/nuevaSolicitud" element={<Navigate to="/nueva-solicitud" replace />} />
     <Route path="/solicitudes-tecnico" element={<ProtectedRoute><PrivateLayout><SolicitudesRecibidas /></PrivateLayout></ProtectedRoute>} />
     <Route path="/asignacion-tecnico" element={<ProtectedRoute><PrivateLayout><AsignacionTecnico /></PrivateLayout></ProtectedRoute>} />
+    <Route path="/Reportes" element={<ProtectedRoute><PrivateLayout><Reportes /></PrivateLayout></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
     <Route path="/tecnicos" element={<ProtectedRoute><PrivateLayout><InfoTecnicos /></PrivateLayout></ProtectedRoute>} />
   </Routes>
