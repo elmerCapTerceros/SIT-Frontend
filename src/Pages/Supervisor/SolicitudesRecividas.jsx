@@ -396,23 +396,29 @@ const SolicitudesRecibidas = () => {
 									</tr>
 								))}
 
-							{isEmpty && (
-								<tr className="empty-row">
-									<td colSpan={COLUMNS.length}>
-										<div className="empty-table-state">
-											<FaInbox aria-hidden="true" />
-											<strong>
-												{hasActiveFilters ? 'Ninguna solicitud coincide con los filtros' : 'Aún no hay solicitudes'}
-											</strong>
-											{hasActiveFilters ? (
-												<button type="button" onClick={clearFilters}>Limpiar filtros</button>
-											) : (
-												<button type="button" onClick={() => navigate('/nueva-solicitud')}>Crear solicitud</button>
-											)}
-										</div>
-									</td>
-								</tr>
-							)}
+							
+										{isEmpty && (
+										<tr className="empty-row">
+											<td colSpan={COLUMNS.length}>
+											<div className="empty-table-state">
+												<FaInbox aria-hidden="true" />
+
+												<strong>
+												{hasActiveFilters
+													? 'Ninguna solicitud coincide con los filtros'
+													: 'Aún no hay solicitudes'}
+												</strong>
+
+												{hasActiveFilters && (
+												<button type="button" onClick={clearFilters}>
+													Limpiar filtros
+												</button>
+												)}
+											</div>
+											</td>
+										</tr>
+										)}
+
 
 							{!loading &&
 								visibleSolicitudes.map((solicitud) => {
