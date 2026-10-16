@@ -1,0 +1,79 @@
+.at-page {
+	--blue-50: #F0FAFE;
+	--blue-100: #DDF1FA;
+	--blue-500: #19ABE3;
+	--blue-600: #008ED6;
+	--blue-800: #005B82;
+	--ink: #0F172A;
+	--ink-soft: #475569;
+	--ink-muted: #64748B;
+	--ink-faint: #94A3B8;
+	--line: #BEDAE5;
+	--line-soft: #E4EEF2;
+	--surface-tint: #F2F8FA;
+	--focus: 0 0 0 3px rgba(25, 171, 227, 0.35);
+	width: min(1240px, calc(100% - 40px));
+	margin: 28px auto 48px;
+	color: var(--ink);
+	font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.at-page *,
+.at-page *::before,
+.at-page *::after { box-sizing: border-box; }
+
+.at-page :is(button, input, select) { font-family: inherit; }
+
+.at-page :focus-visible {
+	outline: none;
+	box-shadow: var(--focus);
+}
+
+.informacion-detalle{
+  margin: 8px 0 0;
+  color: #005b82;
+  font-size: 14px;
+
+}
+.at-header {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.at-header-icon {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	border-radius: 14px;
+	color: #FFFFFF;
+	background: linear-gradient(135deg, var(--blue-500), var(--blue-800));
+	box-shadow: 0 8px 18px rgba(0, 142, 214, 0.28);
+	animation: at-icon-in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1.2) backwards;
+}
+
+.at-header-icon svg { width: 22px; height: 22px; }
+
+@keyframes at-icon-in { from { opacity: 0; transform: scale(0.6) rotate(-8deg); } }
+
+.at-header h1 {
+	margin: 0 0 4px;
+	font-size: 30px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+}
+
+.at-header p {
+	margin: 0;
+	max-width: 60ch;
+	color: var(--ink-soft);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.at-header p strong { color: var(--ink); font-weight: 600; }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FaClipboardList, FaInbox, FaRedo, FaRegCalendarAlt, FaSearch, FaSyncAlt, FaTimes } from 'react-icons/fa';
+import { FaChartBar, FaInbox, FaRedo, FaRegCalendarAlt, FaSearch, FaSyncAlt, FaTimes } from 'react-icons/fa';
 import { formatDateTime, formatId, getValue, humanize, normalize, toSearchText } from '../../utils/Solicitudesutils';
 import './Reportes.css';
 
@@ -73,7 +73,7 @@ const Reportes = () => {
 	return (
 		<main className="at-page report-page">
 			<header className="at-header">
-				<span className="at-header-icon" aria-hidden="true"><FaClipboardList /></span>
+				<span className="at-header-icon" aria-hidden="true"><FaChartBar /></span>
 				<div>
 					<h1>Mis reportes</h1>
 					<p>Consulta los reportes de atención que has realizado.</p>

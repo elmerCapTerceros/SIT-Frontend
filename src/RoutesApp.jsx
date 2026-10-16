@@ -10,6 +10,7 @@ import AsignacionTecnico from './Pages/Tecnico/AsignacionTecnico';
 import NotFound from './Pages/NotFound/NotFound';
 import InfoTecnicos from './Pages/Supervisor/InfoTecnicos';
 import Reportes from './Pages/Tecnico/Reportes';
+import VerDetalleSolicitud from './Pages/Tecnico/VerDetalleSolicitud';
 
 
 const ProtectedRoute = ({ children }) => (
@@ -33,6 +34,7 @@ const RoutesApp = () => (
     <Route path="/asignacion-tecnico" element={<ProtectedRoute><PrivateLayout><AsignacionTecnico /></PrivateLayout></ProtectedRoute>} />
     <Route path="/Reportes" element={<ProtectedRoute><PrivateLayout><Reportes /></PrivateLayout></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
+    <Route path="/detalleSolicitud" element={<ProtectedRoute><PrivateLayout><VerDetalleSolicitud /></PrivateLayout></ProtectedRoute>} />
     <Route path="/tecnicos" element={<ProtectedRoute><PrivateLayout><InfoTecnicos /></PrivateLayout></ProtectedRoute>} />
   </Routes>
 );

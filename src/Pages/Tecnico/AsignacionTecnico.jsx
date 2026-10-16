@@ -20,6 +20,7 @@ import {
 	FaUser,
 	FaUserCheck,
 } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { formatDate, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
 import './AsignacionTecnico.css';
 
@@ -137,7 +138,12 @@ const SolicitudCard = ({ solicitud, index }) => {
 	const done = !isActive(solicitud);
 
 	return (
-		<article className={`at-card at-card-${prioridad}${done ? ' is-done' : ''}`} style={{ '--i': Math.min(index, 8) }}>
+		<Link
+			to="/detalleSolicitud"
+			className={`at-card at-card-${prioridad}${done ? ' is-done' : ''}`}
+			style={{ '--i': Math.min(index, 8) }}
+			aria-label={`Ver detalle de la solicitud ${formatId(solicitud.codigo ?? solicitud.id)}`}
+		>
 			<div className="at-card-top">
 				<span className="at-id">#{formatId(solicitud.codigo ?? solicitud.id)}</span>
 				<span className="at-date">
@@ -169,7 +175,7 @@ const SolicitudCard = ({ solicitud, index }) => {
 					{getValue(solicitud.solicitanteNombre || solicitud.solicitanteId)}
 				</span>
 			</footer>
-		</article>
+		</Link>
 	);
 };
 
