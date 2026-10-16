@@ -24,9 +24,9 @@ import { Link } from 'react-router-dom';
 import { formatDate, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
 import './AsignacionTecnico.css';
 
-/* ==========================================================
+/* 
    Configuración
-   ========================================================== */
+ */
 
 const API_URL = 'http://localhost:8080/api';
 const CLOSED_STATES = ['resuelta', 'concluida', 'cerrada'];
@@ -68,9 +68,9 @@ const getInitials = (name = '') =>
 		.map((part) => part[0].toUpperCase())
 		.join('') || '?';
 
-/* ==========================================================
-   Datos
-   ========================================================== */
+/* 
+Datos
+*/
 
 const useSolicitudesAsignadas = () => {
 	const [state, setState] = useState({ solicitudes: [], tecnicoNombre: '', loading: true, error: '' });
@@ -127,9 +127,9 @@ const useSolicitudesAsignadas = () => {
 	return { ...state, cargar };
 };
 
-/* ==========================================================
+/*
    Componentes
-   ========================================================== */
+ */
 
 const SolicitudCard = ({ solicitud, index }) => {
 	const prioridad = normalize(solicitud.prioridad) || 'sin-definir';
@@ -140,6 +140,7 @@ const SolicitudCard = ({ solicitud, index }) => {
 	return (
 		<Link
 			to="/detalleSolicitud"
+			state={{ solicitud }}
 			className={`at-card at-card-${prioridad}${done ? ' is-done' : ''}`}
 			style={{ '--i': Math.min(index, 8) }}
 			aria-label={`Ver detalle de la solicitud ${formatId(solicitud.codigo ?? solicitud.id)}`}
@@ -189,9 +190,9 @@ const SkeletonCard = () => (
 	</div>
 );
 
-/* ==========================================================
+/* 
    Página
-   ========================================================== */
+ */
 
 const AsignacionTecnico = () => {
 	const { solicitudes, tecnicoNombre, loading, error, cargar } = useSolicitudesAsignadas();

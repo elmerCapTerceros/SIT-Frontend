@@ -1,0 +1,77 @@
+.confirmar-estado-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 2000;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgba(15, 23, 42, 0.48);
+}
+
+.confirmar-estado-modal {
+	width: min(100%, 430px);
+	padding: 28px;
+	border-radius: 14px;
+	background: #FFFFFF;
+	box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+	animation: confirmar-estado-entry 180ms ease-out;
+}
+
+.confirmar-estado-modal h2 {
+	margin: 0 0 10px;
+	color: #0F172A;
+	font-size: 21px;
+}
+
+.confirmar-estado-modal > p {
+	margin: 0;
+	color: #475569;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.confirmar-estado-acciones {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 24px;
+}
+
+.confirmar-estado-btn {
+	min-width: 90px;
+	min-height: 38px;
+	padding: 0 14px;
+	border: 1px solid transparent;
+	border-radius: 7px;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.confirmar-estado-btn:disabled { cursor: wait; opacity: 0.65; }
+
+.confirmar-estado-cancelar {
+	border-color: #BEDAE5;
+	color: #005B82;
+	background: #FFFFFF;
+}
+
+.confirmar-estado-cancelar:hover:not(:disabled) { background: #F0FAFE; }
+
+.confirmar-estado-confirmar {
+	color: #FFFFFF;
+	background: #008ED6;
+}
+
+.confirmar-estado-confirmar:hover:not(:disabled) { background: #005B82; }
+
+.confirmar-estado-modal > .confirmar-estado-error {
+	margin-top: 12px;
+	color: #991B1B;
+}
+
+@keyframes confirmar-estado-entry {
+	from { opacity: 0; transform: translateY(8px) scale(0.98); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
