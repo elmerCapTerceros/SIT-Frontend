@@ -49,9 +49,24 @@ const priorityRank = (solicitud) => PRIORITY_RANK[normalize(solicitud.prioridad)
 const newestFirst = (a, b) => timeOf(b.createdAt) - timeOf(a.createdAt);
 
 const VIEWS = [
-	{ id: 'todas', label: 'Total asignadas', icon: FaListUl, test: () => true },
-	{ id: 'activas', label: 'Activas', icon: FaHourglassHalf, test: isActive },
-	{ id: 'finalizadas', label: 'Finalizadas', icon: FaCheckCircle, test: (s) => !isActive(s) },
+    {
+        id: 'todas',
+        label: 'Total asignadas',
+        icon: FaListUl,
+        test: isActive,
+    },
+    {
+        id: 'activas',
+        label: 'Activas',
+        icon: FaHourglassHalf,
+        test: isActive,
+    },
+    {
+        id: 'finalizadas',
+        label: 'Finalizadas',
+        icon: FaCheckCircle,
+        test: (s) => !isActive(s),
+    },
 ];
 
 const SORTS = [

@@ -1,6 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FaChartBar, FaFilePdf, FaInbox, FaRedo, FaRegCalendarAlt, FaSearch, FaSyncAlt, FaTimes } from 'react-icons/fa';
-import { formatDateTime, formatId, getValue, humanize, normalize, toSearchText } from '../../utils/Solicitudesutils';
+import {
+	FaChartBar,
+	FaCheckCircle,
+	FaFilePdf,
+	FaInbox,
+	FaRedo,
+	FaRegCalendarAlt,
+	FaSearch,
+	FaSyncAlt,
+	FaTimes,
+	FaLaptop,
+	FaClipboardList,
+	FaTools,
+	FaUser,
+	FaBuilding,
+	FaBarcode,
+} from 'react-icons/fa';
+import {
+	formatDateTime,
+	formatId,
+	getValue,
+	humanize,
+	normalize,
+	toSearchText,
+} from '../../utils/Solicitudesutils';
 import { generarReportePdf } from '../../utils/Reportetrabajopdf';
 import './Reportes.css';
 
@@ -16,16 +39,23 @@ const Reportes = () => {
 
 	const cargarReportes = useCallback(async (signal) => {
 		const token = localStorage.getItem('token');
-		if (!token) throw new Error('La sesión expiró. Vuelve a iniciar sesión.');
+		if (!token) {
+			throw new Error('La sesión expiró. Vuelve a iniciar sesión.');
+		}
 
 		const response = await fetch(`${API_URL}/reportes/mis-reportes`, {
 			headers: { Authorization: `Bearer ${token}` },
 			signal,
 		});
-		if (!response.ok) throw new Error(`No se pudieron cargar los reportes (HTTP ${response.status}).`);
+
+		if (!response.ok) {
+			throw new Error(`No se pudieron cargar los reportes (HTTP ${response.status}).`);
+		}
 
 		const data = await response.json();
-		if (!Array.isArray(data)) throw new Error('La respuesta de reportes tiene un formato inesperado.');
+		if (!Array.isArray(data)) {
+			throw new Error('La respuesta de reportes tiene un formato inesperado.');
+		}
 		if (signal?.aborted) return;
 
 		setReportes(data);
@@ -34,6 +64,7 @@ const Reportes = () => {
 	const cargar = useCallback(async (signal) => {
 		setLoading(true);
 		setError('');
+
 		try {
 			await cargarReportes(signal);
 		} catch (requestError) {
@@ -47,14 +78,28 @@ const Reportes = () => {
 	useEffect(() => {
 		const controller = new AbortController();
 		const timer = window.setTimeout(() => cargar(controller.signal), 0);
+
 		return () => {
 			window.clearTimeout(timer);
 			controller.abort();
 		};
 	}, [cargar]);
 
+	const resumen = useMemo(() => {
+		const solucionados = reportes.filter(
+			(reporte) => normalize(reporte.estadoFinal) === 'solucionado'
+		).length;
+
+		return {
+			total: reportes.length,
+			solucionados,
+			otros: reportes.length - solucionados,
+		};
+	}, [reportes]);
+
 	const visibles = useMemo(() => {
 		const text = toSearchText(query.trim());
+
 		return reportes
 			.filter((reporte) =>
 				!text ||
@@ -73,14 +118,19 @@ const Reportes = () => {
 					reporte.observacion,
 					reporte.tecnicoNombre,
 					reporte.funcionarioNombre,
+					reporte.numeroFormulario,
 				].join(' ')).includes(text)
 			)
-			.sort((a, b) => (new Date(b.createdAt).getTime() || 0) - (new Date(a.createdAt).getTime() || 0));
+			.sort((a, b) =>
+				(new Date(b.createdAt).getTime() || 0) -
+				(new Date(a.createdAt).getTime() || 0)
+			);
 	}, [reportes, query]);
 
 	const descargarPdf = async (reporte) => {
 		setErrorPdf('');
 		setDescargandoId(reporte.id);
+
 		try {
 			await generarReportePdf({
 				numeroFormulario: reporte.numeroFormulario ?? '',
@@ -107,14 +157,44 @@ const Reportes = () => {
 		}
 	};
 
+	const claseEstado = (estado) => {
+		const estadoNormalizado = normalize(estado);
+		if (estadoNormalizado === 'solucionado') return 'report-final-solucionado';
+		if (estadoNormalizado === 'parcial') return 'report-final-parcial';
+		if (
+			estadoNormalizado === 'pendiente' ||
+			estadoNormalizado === 'requiere-repuesto' ||
+			estadoNormalizado === 'servicio-externo'
+		) {
+			return 'report-final-pendiente';
+		}
+		return 'report-final-default';
+	};
+
+	const nombreEquipo = (reporte) =>
+		reporte.tipoEquipo === 'OTRO'
+			? getValue(reporte.tipoEquipoOtro)
+			: getValue(humanize(reporte.tipoEquipo));
+
 	return (
 		<main className="at-page report-page">
-			<header className="at-header">
-				<span className="at-header-icon" aria-hidden="true"><FaChartBar /></span>
-				<div>
+			<header className="at-header report-main-header">
+				<span className="at-header-icon" aria-hidden="true">
+					<FaChartBar />
+				</span>
+				<div className="report-header-copy">
 					<h1>Mis reportes</h1>
-					<p>Consulta los reportes de atención que has realizado.</p>
+					<p>Consulta las atenciones técnicas realizadas y descarga sus informes.</p>
 				</div>
+				<button
+					type="button"
+					className={`at-refresh report-header-refresh${loading ? ' is-spinning' : ''}`}
+					onClick={() => cargar()}
+					disabled={loading}
+				>
+					<FaSyncAlt aria-hidden="true" />
+					<span>Actualizar</span>
+				</button>
 			</header>
 
 			{error && (
@@ -126,38 +206,82 @@ const Reportes = () => {
 				</div>
 			)}
 
-			<div className="at-toolbar">
-				<div className="at-search">
-					<FaSearch aria-hidden="true" />
-					<input
-						type="search"
-						value={query}
-						onChange={(event) => setQuery(event.target.value)}
-						placeholder="Buscar por solicitud, equipo, diagnóstico o estado"
-						aria-label="Buscar en mis reportes"
-					/>
-					{query && (
-						<button type="button" className="at-search-clear" onClick={() => setQuery('')} aria-label="Borrar búsqueda">
-							<FaTimes aria-hidden="true" />
-						</button>
-					)}
+			{!error && (
+				<section className="report-summary" aria-label="Resumen de reportes">
+					<article className="summary-card summary-total">
+						<span className="summary-icon"><FaClipboardList aria-hidden="true" /></span>
+						<div className="summary-content">
+							<span>Total de reportes</span>
+							<strong>{resumen.total}</strong>
+							<small>Atenciones registradas</small>
+						</div>
+					</article>
+
+					<article className="summary-card summary-done">
+						<span className="summary-icon"><FaCheckCircle aria-hidden="true" /></span>
+						<div className="summary-content">
+							<span>Solucionados</span>
+							<strong>{resumen.solucionados}</strong>
+							<small>Con solución registrada</small>
+						</div>
+					</article>
+
+					<article className="summary-card summary-pending">
+						<span className="summary-icon"><FaTools aria-hidden="true" /></span>
+						<div className="summary-content">
+							<span>Otros estados</span>
+							<strong>{resumen.otros}</strong>
+							<small>Parciales u otros resultados</small>
+						</div>
+					</article>
+				</section>
+			)}
+
+			<section className="report-tools" aria-label="Buscar reportes">
+				<div className="report-tools-heading">
+					<div>
+						<h2>Historial de atenciones</h2>
+						<p>Busca por solicitud, equipo, inventario, solicitante o diagnóstico.</p>
+					</div>
 				</div>
-				<button
-					type="button"
-					className={`at-refresh${loading ? ' is-spinning' : ''}`}
-					onClick={() => cargar()}
-					disabled={loading}
-					aria-label="Actualizar reportes"
-				>
-					<FaSyncAlt aria-hidden="true" /> <span>Actualizar</span>
-				</button>
-			</div>
 
-			{errorPdf && <div className="at-error report-pdf-error" role="alert">{errorPdf}</div>}
+				<div className="at-toolbar">
+					<div className="at-search">
+						<FaSearch aria-hidden="true" />
+						<input
+							type="search"
+							value={query}
+							onChange={(event) => setQuery(event.target.value)}
+							placeholder="Ej. solicitud, inventario o diagnóstico..."
+							aria-label="Buscar en mis reportes"
+						/>
+						{query && (
+							<button
+								type="button"
+								className="at-search-clear"
+								onClick={() => setQuery('')}
+								aria-label="Borrar búsqueda"
+							>
+								<FaTimes aria-hidden="true" />
+							</button>
+						)}
+					</div>
+					<p className="at-result-count" aria-live="polite">
+						{!loading && !error
+							? `${visibles.length} de ${reportes.length} reportes`
+							: loading ? 'Cargando reportes...' : ''}
+					</p>
+				</div>
+			</section>
 
-			<p className="at-result-count" aria-live="polite">
-				{!loading && !error && `Mostrando ${visibles.length} de ${reportes.length} reportes`}
-			</p>
+			{errorPdf && (
+				<div className="at-error report-pdf-error" role="alert">
+					<span>{errorPdf}</span>
+					<button type="button" onClick={() => setErrorPdf('')} aria-label="Cerrar mensaje">
+						<FaTimes aria-hidden="true" /> Cerrar
+					</button>
+				</div>
+			)}
 
 			<section className="report-list" aria-label="Mis reportes de atención" aria-busy={loading}>
 				{loading && reportes.length === 0 && Array.from({ length: 3 }, (_, index) => (
@@ -167,17 +291,30 @@ const Reportes = () => {
 						<span className="at-skeleton at-skeleton-line" />
 					</div>
 				))}
+
 				{!error && visibles.map((reporte) => (
 					<article className="report-row" key={reporte.id}>
 						<header className="report-row-heading">
-							<div>
-								<span className="report-id">Reporte #{reporte.id}</span>
-								<h2>Solicitud #{formatId(reporte.codigoSolicitud)}</h2>
+							<div className="report-heading-main">
+								<span className="report-id">REPORTE #{reporte.id}</span>
+								<h3>Solicitud #{formatId(reporte.codigoSolicitud)}</h3>
+								<p className="report-equipment">
+									<FaLaptop aria-hidden="true" />
+									<span>{nombreEquipo(reporte)}</span>
+									{reporte.numeroInventario && (
+										<span className="report-inventory">
+											<FaBarcode aria-hidden="true" />
+											{reporte.numeroInventario}
+										</span>
+									)}
+								</p>
 							</div>
+
 							<div className="report-row-actions">
-								<time className="report-date" dateTime={reporte.createdAt}>
-									<FaRegCalendarAlt aria-hidden="true" /> Guardado: {formatDateTime(reporte.createdAt)}
-								</time>
+								<span className={`at-badge report-final-badge ${claseEstado(reporte.estadoFinal)}`}>
+									<span className="report-status-dot" aria-hidden="true" />
+									{getValue(humanize(reporte.estadoFinal))}
+								</span>
 								<button
 									className="report-pdf-button"
 									type="button"
@@ -185,65 +322,76 @@ const Reportes = () => {
 									disabled={descargandoId !== null}
 								>
 									<FaFilePdf aria-hidden="true" />
-									{descargandoId === reporte.id ? 'Generando...' : 'Descargar PDF'}
+									{descargandoId === reporte.id ? 'Generando PDF...' : 'Descargar PDF'}
 								</button>
 							</div>
 						</header>
 
 						<div className="report-row-meta">
-							<span><strong>Equipo:</strong> {getValue(reporte.tipoEquipo === 'OTRO' ? reporte.tipoEquipoOtro : humanize(reporte.tipoEquipo))}</span>
-							<span><strong>Fecha de atención:</strong> {getValue(reporte.fechaAtencion)}</span>
-							<span><strong>Hora:</strong> {getValue(reporte.horaAtencion?.slice(0, 5))}</span>
-							{reporte.asignacionTecnicoId !== undefined && (
-								<span><strong>Asignación:</strong> #{reporte.asignacionTecnicoId}</span>
+							<span className="report-meta-item">
+								<FaRegCalendarAlt aria-hidden="true" />
+								<strong>Atención:</strong> {getValue(reporte.fechaAtencion)}
+							</span>
+							<span className="report-meta-item">
+								<FaRegCalendarAlt aria-hidden="true" />
+								<strong>Hora:</strong> {getValue(reporte.horaAtencion?.slice(0, 5))}
+							</span>
+							{reporte.asignacionTecnicoId !== undefined && reporte.asignacionTecnicoId !== null && (
+								<span className="report-meta-item">
+									<strong>Asignación:</strong> #{reporte.asignacionTecnicoId}
+								</span>
 							)}
-							<span className={`at-badge report-final-${normalize(reporte.estadoFinal)}`}>
-								{humanize(reporte.estadoFinal)}
+							<span className="report-meta-item report-saved-date">
+								Guardado: {getValue(formatDateTime(reporte.createdAt))}
 							</span>
 						</div>
 
 						<dl className="report-details">
-							<div>
-								<dt>Formulario STI</dt>
-								<dd>{getValue(reporte.numeroFormulario ? `STI-${reporte.numeroFormulario}` : '')}</dd>
-							</div>
-							<div>
-								<dt>Unidad / Dirección</dt>
+							<div className="report-detail">
+								<dt><FaBuilding aria-hidden="true" /> Unidad / Dirección</dt>
 								<dd>{getValue(reporte.unidad)}</dd>
 							</div>
-							<div>
-								<dt>Solicitante</dt>
+							<div className="report-detail">
+								<dt><FaUser aria-hidden="true" /> Solicitante</dt>
 								<dd>{getValue(reporte.solicitante)}</dd>
 							</div>
-							<div>
-								<dt>N.º de inventario</dt>
+							<div className="report-detail">
+								<dt><FaClipboardList aria-hidden="true" /> Formulario STI</dt>
+								<dd>{getValue(reporte.numeroFormulario ? `STI-${reporte.numeroFormulario}` : '')}</dd>
+							</div>
+							<div className="report-detail">
+								<dt><FaBarcode aria-hidden="true" /> N.º de inventario</dt>
 								<dd>{getValue(reporte.numeroInventario)}</dd>
 							</div>
-							<div className="report-detail-wide">
-								<dt>Problema reportado</dt>
+
+							<div className="report-highlight report-problem">
+								<dt><FaInbox aria-hidden="true" /> Problema reportado</dt>
 								<dd>{getValue(reporte.problema)}</dd>
 							</div>
-							<div>
-								<dt>Diagnóstico técnico</dt>
+							<div className="report-highlight report-diagnosis">
+								<dt><FaSearch aria-hidden="true" /> Diagnóstico técnico</dt>
 								<dd>{getValue(reporte.diagnostico)}</dd>
 							</div>
-							<div>
-								<dt>Trabajo realizado / Solución</dt>
+							<div className="report-highlight report-solution">
+								<dt><FaCheckCircle aria-hidden="true" /> Trabajo realizado / Solución</dt>
 								<dd>{getValue(reporte.trabajoRealizado)}</dd>
 							</div>
-							<div>
-								<dt>Observaciones</dt>
+							<div className="report-highlight report-observations">
+								<dt><FaTools aria-hidden="true" /> Observaciones</dt>
 								<dd>{getValue(reporte.observacion)}</dd>
 							</div>
-							<div>
-								<dt>Técnico responsable</dt>
-								<dd>{getValue(reporte.tecnicoNombre)}</dd>
-							</div>
-							<div>
-								<dt>Funcionario solicitante</dt>
-								<dd>{getValue(reporte.funcionarioNombre)}</dd>
-							</div>
 						</dl>
+
+						<footer className="report-footer">
+							<div>
+								<span className="report-footer-label">Técnico responsable</span>
+								<strong>{getValue(reporte.tecnicoNombre)}</strong>
+							</div>
+							<div>
+								<span className="report-footer-label">Funcionario solicitante</span>
+								<strong>{getValue(reporte.funcionarioNombre)}</strong>
+							</div>
+						</footer>
 					</article>
 				))}
 			</section>
@@ -254,9 +402,14 @@ const Reportes = () => {
 					<strong>{query ? 'Ningún reporte coincide con la búsqueda' : 'Aún no has realizado reportes'}</strong>
 					<span>
 						{query
-							? 'Prueba con otros términos.'
+							? 'Prueba con el número de solicitud, inventario o algún otro término.'
 							: 'Cuando guardes un reporte de atención aparecerá aquí.'}
 					</span>
+					{query && (
+						<button type="button" className="at-btn-outline" onClick={() => setQuery('')}>
+							Limpiar búsqueda
+						</button>
+					)}
 				</div>
 			)}
 		</main>
