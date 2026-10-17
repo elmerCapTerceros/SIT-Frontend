@@ -8,6 +8,10 @@
 .requests-list { max-width: 1040px; margin: 0 auto; display: grid; gap: 12px; }
 .request-item, .empty-state { background: #fff; border: 1px solid #d8edf5; border-radius: 14px; padding: 22px; box-shadow: 0 6px 20px rgba(0,91,130,.06); }
 .request-item { display: flex; justify-content: space-between; gap: 18px; align-items: center; }
+.request-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.verify-action { border: 0; border-radius: 8px; padding: 9px 13px; background: #16713a; color: #fff; font-weight: 700; cursor: pointer; }
+.verify-action:disabled { opacity: .65; cursor: wait; }
+.verification-status { color: #16713a; font-size: 13px; font-weight: 700; }
 .request-item h2, .empty-state h2 { color: #173042; font-size: 18px; margin: 0 0 7px; }
 .request-item div > p:last-child, .empty-state p { color: #607684; font-size: 14px; margin: 0; }
 .status { border-radius: 999px; padding: 7px 10px; font-size: 11px; font-weight: 800; background: #e6f7fe; color: #005b82; white-space: nowrap; }
