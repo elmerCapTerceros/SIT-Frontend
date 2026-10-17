@@ -1,24 +1,62 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaClipboardList } from 'react-icons/fa';
+import {
+	FaClipboardList,
+	FaUserTie,
+	FaTools,
+	FaCheck,
+	FaTimes,
+	FaExclamationCircle,
+} from 'react-icons/fa';
 import ConfirmarCambioEstado from '../../Components/Modlas/ConfirmarCambioEstado';
+import AtenderSolicitudModal from '../../Components/Modlas/AtenderSolicitudModal';
+import RechazarSolicitudModal from '../../Components/Modlas/RechazarSolicitudModal';
 import { formatDate, formatId, getValue, humanize } from '../../utils/Solicitudesutils';
 import './VerDetalleSolicitud.css';
 
 const API_URL = 'http://localhost:8080/api';
 
-const SIGUIENTE_ESTADO = {
-	PENDIENTE: 'EN_PROCESO',
+// Flujo normal de una solicitud. RECHAZADA es una salida aparte (solo desde PENDIENTE).
+const FLUJO = ['PENDIENTE', 'EN_PROCESO', 'CONCLUIDA'];
+
+// Estados a los que se puede pasar desde cada estado.
+const TRANSICIONES = {
+	PENDIENTE: ['EN_PROCESO'],
+	EN_PROCESO: ['CONCLUIDA'],
 };
 
-const OPCIONES_ESTADO = ['PENDIENTE', 'EN_PROCESO'];
+// Endpoint que ejecuta cada cambio de estado.
+const ACCION_POR_ESTADO = {
+	EN_PROCESO: 'atender',
+	CONCLUIDA: 'concluir',
+};
+
+const MENSAJE_AYUDA = {
+	PENDIENTE: 'Nadie ha trabajado en esta solicitud todavía. Puedes atenderla o rechazarla indicando el motivo.',
+	EN_PROCESO: 'Ya estás atendiendo esta solicitud. Cuando termines el trabajo, cámbiala a Concluida.',
+	CONCLUIDA: 'Esta solicitud ya fue concluida. No se pueden hacer más cambios.',
+	RECHAZADA: 'Esta solicitud fue rechazada. No se pueden hacer más cambios.',
+};
+
+const SIN_REGISTRO = 'No registrado';
+
+const Dato = ({ etiqueta, children, ancho }) => (
+	<div className={ancho ? 'vd-dato vd-dato-ancho' : 'vd-dato'}>
+		<dt>{etiqueta}</dt>
+		<dd>{children}</dd>
+	</div>
+);
 
 const VerDetalleSolicitud = () => {
 	const { state } = useLocation();
 	const solicitudSeleccionada = state?.solicitud;
+	const solicitudId = solicitudSeleccionada?.id;
+
 	const [solicitud, setSolicitud] = useState(null);
 	const [estadoSeleccionado, setEstadoSeleccionado] = useState('');
-	const [confirmacionAbierta, setConfirmacionAbierta] = useState(false);
+	const [modalAbierto, setModalAbierto] = useState(null); // 'atender' | 'rechazar' | 'estado' | null
+	const [enviando, setEnviando] = useState(false);
+	const [errorAccion, setErrorAccion] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 
@@ -38,7 +76,7 @@ const VerDetalleSolicitud = () => {
 				setLoading(false);
 				return;
 			}
-			if (!solicitudSeleccionada?.id) {
+			if (!solicitudId) {
 				setError('No se seleccionó una solicitud. Vuelve a Mis solicitudes asignadas y elige una.');
 				setLoading(false);
 				return;
@@ -59,9 +97,7 @@ const VerDetalleSolicitud = () => {
 				}
 				if (controller.signal.aborted) return;
 
-				const encontrada = data.find(
-					(item) => String(item.id) === String(solicitudSeleccionada.id)
-				);
+				const encontrada = data.find((item) => String(item.id) === String(solicitudId));
 				if (!encontrada) {
 					throw new Error('La solicitud ya no está asignada a este técnico o no existe.');
 				}
@@ -78,18 +114,67 @@ const VerDetalleSolicitud = () => {
 
 		cargarDetalle();
 		return () => controller.abort();
-	}, [solicitudSeleccionada]);
+	}, [solicitudId]);
 
-	const estadoActual = solicitud?.estado?.toUpperCase();
-	const siguienteEstado = estadoActual ? SIGUIENTE_ESTADO[estadoActual] ?? null : null;
-	const solicitudConcluida = estadoActual === 'CONCLUIDA';
+	const estadoActual = solicitud?.estado?.toUpperCase() ?? '';
+	const estadosPermitidos = TRANSICIONES[estadoActual] ?? [];
+	const esPendiente = estadoActual === 'PENDIENTE';
+	const estaRechazada = estadoActual === 'RECHAZADA';
+	const sinAcciones = estadosPermitidos.length === 0;
+	const cambioSeleccionado =
+		estadosPermitidos.includes(estadoSeleccionado) ? estadoSeleccionado : null;
 
-	const confirmarCambioEstado = () => {
-		if (!solicitud || !siguienteEstado || estadoSeleccionado !== siguienteEstado) return;
-		setSolicitud((actual) => ({ ...actual, estado: siguienteEstado }));
-		setEstadoSeleccionado(siguienteEstado);
-		setConfirmacionAbierta(false);
+	const cerrarModal = () => {
+		if (enviando) return;
+		setModalAbierto(null);
+		setErrorAccion('');
+		setEstadoSeleccionado(estadoActual);
 	};
+
+	const abrirModal = (nombre) => {
+		setErrorAccion('');
+		setModalAbierto(nombre);
+	};
+
+	// Llama al backend y actualiza la pantalla con la solicitud devuelta.
+	const ejecutarAccion = async (accion, body) => {
+		setEnviando(true);
+		setErrorAccion('');
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(`${API_URL}/solicitudes/${solicitud.id}/${accion}`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: body ? JSON.stringify(body) : undefined,
+			});
+			if (!response.ok) {
+				const data = await response.json().catch(() => null);
+				throw new Error(
+					data?.message || `No se pudo completar la acción (HTTP ${response.status}).`
+				);
+			}
+			const actualizada = await response.json();
+			setSolicitud((actual) => ({ ...actual, ...actualizada }));
+			setEstadoSeleccionado(actualizada.estado?.toUpperCase() ?? '');
+			setModalAbierto(null);
+		} catch (requestError) {
+			setErrorAccion(requestError.message || 'No se pudo completar la acción.');
+		} finally {
+			setEnviando(false);
+		}
+	};
+
+	const confirmarAtender = () => ejecutarAccion('atender');
+	const confirmarRechazo = (motivo) => ejecutarAccion('rechazar', { motivo });
+	const confirmarCambioEstado = () => {
+		if (!cambioSeleccionado) return;
+		ejecutarAccion(ACCION_POR_ESTADO[cambioSeleccionado]);
+	};
+
+	const indiceActual = FLUJO.indexOf(estadoActual);
 
 	return (
 		<div className="at-page report-page">
@@ -97,7 +182,7 @@ const VerDetalleSolicitud = () => {
 				<span className="at-header-icon" aria-hidden="true"><FaClipboardList /></span>
 				<div>
 					<h1>Detalle de la solicitud</h1>
-					<p>Información de la solicitud asignada al técnico.</p>
+					<p>Revisa los datos del funcionario y de la solicitud, y decide cómo continuar.</p>
 				</div>
 			</header>
 
@@ -111,73 +196,182 @@ const VerDetalleSolicitud = () => {
 			)}
 
 			{!loading && !error && solicitud && (
-				<section className="informacion-detalle" aria-label="Información de la solicitud">
-					<div className="detalle-heading">
-						<div>
-							<p className="detalle-codigo">Solicitud #{formatId(solicitud.codigo ?? solicitud.id)}</p>
+				<div className="vd">
+					{/* ---------- Encabezado de la solicitud ---------- */}
+					<section className="vd-resumen" aria-label="Resumen de la solicitud">
+						<div className="vd-resumen-texto">
+							<p className="vd-codigo">Solicitud #{formatId(solicitud.codigo ?? solicitud.id)}</p>
 							<h2>{getValue(solicitud.titulo)}</h2>
 						</div>
-						<div className="detalle-heading-actions">
-							<Link className="detalle-volver" to="/asignacion-tecnico">Volver a solicitudes</Link>
-							<div className="estados-solicitud" role="radiogroup" aria-label="Estado de la solicitud">
-								{OPCIONES_ESTADO.map((estado) => {
-									const bloqueado = solicitudConcluida ||
-										(estadoActual === 'EN_PROCESO' && estado === 'PENDIENTE') ||
-										(estadoActual === estado);
-									return (
-										<label className="estado-opcion" key={estado}>
-											<input
-												type="radio"
-												name="estado-solicitud"
-												value={estado}
-												checked={estadoSeleccionado === estado}
-												disabled={bloqueado}
-												onChange={() => setEstadoSeleccionado(estado)}
-											/>
-											<span>{humanize(estado)}</span>
-										</label>
-									);
-								})}
-								{siguienteEstado && (
-									<button
-										className="detalle-btn detalle-btn-primary"
-										type="button"
-										disabled={estadoSeleccionado !== siguienteEstado}
-										onClick={() => setConfirmacionAbierta(true)}
-									>
-										Cambiar estado
-									</button>
-								)}
-							</div>
-							{solicitudConcluida && (
-								<span className="estado-finalizado">Solicitud concluida</span>
-							)}
+						<div className="vd-resumen-lado">
+							<span className={`vd-badge vd-estado-${estadoActual.toLowerCase()}`}>
+								{humanize(estadoActual)}
+							</span>
+							<Link className="vd-volver" to="/asignacion-tecnico">Volver a solicitudes</Link>
 						</div>
+					</section>
+
+					{/* ---------- Progreso ---------- */}
+					{!estaRechazada ? (
+						<ol className="vd-progreso" aria-label="Progreso de la solicitud">
+							{FLUJO.map((estado, indice) => {
+								const clase =
+									indice < indiceActual ? 'hecho' : indice === indiceActual ? 'actual' : 'pendiente';
+								return (
+									<li
+										key={estado}
+										className={`vd-paso vd-paso-${clase}`}
+										aria-current={clase === 'actual' ? 'step' : undefined}
+									>
+										<span className="vd-paso-marca" aria-hidden="true">
+											{clase === 'hecho' ? <FaCheck /> : indice + 1}
+										</span>
+										<span>{humanize(estado)}</span>
+									</li>
+								);
+							})}
+						</ol>
+					) : (
+						<div className="vd-rechazo" role="status">
+							<FaExclamationCircle aria-hidden="true" />
+							<div>
+								<strong>Solicitud rechazada</strong>
+								<p>{getValue(solicitud.motivoRechazo)}</p>
+							</div>
+						</div>
+					)}
+
+					{/* ---------- Datos: funcionario y solicitud técnica ---------- */}
+					<div className="vd-columnas">
+						<section className="vd-tarjeta vd-funcionario" aria-labelledby="vd-titulo-funcionario">
+							<header>
+								<span className="vd-tarjeta-icono" aria-hidden="true"><FaUserTie /></span>
+								<div>
+									<h3 id="vd-titulo-funcionario">Datos del funcionario</h3>
+									<p>Quién hizo la solicitud y dónde encontrarlo.</p>
+								</div>
+							</header>
+							<dl>
+								<Dato etiqueta="Nombre">{getValue(solicitud.solicitanteNombre)}</Dato>
+								<Dato etiqueta="Cargo">{solicitud.solicitanteCargo || SIN_REGISTRO}</Dato>
+								<Dato etiqueta="Área o unidad">{getValue(solicitud.area)}</Dato>
+								<Dato etiqueta="Ubicación de la oficina">{getValue(solicitud.ubicacion)}</Dato>
+								<Dato etiqueta="Correo">{solicitud.solicitanteCorreo || SIN_REGISTRO}</Dato>
+								<Dato etiqueta="Teléfono o interno">{solicitud.solicitanteTelefono || SIN_REGISTRO}</Dato>
+							</dl>
+						</section>
+
+						<section className="vd-tarjeta vd-tecnica" aria-labelledby="vd-titulo-tecnica">
+							<header>
+								<span className="vd-tarjeta-icono" aria-hidden="true"><FaTools /></span>
+								<div>
+									<h3 id="vd-titulo-tecnica">Solicitud técnica</h3>
+									<p>Qué se pide y con qué urgencia.</p>
+								</div>
+							</header>
+							<dl>
+								<Dato etiqueta="Categoría">{getValue(solicitud.categoria)}</Dato>
+								<Dato etiqueta="Prioridad">
+									<span className={`vd-prioridad vd-prioridad-${(solicitud.prioridad ?? '').toLowerCase()}`}>
+										{humanize(solicitud.prioridad)}
+									</span>
+								</Dato>
+								<Dato etiqueta="Fecha de creación">{formatDate(solicitud.createdAt)}</Dato>
+								<Dato etiqueta="Descripción del problema" ancho>
+									<p className="vd-descripcion">{getValue(solicitud.descripcion)}</p>
+								</Dato>
+							</dl>
+						</section>
 					</div>
 
-					<dl className="detalle-lista">
-						<div><dt>Estado</dt><dd>{humanize(solicitud.estado)}</dd></div>
-						<div><dt>Prioridad</dt><dd>{humanize(solicitud.prioridad)}</dd></div>
-						<div><dt>Categoría</dt><dd>{getValue(solicitud.categoria)}</dd></div>
-						<div><dt>Área solicitante</dt><dd>{getValue(solicitud.area)}</dd></div>
-						<div><dt>Solicitante</dt><dd>{getValue(solicitud.solicitanteNombre)}</dd></div>
-						<div><dt>Fecha de creación</dt><dd>{formatDate(solicitud.createdAt)}</dd></div>
-						<div className="detalle-descripcion"><dt>Descripción</dt><dd>{getValue(solicitud.descripcion)}</dd></div>
-					</dl>
+					{/* ---------- Acciones ---------- */}
+					<section className="vd-acciones" aria-labelledby="vd-titulo-acciones">
+						<h3 id="vd-titulo-acciones">¿Qué quieres hacer con esta solicitud?</h3>
+						<p className="vd-ayuda">{MENSAJE_AYUDA[estadoActual]}</p>
 
-					<div className="detalle-acciones">
-						<button className="detalle-btn detalle-btn-primary" type="button">Atender</button>
-						<button className="detalle-btn detalle-btn-danger" type="button">Rechazar</button>
-					</div>
-				</section>
+						{esPendiente && (
+							<div className="vd-botones">
+								<button
+									className="vd-btn vd-btn-primario"
+									type="button"
+									onClick={() => abrirModal('atender')}
+								>
+									<FaCheck aria-hidden="true" /> Atender solicitud
+								</button>
+								<button
+									className="vd-btn vd-btn-peligro"
+									type="button"
+									onClick={() => abrirModal('rechazar')}
+								>
+									<FaTimes aria-hidden="true" /> Rechazar solicitud
+								</button>
+							</div>
+						)}
+
+						{!sinAcciones && (
+							<fieldset className="vd-estados">
+								<legend>Cambiar estado manualmente</legend>
+								<div className="vd-estados-opciones" role="radiogroup">
+									{FLUJO.map((estado) => {
+										const esActual = estado === estadoActual;
+										const disponible = estadosPermitidos.includes(estado);
+										return (
+											<label
+												key={estado}
+												className={`vd-estado-opcion${esActual ? ' es-actual' : ''}${!disponible && !esActual ? ' no-disponible' : ''}`}
+											>
+												<input
+													type="radio"
+													name="estado-solicitud"
+													value={estado}
+													checked={estadoSeleccionado === estado}
+													disabled={!disponible && !esActual}
+													onChange={() => setEstadoSeleccionado(estado)}
+												/>
+												<span>
+													{humanize(estado)}
+													{esActual && <small>Estado actual</small>}
+												</span>
+											</label>
+										);
+									})}
+								</div>
+								<button
+									className="vd-btn vd-btn-secundario"
+									type="button"
+									disabled={!cambioSeleccionado}
+									onClick={() => abrirModal('estado')}
+								>
+									Cambiar estado
+								</button>
+							</fieldset>
+						)}
+					</section>
+				</div>
 			)}
 
+			<AtenderSolicitudModal
+				open={modalAbierto === 'atender'}
+				loading={enviando}
+				error={errorAccion}
+				onCancel={cerrarModal}
+				onConfirm={confirmarAtender}
+			/>
+
+			<RechazarSolicitudModal
+				open={modalAbierto === 'rechazar'}
+				loading={enviando}
+				error={errorAccion}
+				onCancel={cerrarModal}
+				onConfirm={confirmarRechazo}
+			/>
+
 			<ConfirmarCambioEstado
-				open={confirmacionAbierta}
-				estado={siguienteEstado}
-				loading={false}
-				error=""
-				onCancel={() => setConfirmacionAbierta(false)}
+				open={modalAbierto === 'estado'}
+				estado={cambioSeleccionado}
+				loading={enviando}
+				error={errorAccion}
+				onCancel={cerrarModal}
 				onConfirm={confirmarCambioEstado}
 			/>
 		</div>
