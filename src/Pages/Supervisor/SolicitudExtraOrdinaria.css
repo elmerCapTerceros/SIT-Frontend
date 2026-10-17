@@ -186,6 +186,26 @@
   max-width: 850px;
 }
 
+.supervisor-assignment {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid #b8dce9;
+  border-radius: 8px;
+  background: #f3fafe;
+}
+
+.supervisor-assignment h2 {
+  margin: 0 0 5px;
+  color: #005b82;
+  font-size: 16px;
+}
+
+.supervisor-assignment > p {
+  margin: 0 0 14px;
+  color: #526a78;
+  font-size: 12px;
+}
+
 .form-field {
   margin-bottom: 9px;
 }

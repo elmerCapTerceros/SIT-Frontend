@@ -1,23 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SolicitudExtraOrdinaria.css";
 import Modlas from "../../Components/Modlas/Modlas";
 
 const API_URL = "http://localhost:8080/api";
+const INITIAL_FORM = { titulo: "", tipoEquipo: "PC", descripcion: "", prioridad: "", tecnicoId: "" };
 
 const SolicitudExtraOrdinaria = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    titulo: "",
-    tipoEquipo: "PC",
-    descripcion: "",
-  });
+  const [form, setForm] = useState(INITIAL_FORM);
 
   const [errores, setErrores] = useState({});
   const [modalAbierto, setModalAbierto] = useState(false);
   const [cancelModalAbierto, setCancelModalAbierto] = useState(false);
   const [errorApi, setErrorApi] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [tecnicos, setTecnicos] = useState([]);
+  const esSupervisor = (localStorage.getItem("rol") || "").trim().toUpperCase() === "SUPERVISOR";
+
+  useEffect(() => {
+    if (!esSupervisor) return;
+    const token = localStorage.getItem("token");
+    fetch(`${API_URL}/usuarios/tecnicos`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("No se pudo cargar la lista de técnicos.");
+        return response.json();
+      })
+      .then((data) => setTecnicos(Array.isArray(data) ? data : []))
+      .catch((error) => setErrorApi(error.message));
+  }, [esSupervisor]);
 
   const TIPOS_EQUIPO = ["PC", "Laptop", "Impresora", "Otros"];
 
@@ -48,6 +59,9 @@ const SolicitudExtraOrdinaria = () => {
         "La descripción no puede superar los 500 caracteres.";
     }
 
+    if (esSupervisor && !form.prioridad) nuevosErrores.prioridad = "Debe seleccionar una prioridad.";
+    if (esSupervisor && !form.tecnicoId) nuevosErrores.tecnicoId = "Debe asignar un técnico.";
+
     setErrores(nuevosErrores);
     setErrorApi("");
 
@@ -61,6 +75,7 @@ const SolicitudExtraOrdinaria = () => {
 
       setEnviando(true);
 
+      let solicitudRegistrada = false;
       try {
         const response = await fetch(`${API_URL}/solicitudes`, {
           method: "POST",
@@ -80,10 +95,24 @@ const SolicitudExtraOrdinaria = () => {
           throw new Error(body?.message || "No se pudo registrar la solicitud.");
         }
 
-        setForm({ titulo: "", tipoEquipo: "PC", descripcion: "" });
+        if (esSupervisor) {
+          const solicitudCreada = await response.json();
+          solicitudRegistrada = true;
+          const asignacionResponse = await fetch(`${API_URL}/solicitudes/${solicitudCreada.id}/asignacion`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ prioridad: form.prioridad.toUpperCase(), tecnicoId: Number(form.tecnicoId) }),
+          });
+          if (!asignacionResponse.ok) {
+            throw new Error("La solicitud se creó, pero no se pudo asignar. Puedes completar la asignación desde Solicitudes.");
+          }
+        }
+
+        setForm(INITIAL_FORM);
         setErrores({});
         setModalAbierto(true);
       } catch (error) {
+        if (solicitudRegistrada) setForm(INITIAL_FORM);
         setErrorApi(error.message || "Ocurrió un error al enviar la solicitud.");
       } finally {
         setEnviando(false);
@@ -96,7 +125,7 @@ const SolicitudExtraOrdinaria = () => {
   };
 
   const confirmarCancelar = () => {
-    setForm({ titulo: "", tipoEquipo: "PC", descripcion: "" });
+    setForm(INITIAL_FORM);
     setErrores({});
     setErrorApi("");
     setModalAbierto(false);
@@ -205,6 +234,32 @@ const SolicitudExtraOrdinaria = () => {
               </span>
             )}
           </div>
+
+          {esSupervisor && (
+            <section className="supervisor-assignment" aria-labelledby="supervisor-assignment-title">
+              <h2 id="supervisor-assignment-title">Asignación de supervisión</h2>
+              <p>Asigna un técnico y define la prioridad al registrar esta solicitud.</p>
+              <div className="form-field">
+                <label className="form-label" htmlFor="prioridad">Prioridad <span className="required">*</span></label>
+                <select id="prioridad" name="prioridad" className={`form-input ${errores.prioridad ? "input-error" : ""}`} value={form.prioridad} onChange={handleChange}>
+                  <option value="">Seleccione prioridad</option>
+                  <option value="ALTA">Alta</option>
+                  <option value="MEDIA">Media</option>
+                  <option value="BAJA">Baja</option>
+                </select>
+                {errores.prioridad && <span className="error-msg">{errores.prioridad}</span>}
+              </div>
+              <div className="form-field">
+                <label className="form-label" htmlFor="tecnicoId">Técnico asignado <span className="required">*</span></label>
+                <select id="tecnicoId" name="tecnicoId" className={`form-input ${errores.tecnicoId ? "input-error" : ""}`} value={form.tecnicoId} onChange={handleChange}>
+                  <option value="">Seleccione técnico</option>
+                  {tecnicos.map((tecnico) => <option key={tecnico.id} value={tecnico.id}>{[tecnico.nombre, tecnico.apellido].filter(Boolean).join(" ")}</option>)}
+                </select>
+                {errores.tecnicoId && <span className="error-msg">{errores.tecnicoId}</span>}
+                {tecnicos.length === 0 && <span className="hint-msg">No hay técnicos disponibles para asignar.</span>}
+              </div>
+            </section>
+          )}
 
           {errorApi && <div className="error-msg api-error">{errorApi}</div>}
 
