@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	FaClipboardList,
 	FaUserTie,
@@ -7,6 +7,7 @@ import {
 	FaCheck,
 	FaTimes,
 	FaExclamationCircle,
+	FaFilePdf,
 } from 'react-icons/fa';
 import ConfirmarCambioEstado from '../../Components/Modlas/ConfirmarCambioEstado';
 import AtenderSolicitudModal from '../../Components/Modlas/AtenderSolicitudModal';
@@ -33,8 +34,8 @@ const ACCION_POR_ESTADO = {
 
 const MENSAJE_AYUDA = {
 	PENDIENTE: 'Nadie ha trabajado en esta solicitud todavía. Puedes atenderla o rechazarla indicando el motivo.',
-	EN_PROCESO: 'Ya estás atendiendo esta solicitud. Cuando termines el trabajo, cámbiala a Concluida.',
-	CONCLUIDA: 'Esta solicitud ya fue concluida. No se pueden hacer más cambios.',
+	EN_PROCESO: 'Ya estás atendiendo esta solicitud. Cuando termines el trabajo, cámbiala a Concluida y llena el reporte de trabajo.',
+	CONCLUIDA: 'Esta solicitud ya fue concluida. Si aún no lo hiciste, llena el reporte de trabajo y descárgalo en PDF.',
 	RECHAZADA: 'Esta solicitud fue rechazada. No se pueden hacer más cambios.',
 };
 
@@ -49,6 +50,7 @@ const Dato = ({ etiqueta, children, ancho }) => (
 
 const VerDetalleSolicitud = () => {
 	const { state } = useLocation();
+	const navigate = useNavigate();
 	const solicitudSeleccionada = state?.solicitud;
 	const solicitudId = solicitudSeleccionada?.id;
 
@@ -157,9 +159,14 @@ const VerDetalleSolicitud = () => {
 				);
 			}
 			const actualizada = await response.json();
-			setSolicitud((actual) => ({ ...actual, ...actualizada }));
+			const completa = { ...solicitud, ...actualizada };
+			setSolicitud(completa);
 			setEstadoSeleccionado(actualizada.estado?.toUpperCase() ?? '');
 			setModalAbierto(null);
+			// Al concluir, el técnico debe llenar el reporte de trabajo.
+			if (accion === 'concluir') {
+				navigate('/reporte-trabajo', { state: { solicitud: completa } });
+			}
 		} catch (requestError) {
 			setErrorAccion(requestError.message || 'No se pudo completar la acción.');
 		} finally {
@@ -305,6 +312,18 @@ const VerDetalleSolicitud = () => {
 								>
 									<FaTimes aria-hidden="true" /> Rechazar solicitud
 								</button>
+							</div>
+						)}
+
+						{estadoActual === 'CONCLUIDA' && (
+							<div className="vd-botones">
+								<Link
+									className="vd-btn vd-btn-primario"
+									to="/reporte-trabajo"
+									state={{ solicitud }}
+								>
+									<FaFilePdf aria-hidden="true" /> Llenar reporte de trabajo
+								</Link>
 							</div>
 						)}
 

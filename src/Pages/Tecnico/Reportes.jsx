@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FaChartBar, FaInbox, FaRedo, FaRegCalendarAlt, FaSearch, FaSyncAlt, FaTimes } from 'react-icons/fa';
+import { FaChartBar, FaFilePdf, FaInbox, FaRedo, FaRegCalendarAlt, FaSearch, FaSyncAlt, FaTimes } from 'react-icons/fa';
 import { formatDateTime, formatId, getValue, humanize, normalize, toSearchText } from '../../utils/Solicitudesutils';
+import { generarReportePdf } from '../../utils/reporteTrabajoPdf';
 import './Reportes.css';
 
 const API_URL = 'http://localhost:8080/api';
@@ -10,11 +11,11 @@ const Reportes = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 	const [query, setQuery] = useState('');
+	const [errorPdf, setErrorPdf] = useState('');
+	const [descargandoId, setDescargandoId] = useState(null);
 
 	const cargarReportes = useCallback(async (signal) => {
-		const tecnicoId = localStorage.getItem('userId');
 		const token = localStorage.getItem('token');
-		if (!tecnicoId) throw new Error('No se encontró el ID del técnico en la sesión. Vuelve a iniciar sesión.');
 		if (!token) throw new Error('La sesión expiró. Vuelve a iniciar sesión.');
 
 		const response = await fetch(`${API_URL}/reportes/mis-reportes`, {
@@ -27,7 +28,7 @@ const Reportes = () => {
 		if (!Array.isArray(data)) throw new Error('La respuesta de reportes tiene un formato inesperado.');
 		if (signal?.aborted) return;
 
-		setReportes(data.filter((reporte) => String(reporte.tecnicoId) === String(tecnicoId)));
+		setReportes(data);
 	}, []);
 
 	const cargar = useCallback(async (signal) => {
@@ -61,14 +62,50 @@ const Reportes = () => {
 					reporte.id,
 					reporte.codigoSolicitud,
 					reporte.tipoEquipo,
+					reporte.tipoEquipoOtro,
+					reporte.unidad,
+					reporte.solicitante,
+					reporte.numeroInventario,
+					reporte.problema,
 					reporte.diagnostico,
 					reporte.trabajoRealizado,
 					reporte.estadoFinal,
 					reporte.observacion,
+					reporte.tecnicoNombre,
+					reporte.funcionarioNombre,
 				].join(' ')).includes(text)
 			)
 			.sort((a, b) => (new Date(b.createdAt).getTime() || 0) - (new Date(a.createdAt).getTime() || 0));
 	}, [reportes, query]);
+
+	const descargarPdf = async (reporte) => {
+		setErrorPdf('');
+		setDescargandoId(reporte.id);
+		try {
+			await generarReportePdf({
+				numeroFormulario: reporte.numeroFormulario ?? '',
+				fecha: reporte.fechaAtencion ?? '',
+				hora: reporte.horaAtencion?.slice(0, 5) ?? '',
+				unidad: reporte.unidad ?? '',
+				solicitante: reporte.solicitante ?? '',
+				tipoEquipo: reporte.tipoEquipo ?? '',
+				tipoEquipoOtro: reporte.tipoEquipoOtro ?? '',
+				inventario: reporte.numeroInventario ?? '',
+				problema: reporte.problema ?? '',
+				diagnostico: reporte.diagnostico ?? '',
+				trabajo: reporte.trabajoRealizado ?? '',
+				estadoFinal: reporte.estadoFinal ?? '',
+				observaciones: reporte.observacion ?? '',
+				tecnicoNombre: reporte.tecnicoNombre ?? '',
+				funcionarioNombre: reporte.funcionarioNombre ?? '',
+			});
+		} catch (pdfError) {
+			console.error(pdfError);
+			setErrorPdf(`No se pudo generar el PDF del reporte #${reporte.id}. Intenta de nuevo.`);
+		} finally {
+			setDescargandoId(null);
+		}
+	};
 
 	return (
 		<main className="at-page report-page">
@@ -116,6 +153,8 @@ const Reportes = () => {
 				</button>
 			</div>
 
+			{errorPdf && <div className="at-error report-pdf-error" role="alert">{errorPdf}</div>}
+
 			<p className="at-result-count" aria-live="polite">
 				{!loading && !error && `Mostrando ${visibles.length} de ${reportes.length} reportes`}
 			</p>
@@ -135,13 +174,26 @@ const Reportes = () => {
 								<span className="report-id">Reporte #{reporte.id}</span>
 								<h2>Solicitud #{formatId(reporte.codigoSolicitud)}</h2>
 							</div>
-							<time className="report-date" dateTime={reporte.createdAt}>
-								<FaRegCalendarAlt aria-hidden="true" /> {formatDateTime(reporte.createdAt)}
-							</time>
+							<div className="report-row-actions">
+								<time className="report-date" dateTime={reporte.createdAt}>
+									<FaRegCalendarAlt aria-hidden="true" /> Guardado: {formatDateTime(reporte.createdAt)}
+								</time>
+								<button
+									className="report-pdf-button"
+									type="button"
+									onClick={() => descargarPdf(reporte)}
+									disabled={descargandoId !== null}
+								>
+									<FaFilePdf aria-hidden="true" />
+									{descargandoId === reporte.id ? 'Generando...' : 'Descargar PDF'}
+								</button>
+							</div>
 						</header>
 
 						<div className="report-row-meta">
-							<span><strong>Equipo:</strong> {getValue(reporte.tipoEquipo)}</span>
+							<span><strong>Equipo:</strong> {getValue(reporte.tipoEquipo === 'OTRO' ? reporte.tipoEquipoOtro : humanize(reporte.tipoEquipo))}</span>
+							<span><strong>Fecha de atención:</strong> {getValue(reporte.fechaAtencion)}</span>
+							<span><strong>Hora:</strong> {getValue(reporte.horaAtencion?.slice(0, 5))}</span>
 							{reporte.asignacionTecnicoId !== undefined && (
 								<span><strong>Asignación:</strong> #{reporte.asignacionTecnicoId}</span>
 							)}
@@ -151,6 +203,26 @@ const Reportes = () => {
 						</div>
 
 						<dl className="report-details">
+							<div>
+								<dt>Formulario STI</dt>
+								<dd>{getValue(reporte.numeroFormulario ? `STI-${reporte.numeroFormulario}` : '')}</dd>
+							</div>
+							<div>
+								<dt>Unidad / Dirección</dt>
+								<dd>{getValue(reporte.unidad)}</dd>
+							</div>
+							<div>
+								<dt>Solicitante</dt>
+								<dd>{getValue(reporte.solicitante)}</dd>
+							</div>
+							<div>
+								<dt>N.º de inventario</dt>
+								<dd>{getValue(reporte.numeroInventario)}</dd>
+							</div>
+							<div className="report-detail-wide">
+								<dt>Problema reportado</dt>
+								<dd>{getValue(reporte.problema)}</dd>
+							</div>
 							<div>
 								<dt>Diagnóstico técnico</dt>
 								<dd>{getValue(reporte.diagnostico)}</dd>
@@ -162,6 +234,14 @@ const Reportes = () => {
 							<div>
 								<dt>Observaciones</dt>
 								<dd>{getValue(reporte.observacion)}</dd>
+							</div>
+							<div>
+								<dt>Técnico responsable</dt>
+								<dd>{getValue(reporte.tecnicoNombre)}</dd>
+							</div>
+							<div>
+								<dt>Funcionario solicitante</dt>
+								<dd>{getValue(reporte.funcionarioNombre)}</dd>
 							</div>
 						</dl>
 					</article>
