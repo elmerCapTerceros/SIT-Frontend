@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaChartBar, FaFilePdf, FaInbox, FaRedo, FaRegCalendarAlt, FaSearch, FaSyncAlt, FaTimes } from 'react-icons/fa';
 import { formatDateTime, formatId, getValue, humanize, normalize, toSearchText } from '../../utils/Solicitudesutils';
-import { generarReportePdf } from '../../utils/reporteTrabajoPdf';
+import { generarReportePdf } from '../../utils/Reportetrabajopdf';
 import './Reportes.css';
 
 const API_URL = 'http://localhost:8080/api';
