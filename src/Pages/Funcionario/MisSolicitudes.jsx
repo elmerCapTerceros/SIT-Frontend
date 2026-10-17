@@ -39,7 +39,7 @@ const MisSolicitudes = () => {
           <h1>Mis solicitudes</h1>
           <p>Revise el estado de los requerimientos que registró.</p>
         </div>
-        <button className="primary-action" type="button" onClick={() => navigate('/nueva-solicitud')}>Nueva solicitud</button>
+        
       </section>
 
       {error && <div className="requests-error">{error}</div>}

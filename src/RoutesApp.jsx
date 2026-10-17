@@ -11,6 +11,7 @@ import NotFound from './Pages/NotFound/NotFound';
 import InfoTecnicos from './Pages/Supervisor/InfoTecnicos';
 import Reportes from './Pages/Tecnico/Reportes';
 import VerDetalleSolicitud from './Pages/Tecnico/VerDetalleSolicitud';
+import SolicitudExtraOrdinaria from './Pages/Supervisor/SolicitudExtraOrdinaria';
 
 
 const ProtectedRoute = ({ children }) => (
@@ -36,6 +37,7 @@ const RoutesApp = () => (
     <Route path="*" element={<NotFound />} />
     <Route path="/detalleSolicitud" element={<ProtectedRoute><PrivateLayout><VerDetalleSolicitud /></PrivateLayout></ProtectedRoute>} />
     <Route path="/tecnicos" element={<ProtectedRoute><PrivateLayout><InfoTecnicos /></PrivateLayout></ProtectedRoute>} />
+        <Route path="/solicitud-extraordinaria" element={<ProtectedRoute><PrivateLayout><SolicitudExtraOrdinaria /></PrivateLayout></ProtectedRoute>} />
   </Routes>
 );
 
