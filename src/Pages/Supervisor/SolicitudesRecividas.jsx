@@ -352,7 +352,7 @@ const SolicitudesRecibidas = () => {
 					)}
 				</div>
 
-				<button className="new-request-button" type="button" onClick={() => navigate('/nueva-solicitud')}>
+				<button className="new-request-button" type="button" onClick={() => navigate('/solicitud-extraordinaria')}>
 					<FaPlus aria-hidden="true" /> Nueva solicitud
 				</button>
 			</section>

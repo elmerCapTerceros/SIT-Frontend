@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './MisSolicitudes.css';
 
 const API_URL = 'http://localhost:8080/api';
 
 const MisSolicitudes = () => {
-  const navigate = useNavigate();
   const [solicitudes, setSolicitudes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [verificandoId, setVerificandoId] = useState(null);
 
   const cargarSolicitudes = useCallback(async () => {
     setLoading(true);
@@ -26,6 +25,28 @@ const MisSolicitudes = () => {
     }
   }, []);
 
+  const verificarSolicitud = async (solicitud) => {
+    setVerificandoId(solicitud.id);
+    setError('');
+    try {
+      const response = await fetch(`${API_URL}/solicitudes/${solicitud.id}/verificar`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(data?.message || 'No se pudo confirmar la solicitud.');
+      }
+      setSolicitudes((actuales) =>
+        actuales.map((actual) => (actual.id === solicitud.id ? { ...actual, ...data } : actual)),
+      );
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setVerificandoId(null);
+    }
+  };
+
   useEffect(() => {
     const timer = window.setTimeout(cargarSolicitudes, 0);
     return () => window.clearTimeout(timer);
@@ -39,7 +60,7 @@ const MisSolicitudes = () => {
           <h1>Mis solicitudes</h1>
           <p>Revise el estado de los requerimientos que registró.</p>
         </div>
-        <button className="primary-action" type="button" onClick={() => navigate('/nueva-solicitud')}>Nueva solicitud</button>
+        
       </section>
 
       {error && <div className="requests-error">{error}</div>}
@@ -57,7 +78,21 @@ const MisSolicitudes = () => {
                 <h2>{solicitud.titulo}</h2>
                 <p>{solicitud.tipo || solicitud.categoria} · {new Date(solicitud.createdAt).toLocaleDateString('es-BO')}</p>
               </div>
-              <span className={`status status-${solicitud.estado?.toLowerCase()}`}>{solicitud.estado}</span>
+              <div className="request-actions">
+                <span className={`status status-${solicitud.estado?.toLowerCase()}`}>{solicitud.estado}</span>
+                {solicitud.verificadoPorUsuario ? (
+                  <span className="verification-status">Solicitud verificada</span>
+                ) : solicitud.estado?.toUpperCase() === 'CONCLUIDA' && (
+                  <button
+                    className="verify-action"
+                    type="button"
+                    onClick={() => verificarSolicitud(solicitud)}
+                    disabled={verificandoId === solicitud.id}
+                  >
+                    {verificandoId === solicitud.id ? 'Confirmando…' : 'Confirmar recepción'}
+                  </button>
+                )}
+              </div>
             </article>
           ))}
         </section>
