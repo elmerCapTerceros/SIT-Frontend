@@ -24,10 +24,6 @@ import { Link } from 'react-router-dom';
 import { formatDate, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
 import './AsignacionTecnico.css';
 
-/* 
-   Configuración
- */
-
 const API_URL = 'http://localhost:8080/api';
 const CLOSED_STATES = ['resuelta', 'concluida', 'cerrada'];
 const SKELETON_CARDS = 6;

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaClipboardCheck, FaFilePdf, FaUndo } from 'react-icons/fa';
 import { ESTADOS_FINALES, TIPOS_EQUIPO, generarReportePdf } from '../../utils/reporteTrabajoPdf';
 import './ReporteTrabajo.css';
@@ -103,6 +103,7 @@ const Opciones = ({ nombre, opciones, valor, onChange }) =>
 
 const ReporteTrabajo = () => {
 	const { state } = useLocation();
+	const navigate = useNavigate();
 	const solicitud = state?.solicitud ?? null;
 	const estadoSolicitud = solicitud?.estado?.toUpperCase();
 	const clave = solicitud ? `reporteTrabajo:${solicitud.id}` : null;
@@ -238,7 +239,7 @@ const ReporteTrabajo = () => {
 		return e;
 	};
 
-	const guardarYDescargar = async (event) => {
+	const guardarReporte = async (event) => {
 		event.preventDefault();
 		setErrorGuardado('');
 		setErrorPdf('');
@@ -301,7 +302,7 @@ const ReporteTrabajo = () => {
 		}
 
 		setGuardando(false);
-		await descargarPdf();
+		navigate('/Reportes');
 	};
 
 	const descargarPdf = async () => {
@@ -327,7 +328,7 @@ const ReporteTrabajo = () => {
 		<div className="at-page report-page">
 			<Cabecera />
 
-			<form className="rt" onSubmit={guardarYDescargar} noValidate>
+			<form className="rt" onSubmit={guardarReporte} noValidate>
 				<div className="rt-aviso" role="note">
 					<p>
 						<strong>Solicitud #{solicitud.codigo ?? solicitud.id}</strong>: los datos que ya tenemos
@@ -418,26 +419,41 @@ const ReporteTrabajo = () => {
 				{errorPdf && <p className="rt-aviso rt-aviso-error" role="alert">{errorPdf}</p>}
 
 				<div className="rt-barra">
-					{reporteGuardado ? (
-						<button className="rt-btn rt-btn-primario" type="button" onClick={descargarPdf} disabled={generando || cargandoReporte}>
-							<FaFilePdf aria-hidden="true" /> {generando ? 'Generando PDF...' : 'Descargar PDF'}
-						</button>
-					) : (
-						<button className="rt-btn rt-btn-primario" type="submit" disabled={generando || guardando || cargandoReporte}>
-							<FaFilePdf aria-hidden="true" /> {guardando ? 'Guardando reporte...' : generando ? 'Generando PDF...' : 'Guardar y descargar PDF'}
-						</button>
-					)}
-					{!reporteGuardado && (
-						<button className="rt-btn rt-btn-neutro" type="button" onClick={restablecer} disabled={generando || guardando}>
-							<FaUndo aria-hidden="true" /> Restablecer datos
-						</button>
-					)}
-					<Link className="rt-volver" to="/asignacion-tecnico">Volver a mis solicitudes</Link>
-					<Link className="rt-volver" to="/Reportes">Mis reportes</Link>
+					 {!reporteGuardado && (
+        <button
+            className="rt-btn rt-btn-neutro"
+            type="button"
+            onClick={restablecer}
+            disabled={generando || guardando}
+        >
+            <FaUndo aria-hidden="true" /> Restablecer datos
+        </button>
+    )}
+
+    {reporteGuardado ? (
+        <button
+            className="rt-btn rt-btn-primario"
+            type="button"
+            onClick={descargarPdf}
+            disabled={generando || cargandoReporte}
+        >
+            <FaFilePdf aria-hidden="true" /> {generando ? 'Generando PDF...' : 'Descargar PDF'}
+        </button>
+    ) : (
+        <button
+            className="rt-btn rt-btn-primario"
+            type="submit"
+            disabled={generando || guardando || cargandoReporte}
+        >
+            <FaCheckCircle aria-hidden="true" /> {guardando ? 'Guardando reporte...' : 'Guardar reporte'}
+        </button>
+    )}
+					{/*<Link className="rt-volver" to="/asignacion-tecnico">Volver a mis solicitudes</Link>
+					<Link className="rt-volver" to="/Reportes">Mis reportes</Link>*/}
 				</div>
 				<p className="rt-nota">
 					Al guardar, el reporte queda asociado a la solicitud y estará disponible en Mis reportes.
-					El PDF sale en hoja carta con dos copias separadas por una línea de corte.
+					Desde allí podrás generar el PDF si lo necesitas.
 				</p>
 			</form>
 		</div>

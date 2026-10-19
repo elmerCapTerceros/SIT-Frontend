@@ -8,6 +8,7 @@ import {
 	FaTimes,
 	FaExclamationCircle,
 	FaFilePdf,
+	FaArrowLeft,
 } from 'react-icons/fa';
 import ConfirmarCambioEstado from '../../Components/Modlas/ConfirmarCambioEstado';
 import AtenderSolicitudModal from '../../Components/Modlas/AtenderSolicitudModal';
@@ -185,7 +186,10 @@ const VerDetalleSolicitud = () => {
 
 	return (
 		<div className="at-page report-page">
-			<header className="at-header">
+			<Link className="vd-volver" to="/asignacion-tecnico">
+						<FaArrowLeft aria-hidden="true" /> Volver a solicitudes
+			</Link>
+			<header className="at-header vd-header">
 				<span className="at-header-icon" aria-hidden="true"><FaClipboardList /></span>
 				<div>
 					<h1>Detalle de la solicitud</h1>
@@ -214,7 +218,6 @@ const VerDetalleSolicitud = () => {
 							<span className={`vd-badge vd-estado-${estadoActual.toLowerCase()}`}>
 								{humanize(estadoActual)}
 							</span>
-							<Link className="vd-volver" to="/asignacion-tecnico">Volver a solicitudes</Link>
 						</div>
 					</section>
 
@@ -263,7 +266,6 @@ const VerDetalleSolicitud = () => {
 								<Dato etiqueta="Cargo">{solicitud.solicitanteCargo || SIN_REGISTRO}</Dato>
 								<Dato etiqueta="Área o unidad">{getValue(solicitud.area)}</Dato>
 								<Dato etiqueta="Ubicación de la oficina">{getValue(solicitud.ubicacion)}</Dato>
-								<Dato etiqueta="Correo">{solicitud.solicitanteCorreo || SIN_REGISTRO}</Dato>
 								<Dato etiqueta="Teléfono o interno">{solicitud.solicitanteTelefono || SIN_REGISTRO}</Dato>
 							</dl>
 						</section>
