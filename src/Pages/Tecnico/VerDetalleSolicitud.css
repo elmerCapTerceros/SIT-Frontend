@@ -4,7 +4,9 @@
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
+	width: 100%;
 	max-width: 1100px;
+	margin: 0 auto;
 }
 
 .detalle-error {
@@ -13,6 +15,13 @@
 	border-radius: 6px;
 	background: #fef3f2;
 	color: #912018;
+}
+
+.vd-header {
+	width: 100%;
+	max-width: 1100px;
+	margin: 0 auto 20px;
+	padding: 0;
 }
 
 /* ---------- Resumen ---------- */
@@ -49,9 +58,25 @@
 	gap: 10px;
 }
 
+
+
 .vd-volver {
-	font-size: 0.9rem;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+	font-size: 1.0rem;  
+	font-weight: 600;
 	color: #1d4ed8;
+	text-decoration: none;
+}
+
+.vd-volver svg {
+	font-size: 1.0em;      
+}
+
+.vd-volver:hover {
+	text-decoration: underline;
 }
 
 .vd-badge {
@@ -234,6 +259,7 @@
 .vd-botones {
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: center;
 	gap: 12px;
 	margin-bottom: 20px;
 }

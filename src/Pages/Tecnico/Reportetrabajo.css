@@ -4,7 +4,9 @@
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
+	width: 100%;
 	max-width: 960px;
+	margin: 0 auto;  
 }
 
 .rt-aviso {
@@ -53,6 +55,7 @@
 	color: #111827;
 }
 
+
 .rt-grid {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -67,6 +70,7 @@
 
 .rt-campo-cab {
 	display: flex;
+	flex: 1; 
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: space-between;
@@ -125,7 +129,12 @@
 .rt-error { margin: 0; font-size: 0.85rem; font-weight: 600; color: #b42318; }
 
 /* ---------- Opciones (tipo de equipo, estado final) ---------- */
-.rt-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.rt-chips {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;   /* centra las opciones horizontalmente */
+	gap: 10px;
+}
 
 .rt-chip {
 	display: inline-flex;
@@ -146,7 +155,13 @@
 .rt-campo.tiene-error .rt-chip { border-color: #b42318; }
 
 /* ---------- Barra de acciones ---------- */
-.rt-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.rt-barra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
 
 .rt-btn {
 	display: inline-flex;
