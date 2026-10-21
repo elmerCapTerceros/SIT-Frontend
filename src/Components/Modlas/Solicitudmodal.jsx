@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaCheck, FaCopy, FaSearch, FaSpinner, FaTimes } from 'react-icons/fa';
 import { formatDateTime, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
-import './Solicitudmodal.css';
+import './SolicitudModal.css';
 
 const PRIORIDADES = [
 	{ key: 'alta', label: 'Alta' },

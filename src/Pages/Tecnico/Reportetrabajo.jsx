@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaClipboardCheck, FaFilePdf, FaUndo } from 'react-icons/fa';
-import { ESTADOS_FINALES, TIPOS_EQUIPO, generarReportePdf } from '../../utils/reporteTrabajoPdf';
+import { ESTADOS_FINALES, TIPOS_EQUIPO, generarReportePdf } from '../../utils/ReporteTrabajopdf';
 import './ReporteTrabajo.css';
 
 const API_URL = 'http://localhost:8080/api';
