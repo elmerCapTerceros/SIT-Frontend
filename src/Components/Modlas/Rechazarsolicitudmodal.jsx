@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './ModalesSolicitud.css';
+import './Modalessolicitud.css';
 
 const MIN_CARACTERES = 10;
 const MAX_CARACTERES = 500;
