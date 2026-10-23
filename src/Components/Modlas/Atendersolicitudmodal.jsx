@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import './ModalesSolicitud.css';
+import './Modalessolicitud.css';
 
 const AtenderSolicitudModal = ({ open, loading = false, error = '', onCancel, onConfirm }) => {
 	useEffect(() => {

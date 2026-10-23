@@ -11,8 +11,8 @@ import {
 	FaArrowLeft,
 } from 'react-icons/fa';
 import ConfirmarCambioEstado from '../../Components/Modlas/ConfirmarCambioEstado';
-import AtenderSolicitudModal from '../../Components/Modlas/AtenderSolicitudModal';
-import RechazarSolicitudModal from '../../Components/Modlas/RechazarSolicitudModal';
+import AtenderSolicitudModal from '../../Components/Modlas/Atendersolicitudmodal';
+import RechazarSolicitudModal from '../../Components/Modlas/Rechazarsolicitudmodal';
 import { formatDate, formatId, getValue, humanize } from '../../utils/Solicitudesutils';
 import './VerDetalleSolicitud.css';
 
