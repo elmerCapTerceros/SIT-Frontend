@@ -46,7 +46,7 @@ const navLinksByRole = {
     { label: 'Solicitudes', to: '/solicitudes-tecnico' },
     { label: 'Técnicos', to: '/tecnicos' },
     { label: 'Avisos', to: '/avisos' },
-    { label: 'Reportes', to: '/avisos' },
+    { label: 'Reportes', to: '/ReportesSupervisor' },
     { label: 'Mis solicitudes', to: '/mis-solicitudes' },
   ],
 };

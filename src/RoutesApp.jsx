@@ -6,6 +6,7 @@ import NuevaSolicitud from './Pages/Funcionario/nuevaSolicitud';
 import MisSolicitudes from './Pages/Funcionario/MisSolicitudes';
 import RegistroDeUsuario from './Pages/RegistroDeUsuario/RegistroDeUsuario';
 import SolicitudesRecibidas from './Pages/Supervisor/SolicitudesRecividas';
+import ReportesSupervisor from './Pages/Supervisor/ReportesSupervisor';
 import AsignacionTecnico from './Pages/Tecnico/AsignacionTecnico';
 import NotFound from './Pages/NotFound/NotFound';
 import InfoTecnicos from './Pages/Supervisor/InfoTecnicos';
@@ -33,6 +34,7 @@ const RoutesApp = () => (
     <Route path="/mis-solicitudes" element={<ProtectedRoute><PrivateLayout><MisSolicitudes /></PrivateLayout></ProtectedRoute>} />
     <Route path="/nuevaSolicitud" element={<Navigate to="/nueva-solicitud" replace />} />
     <Route path="/solicitudes-tecnico" element={<ProtectedRoute><PrivateLayout><SolicitudesRecibidas /></PrivateLayout></ProtectedRoute>} />
+    <Route path="/ReportesSupervisor" element={<ProtectedRoute><PrivateLayout><ReportesSupervisor /></PrivateLayout></ProtectedRoute>} />
     <Route path="/asignacion-tecnico" element={<ProtectedRoute><PrivateLayout><AsignacionTecnico /></PrivateLayout></ProtectedRoute>} />
     <Route path="/Reportes" element={<ProtectedRoute><PrivateLayout><Reportes /></PrivateLayout></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
