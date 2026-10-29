@@ -48,6 +48,7 @@ const navLinksByRole = {
     { label: 'Avisos', to: '/AvisoSupervisor' },
     { label: 'Reportes', to: '/ReportesSupervisor' },
     { label: 'Mis solicitudes', to: '/mis-solicitudes' },
+    { label: 'Dashboard', to: '/DashboardSupervisor' },
   ],
 };
 
