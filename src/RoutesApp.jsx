@@ -15,6 +15,7 @@ import Reportes from './Pages/Tecnico/Reportes';
 import VerDetalleSolicitud from './Pages/Tecnico/VerDetalleSolicitud';
 import SolicitudExtraOrdinaria from './Pages/Supervisor/SolicitudExtraOrdinaria';
 import ReporteTrabajo from './Pages/Tecnico/Reportetrabajo';
+import DashboardSupervisor from './Pages/Supervisor/DashboardSupervisor';
 
 
 
@@ -38,6 +39,7 @@ const RoutesApp = () => (
     <Route path="/solicitudes-tecnico" element={<ProtectedRoute><PrivateLayout><SolicitudesRecibidas /></PrivateLayout></ProtectedRoute>} />
     <Route path="/ReportesSupervisor" element={<ProtectedRoute><PrivateLayout><ReportesSupervisor /></PrivateLayout></ProtectedRoute>} />
     <Route path="/AvisoSupervisor" element={<ProtectedRoute><PrivateLayout><AvisoSupervisor /></PrivateLayout></ProtectedRoute>} />
+    <Route path="/DashboardSupervisor" element={<ProtectedRoute><PrivateLayout><DashboardSupervisor /></PrivateLayout></ProtectedRoute>} />
     <Route path="/asignacion-tecnico" element={<ProtectedRoute><PrivateLayout><AsignacionTecnico /></PrivateLayout></ProtectedRoute>} />
     <Route path="/Reportes" element={<ProtectedRoute><PrivateLayout><Reportes /></PrivateLayout></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
