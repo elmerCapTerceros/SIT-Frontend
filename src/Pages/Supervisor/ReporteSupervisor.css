@@ -1,9 +1,3 @@
-/* ============================================================
-   AGREGAR AL FINAL de ReporteSupervisor.css
-   Reemplaza por completo el "additions" anterior (lista compacta):
-   si ya pegaste ese, bórralo y pega este en su lugar.
-   Incluye: filtros, tabla, paginación y modal de detalle.
-   ============================================================ */
 
 .report-sr-only {
 	position: absolute;
@@ -14,7 +8,7 @@
 	white-space: nowrap;
 }
 
-/* Barra de búsqueda + filtros */
+
 
 .report-tools {
 	padding: 14px 16px;

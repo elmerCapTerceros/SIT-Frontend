@@ -7,6 +7,7 @@ import MisSolicitudes from './Pages/Funcionario/MisSolicitudes';
 import RegistroDeUsuario from './Pages/RegistroDeUsuario/RegistroDeUsuario';
 import SolicitudesRecibidas from './Pages/Supervisor/SolicitudesRecividas';
 import ReportesSupervisor from './Pages/Supervisor/ReportesSupervisor';
+import AvisoSupervisor from './Pages/Supervisor/AvisoSupervisor';
 import AsignacionTecnico from './Pages/Tecnico/AsignacionTecnico';
 import NotFound from './Pages/NotFound/NotFound';
 import InfoTecnicos from './Pages/Supervisor/InfoTecnicos';
@@ -14,6 +15,7 @@ import Reportes from './Pages/Tecnico/Reportes';
 import VerDetalleSolicitud from './Pages/Tecnico/VerDetalleSolicitud';
 import SolicitudExtraOrdinaria from './Pages/Supervisor/SolicitudExtraOrdinaria';
 import ReporteTrabajo from './Pages/Tecnico/Reportetrabajo';
+
 
 
 const ProtectedRoute = ({ children }) => (
@@ -35,6 +37,7 @@ const RoutesApp = () => (
     <Route path="/nuevaSolicitud" element={<Navigate to="/nueva-solicitud" replace />} />
     <Route path="/solicitudes-tecnico" element={<ProtectedRoute><PrivateLayout><SolicitudesRecibidas /></PrivateLayout></ProtectedRoute>} />
     <Route path="/ReportesSupervisor" element={<ProtectedRoute><PrivateLayout><ReportesSupervisor /></PrivateLayout></ProtectedRoute>} />
+    <Route path="/AvisoSupervisor" element={<ProtectedRoute><PrivateLayout><AvisoSupervisor /></PrivateLayout></ProtectedRoute>} />
     <Route path="/asignacion-tecnico" element={<ProtectedRoute><PrivateLayout><AsignacionTecnico /></PrivateLayout></ProtectedRoute>} />
     <Route path="/Reportes" element={<ProtectedRoute><PrivateLayout><Reportes /></PrivateLayout></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />

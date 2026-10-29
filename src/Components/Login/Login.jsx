@@ -86,10 +86,20 @@ const Login = () => {
       const usuario = data.usuario ?? data.user ?? {};
       const userId = data.tecnicoId ?? data.userId ?? data.usuarioId ?? data.id ??
         usuario.tecnicoId ?? usuario.userId ?? usuario.usuarioId ?? usuario.id;
+      const supervisorId = data.idSupervisor ?? data.supervisorId ??
+        usuario.idSupervisor ?? usuario.supervisorId;
       if (userId !== null && userId !== undefined) {
         localStorage.setItem('userId', String(userId));
       } else {
         localStorage.removeItem('userId');
+      }
+      if (supervisorId !== null && supervisorId !== undefined) {
+        localStorage.setItem('idSupervisor', String(supervisorId));
+      } else if ((data.rol || '').trim().toUpperCase() === 'SUPERVISOR' &&
+        userId !== null && userId !== undefined) {
+        localStorage.setItem('idSupervisor', String(userId));
+      } else {
+        localStorage.removeItem('idSupervisor');
       }
       localStorage.setItem('userLogin', data.userLogin);
       localStorage.setItem('rol', data.rol || '');
