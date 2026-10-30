@@ -13,6 +13,16 @@ const LOGOS = { izquierda: null, centro: null, derecha: null };
 
 // Claves de localStorage donde se busca el nombre del técnico. Ajústalas a tu login.
 const CLAVES_NOMBRE_SESION = ['nombreCompleto', 'userName', 'nombre', 'userLogin'];
+const SOLO_LETRAS_Y_ESPACIOS = /^[\p{L} ]*$/u;
+const SOLO_DIGITOS = /^\d*$/;
+const INVENTARIO_VALIDO = /^[\p{L}\p{N} /-]*$/u;
+const CAMPOS_SOLO_LETRAS = new Set([
+	'unidad',
+	'solicitante',
+	'tipoEquipoOtro',
+	'tecnicoNombre',
+	'funcionarioNombre',
+]);
 
 const pad = (n) => String(n).padStart(2, '0');
 const aFechaISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -214,7 +224,14 @@ const ReporteTrabajo = () => {
 	}
 
 	const cambiar = (campo) => (event) => {
-		const valor = event.target.value;
+		const valorOriginal = event.target.value;
+		const valor = campo === 'numeroFormulario'
+			? valorOriginal.replace(/\D/g, '')
+			: campo === 'inventario'
+				? valorOriginal.replace(/[^\p{L}\p{N} /-]/gu, '')
+				: CAMPOS_SOLO_LETRAS.has(campo)
+					? valorOriginal.replace(/[^\p{L} ]/gu, '')
+					: valorOriginal;
 		setDatos((actual) => ({ ...actual, [campo]: valor }));
 		setErrores((actual) => ({ ...actual, [campo]: undefined }));
 	};
@@ -226,6 +243,17 @@ const ReporteTrabajo = () => {
 
 	const validar = () => {
 		const e = {};
+		if (datos.numeroFormulario && !SOLO_DIGITOS.test(datos.numeroFormulario)) {
+			e.numeroFormulario = 'El número de formulario solo puede contener dígitos.';
+		}
+		for (const campo of CAMPOS_SOLO_LETRAS) {
+			if (datos[campo].trim() && !SOLO_LETRAS_Y_ESPACIOS.test(datos[campo].trim())) {
+				e[campo] = 'Este campo solo puede contener letras y espacios.';
+			}
+		}
+		if (datos.inventario.trim() && !INVENTARIO_VALIDO.test(datos.inventario.trim())) {
+			e.inventario = 'Use solo letras, números, espacios, guion o barra.';
+		}
 		if (!datos.fecha) e.fecha = 'Indica la fecha de la atención.';
 		if (!datos.hora) e.hora = 'Indica la hora de la atención.';
 		if (!datos.tipoEquipo) e.tipoEquipo = 'Selecciona el tipo de equipo.';
@@ -351,7 +379,7 @@ const ReporteTrabajo = () => {
 				<fieldset className="rt-seccion" disabled={cargandoReporte || Boolean(reporteGuardado)}>
 					<legend>1. Datos de la atención</legend>
 					<div className="rt-grid">
-						<Campo id="rt-numero" etiqueta="N.º de formulario (STI-)" autocompletado={auto('numeroFormulario')}>
+						<Campo id="rt-numero" etiqueta="N.º de formulario (STI-)" autocompletado={auto('numeroFormulario')} error={errores.numeroFormulario}>
 							<input id="rt-numero" type="text" inputMode="numeric" value={datos.numeroFormulario} onChange={cambiar('numeroFormulario')} />
 						</Campo>
 						<Campo id="rt-fecha" etiqueta="Fecha" requerido autocompletado error={errores.fecha}>
@@ -360,13 +388,13 @@ const ReporteTrabajo = () => {
 						<Campo id="rt-hora" etiqueta="Hora" requerido autocompletado error={errores.hora}>
 							<input id="rt-hora" type="time" value={datos.hora} onChange={cambiar('hora')} />
 						</Campo>
-						<Campo id="rt-unidad" etiqueta="Unidad / Dirección" autocompletado={auto('unidad')}>
+						<Campo id="rt-unidad" etiqueta="Unidad / Dirección" autocompletado={auto('unidad')} error={errores.unidad}>
 							<input id="rt-unidad" type="text" value={datos.unidad} onChange={cambiar('unidad')} />
 						</Campo>
-						<Campo id="rt-solicitante" etiqueta="Solicitante" autocompletado={auto('solicitante')}>
+						<Campo id="rt-solicitante" etiqueta="Solicitante" autocompletado={auto('solicitante')} error={errores.solicitante}>
 							<input id="rt-solicitante" type="text" value={datos.solicitante} onChange={cambiar('solicitante')} />
 						</Campo>
-						<Campo id="rt-inventario" etiqueta="N.º de inventario" autocompletado={auto('inventario')}>
+						<Campo id="rt-inventario" etiqueta="N.º de inventario" autocompletado={auto('inventario')} error={errores.inventario}>
 							<input id="rt-inventario" type="text" value={datos.inventario} onChange={cambiar('inventario')} placeholder="Ejemplo: GADC-10234" />
 						</Campo>
 						<Campo id="rt-tipo" etiqueta="Tipo de equipo" requerido grupo ancho autocompletado={auto('tipoEquipo')} error={errores.tipoEquipo}>
@@ -409,7 +437,7 @@ const ReporteTrabajo = () => {
 						<Campo id="rt-tecnico" etiqueta="Técnico responsable" requerido autocompletado={auto('tecnicoNombre')} error={errores.tecnicoNombre}>
 							<input id="rt-tecnico" type="text" value={datos.tecnicoNombre} onChange={cambiar('tecnicoNombre')} />
 						</Campo>
-						<Campo id="rt-funcionario" etiqueta="Funcionario solicitante" autocompletado={auto('funcionarioNombre')}>
+						<Campo id="rt-funcionario" etiqueta="Funcionario solicitante" autocompletado={auto('funcionarioNombre')} error={errores.funcionarioNombre}>
 							<input id="rt-funcionario" type="text" value={datos.funcionarioNombre} onChange={cambiar('funcionarioNombre')} />
 						</Campo>
 					</div>

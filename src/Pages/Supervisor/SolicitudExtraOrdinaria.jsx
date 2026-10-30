@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SolicitudExtraOrdinaria.css";
 import Modlas from "../../Components/Modlas/Modlas";
+import {
+  limpiarTituloSolicitud,
+  TITULO_SOLO_LETRAS_Y_ESPACIOS,
+} from "../../utils/validacionesSolicitud";
 
 const API_URL = "http://localhost:8080/api";
 const INITIAL_FORM = { titulo: "", tipoEquipo: "PC", descripcion: "", prioridad: "", tecnicoId: "" };
@@ -34,7 +38,11 @@ const SolicitudExtraOrdinaria = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const nextValue = name === "titulo"
+      ? limpiarTituloSolicitud(value)
+      : value;
+
+    setForm((prev) => ({ ...prev, [name]: nextValue }));
     setErrores((prev) => ({ ...prev, [name]: undefined }));
     setErrorApi("");
   };
@@ -46,6 +54,8 @@ const SolicitudExtraOrdinaria = () => {
 
     if (!form.titulo.trim()) {
       nuevosErrores.titulo = "El título de la solicitud es obligatorio.";
+    } else if (!TITULO_SOLO_LETRAS_Y_ESPACIOS.test(form.titulo.trim())) {
+      nuevosErrores.titulo = "El título solo puede contener letras y espacios.";
     } else if (form.titulo.trim().length < 5 || form.titulo.trim().length > 200) {
       nuevosErrores.titulo = "El título debe tener entre 5 y 200 caracteres.";
     }
@@ -178,6 +188,7 @@ const SolicitudExtraOrdinaria = () => {
               placeholder="Ej. Error de conexión a la impresora de red"
               value={form.titulo}
               onChange={handleChange}
+              pattern="[A-Za-zÀ-ÿ ]+"
               minLength={5}
               maxLength={200}
             />

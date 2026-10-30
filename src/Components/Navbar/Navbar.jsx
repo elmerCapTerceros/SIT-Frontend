@@ -93,6 +93,13 @@ const Navbar = () => {
         {navLinks.map(({ label, to }) => (
           <NavLink key={to} to={to} className="nav-link" onClick={closeMenu}>{label}</NavLink>
         ))}
+        <button
+          className="mobile-logout-button"
+          type="button"
+          onClick={logout}
+        >
+          Cerrar sesión
+        </button>
       </div>
 
       {/* Perfil de usuario*/}
