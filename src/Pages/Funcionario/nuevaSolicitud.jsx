@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
 import Modlas from "../../Components/Modlas/Modlas";
+import {
+  limpiarTituloSolicitud,
+  TITULO_SOLO_LETRAS_Y_ESPACIOS,
+} from "../../utils/validacionesSolicitud";
 
 const API_URL = "http://localhost:8080/api";
-const TITULO_SOLO_LETRAS_Y_ESPACIOS = /^[\p{L} ]+$/u;
 
 const NuevaSolicitud = () => {
   const navigate = useNavigate();
@@ -25,7 +28,7 @@ const NuevaSolicitud = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     const nextValue = name === "titulo"
-      ? value.replace(/[^\p{L} ]/gu, "")
+      ? limpiarTituloSolicitud(value)
       : value;
 
     setForm((prev) => ({ ...prev, [name]: nextValue }));
