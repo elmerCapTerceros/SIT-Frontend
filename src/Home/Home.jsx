@@ -108,12 +108,9 @@ const Home = () => {
             </h1>
 
             <div className="hero-buttons">
-              <button className="btn btn-primary" type="button" onClick={() => navigate('/nueva-solicitud')}>
+              <button className="btn btn-primary btn-solicitud" type="button" onClick={() => navigate('/nueva-solicitud')}>
+                <FaFileAlt aria-hidden="true" />
                 NUEVA SOLICITUD
-              </button>
-
-              <button className="btn btn-secondary" type="button" onClick={() => navigate('/not-found')}>
-                ÚLTIMAS NOTICIAS
               </button>
             </div>
           </div>
@@ -253,4 +250,3 @@ const Home = () => {
 };
 
 export default Home;
-

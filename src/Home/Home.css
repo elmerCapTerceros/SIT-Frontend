@@ -63,6 +63,7 @@ body {
 
 .hero-buttons {
   display: flex;
+  justify-content: flex-start;
   gap: 20px;
   flex-wrap: wrap;
 }
@@ -86,21 +87,48 @@ body {
   color: #FFFFFF;
 }
 
+.btn-solicitud {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: auto;
+  min-height: auto;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 6px;
+  background-color: #185a72;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-solicitud svg {
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+
 .btn-primary:hover {
+  background-color: #53a0be;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 174, 239, 0.3);
+}
+
+.btn-solicitud:hover {
   background-color: #19ABE3;
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 174, 239, 0.3);
 }
 
-.btn-secondary {
-  background-color: #005B82;
-  color: #FFFFFF;
-}
-
-.btn-secondary:hover {
-  background-color: #004a6b;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 91, 130, 0.3);
+.btn-solicitud:focus-visible {
+  outline: 3px solid #005B82;
+  outline-offset: 3px;
 }
 
 .hero-image-wrapper {
@@ -596,6 +624,12 @@ body {
     font-size: 34px;
   }
 
+  .btn-solicitud {
+    width: 100%;
+    padding: 36px 20px;
+    font-size: 34px;
+  }
+
   .hero-subtitle {
     font-size: 10px;
   }
@@ -610,4 +644,3 @@ body {
   }
 
 }
-
