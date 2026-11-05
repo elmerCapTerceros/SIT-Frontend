@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { FaBullhorn, FaInbox, FaSyncAlt, FaTimes, FaTrash } from 'react-icons/fa';
+import { FaBullhorn, FaEdit, FaInbox, FaSyncAlt, FaTimes, FaTrash } from 'react-icons/fa';
 import { formatDateTime, getValue } from '../../utils/Solicitudesutils';
 import './AvisoSupervisor.css';
 
@@ -25,6 +25,7 @@ const Avisos = () => {
 
     const [form, setForm] = useState(FORM_INICIAL);
     const [guardando, setGuardando] = useState(false);
+    const [editandoId, setEditandoId] = useState(null);
     const [errorForm, setErrorForm] = useState('');
     const [exito, setExito] = useState('');
 
@@ -121,8 +122,16 @@ const Avisos = () => {
         setExito('');
     };
 
+    const editarAviso = (aviso) => {
+        setEditandoId(aviso.id);
+        setForm({ mensaje: aviso.mensaje || '', destinatario: aviso.destinatario || 'TECNICO' });
+        setErrorForm('');
+        setExito('');
+    };
+
     const limpiarFormulario = () => {
         setForm(FORM_INICIAL);
+        setEditandoId(null);
         setErrorForm('');
         setExito('');
     };
@@ -149,8 +158,8 @@ const Avisos = () => {
         setGuardando(true);
 
         try {
-            const response = await fetch(`${API_URL}/avisos`, {
-                method: 'POST',
+            const response = await fetch(`${API_URL}${editandoId ? `/avisos/${editandoId}` : '/avisos'}`, {
+                method: editandoId ? 'PUT' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${getToken()}`,
@@ -159,15 +168,18 @@ const Avisos = () => {
             });
 
             if (!response.ok) {
-                throw new Error(`No se pudo guardar el aviso (HTTP ${response.status}).`);
+                throw new Error(`No se pudo ${editandoId ? 'actualizar' : 'guardar'} el aviso (HTTP ${response.status}).`);
             }
 
-            const creado = await response.json();
-            setAvisos((actuales) => [creado, ...actuales]);
+            const guardado = await response.json();
+            setAvisos((actuales) => editandoId
+                ? actuales.map((aviso) => (aviso.id === editandoId ? guardado : aviso))
+                : [guardado, ...actuales]);
             setForm(FORM_INICIAL);
-            setExito('Aviso creado correctamente.');
+            setEditandoId(null);
+            setExito(`Aviso ${editandoId ? 'actualizado' : 'creado'} correctamente.`);
         } catch (requestError) {
-            setErrorForm(requestError.message || 'No se pudo guardar el aviso.');
+            setErrorForm(requestError.message || `No se pudo ${editandoId ? 'actualizar' : 'guardar'} el aviso.`);
         } finally {
             setGuardando(false);
         }
@@ -208,7 +220,7 @@ const Avisos = () => {
                                     <th scope="col">Aviso</th>
                                     <th scope="col">Destinatarios</th>
                                     <th scope="col">Activo</th>
-                                    <th scope="col">Eliminar</th>
+                                    <th scope="col">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -242,14 +254,24 @@ const Avisos = () => {
                                                 disabled={cambiandoId === aviso.id || eliminandoId === aviso.id}
                                             />
                                         </td>
-                                        <td>
+                                        <td className="aviso-actions-cell">
+                                            <button
+                                                type="button"
+                                                className="aviso-edit"
+                                                aria-label={`Editar aviso ${aviso.id}`}
+                                                title="Editar aviso"
+                                                onClick={() => editarAviso(aviso)}
+                                                disabled={eliminandoId === aviso.id || cambiandoId === aviso.id || guardando}
+                                            >
+                                                <FaEdit aria-hidden="true" />
+                                            </button>
                                             <button
                                                 type="button"
                                                 className="aviso-delete"
                                                 aria-label={`Eliminar aviso ${aviso.id}`}
                                                 title="Eliminar aviso"
                                                 onClick={() => eliminarAviso(aviso)}
-                                                disabled={eliminandoId === aviso.id || cambiandoId === aviso.id}
+                                                disabled={eliminandoId === aviso.id || cambiandoId === aviso.id || guardando}
                                             >
                                                 <FaTrash aria-hidden="true" />
                                             </button>
@@ -270,7 +292,7 @@ const Avisos = () => {
                 </section>
 
                 <form className="aviso-card aviso-form" onSubmit={guardar} noValidate>
-                    <h2>Crear aviso <span className="aviso-required" aria-hidden="true">*</span></h2>
+                    <h2>{editandoId ? 'Editar aviso' : 'Crear aviso'} <span className="aviso-required" aria-hidden="true">*</span></h2>
 
                     <label className="aviso-field" htmlFor="aviso-mensaje">
                         <span>Mensaje <span className="aviso-required" aria-hidden="true">*</span></span>
@@ -322,7 +344,7 @@ const Avisos = () => {
                             Cancelar
                         </button>
                         <button type="submit" className="aviso-submit" disabled={guardando}>
-                            {guardando ? 'Guardando...' : 'Guardar aviso'}
+                            {guardando ? (editandoId ? 'Actualizando...' : 'Guardando...') : (editandoId ? 'Actualizar aviso' : 'Guardar aviso')}
                         </button>
                     </div>
                 </form>
