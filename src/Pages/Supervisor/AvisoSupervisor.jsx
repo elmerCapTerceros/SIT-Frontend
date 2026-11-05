@@ -25,7 +25,11 @@ const Avisos = () => {
 
     const [form, setForm] = useState(FORM_INICIAL);
     const [guardando, setGuardando] = useState(false);
-    const [editandoId, setEditandoId] = useState(null);
+    const [avisoEditando, setAvisoEditando] = useState(null);
+    const [formEdicion, setFormEdicion] = useState(FORM_INICIAL);
+    const [guardandoEdicion, setGuardandoEdicion] = useState(false);
+    const [errorModal, setErrorModal] = useState('');
+    const [avisoEliminando, setAvisoEliminando] = useState(null);
     const [errorForm, setErrorForm] = useState('');
     const [exito, setExito] = useState('');
 
@@ -93,13 +97,17 @@ const Avisos = () => {
     };
 
     const eliminarAviso = async (aviso) => {
-        if (!window.confirm(`¿Seguro que deseas eliminar el aviso "${aviso.mensaje}"?`)) return;
+        setAvisoEliminando(aviso);
+        setErrorModal('');
+    };
 
+    const confirmarEliminacion = async () => {
+        if (!avisoEliminando) return;
         setError('');
-        setEliminandoId(aviso.id);
+        setEliminandoId(avisoEliminando.id);
 
         try {
-            const response = await fetch(`${API_URL}/avisos/${aviso.id}`, {
+            const response = await fetch(`${API_URL}/avisos/${avisoEliminando.id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
@@ -108,9 +116,10 @@ const Avisos = () => {
                 throw new Error(`No se pudo eliminar el aviso (HTTP ${response.status}).`);
             }
 
-            setAvisos((actuales) => actuales.filter((actual) => actual.id !== aviso.id));
+            setAvisos((actuales) => actuales.filter((actual) => actual.id !== avisoEliminando.id));
+            setAvisoEliminando(null);
         } catch (requestError) {
-            setError(requestError.message || 'No se pudo eliminar el aviso.');
+            setErrorModal(requestError.message || 'No se pudo eliminar el aviso.');
         } finally {
             setEliminandoId(null);
         }
@@ -123,15 +132,53 @@ const Avisos = () => {
     };
 
     const editarAviso = (aviso) => {
-        setEditandoId(aviso.id);
-        setForm({ mensaje: aviso.mensaje || '', destinatario: aviso.destinatario || 'TECNICO' });
-        setErrorForm('');
-        setExito('');
+        setAvisoEditando(aviso);
+        setFormEdicion({ mensaje: aviso.mensaje || '', destinatario: aviso.destinatario || 'TECNICO' });
+        setErrorModal('');
+    };
+
+    const actualizarCampoEdicion = (campo) => (event) => {
+        setFormEdicion((actual) => ({ ...actual, [campo]: event.target.value }));
+        setErrorModal('');
+    };
+
+    const actualizarAviso = async (event) => {
+        event.preventDefault();
+        const mensaje = formEdicion.mensaje.trim();
+        if (!mensaje || !avisoEditando) {
+            setErrorModal('El mensaje es obligatorio.');
+            return;
+        }
+
+        const idSupervisor = Number(localStorage.getItem('idSupervisor') || localStorage.getItem('userId'));
+        if (!Number.isInteger(idSupervisor) || idSupervisor <= 0) {
+            setErrorModal('No se encontró el ID del supervisor. Cierra sesión e inicia sesión nuevamente.');
+            return;
+        }
+
+        setGuardandoEdicion(true);
+        try {
+            const response = await fetch(`${API_URL}/avisos/${avisoEditando.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+                body: JSON.stringify({ idSupervisor, mensaje, destinatario: formEdicion.destinatario }),
+            });
+            if (!response.ok) throw new Error(`No se pudo actualizar el aviso (HTTP ${response.status}).`);
+
+            const actualizado = await response.json();
+            setAvisos((actuales) => actuales.map((aviso) => (aviso.id === actualizado.id ? actualizado : aviso)));
+            setAvisoEditando(null);
+            setErrorModal('');
+            setExito('Aviso actualizado correctamente.');
+        } catch (requestError) {
+            setErrorModal(requestError.message || 'No se pudo actualizar el aviso.');
+        } finally {
+            setGuardandoEdicion(false);
+        }
     };
 
     const limpiarFormulario = () => {
         setForm(FORM_INICIAL);
-        setEditandoId(null);
         setErrorForm('');
         setExito('');
     };
@@ -158,8 +205,8 @@ const Avisos = () => {
         setGuardando(true);
 
         try {
-            const response = await fetch(`${API_URL}${editandoId ? `/avisos/${editandoId}` : '/avisos'}`, {
-                method: editandoId ? 'PUT' : 'POST',
+            const response = await fetch(`${API_URL}/avisos`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${getToken()}`,
@@ -168,18 +215,15 @@ const Avisos = () => {
             });
 
             if (!response.ok) {
-                throw new Error(`No se pudo ${editandoId ? 'actualizar' : 'guardar'} el aviso (HTTP ${response.status}).`);
+                throw new Error(`No se pudo guardar el aviso (HTTP ${response.status}).`);
             }
 
             const guardado = await response.json();
-            setAvisos((actuales) => editandoId
-                ? actuales.map((aviso) => (aviso.id === editandoId ? guardado : aviso))
-                : [guardado, ...actuales]);
+            setAvisos((actuales) => [guardado, ...actuales]);
             setForm(FORM_INICIAL);
-            setEditandoId(null);
-            setExito(`Aviso ${editandoId ? 'actualizado' : 'creado'} correctamente.`);
+            setExito('Aviso creado correctamente.');
         } catch (requestError) {
-            setErrorForm(requestError.message || `No se pudo ${editandoId ? 'actualizar' : 'guardar'} el aviso.`);
+            setErrorForm(requestError.message || 'No se pudo guardar el aviso.');
         } finally {
             setGuardando(false);
         }
@@ -292,7 +336,7 @@ const Avisos = () => {
                 </section>
 
                 <form className="aviso-card aviso-form" onSubmit={guardar} noValidate>
-                    <h2>{editandoId ? 'Editar aviso' : 'Crear aviso'} <span className="aviso-required" aria-hidden="true">*</span></h2>
+                    <h2>Crear aviso <span className="aviso-required" aria-hidden="true">*</span></h2>
 
                     <label className="aviso-field" htmlFor="aviso-mensaje">
                         <span>Mensaje <span className="aviso-required" aria-hidden="true">*</span></span>
@@ -344,11 +388,71 @@ const Avisos = () => {
                             Cancelar
                         </button>
                         <button type="submit" className="aviso-submit" disabled={guardando}>
-                            {guardando ? (editandoId ? 'Actualizando...' : 'Guardando...') : (editandoId ? 'Actualizar aviso' : 'Guardar aviso')}
+                            {guardando ? 'Guardando...' : 'Guardar aviso'}
                         </button>
                     </div>
                 </form>
             </div>
+
+            {avisoEliminando && (
+                <div
+                    className="aviso-modal-backdrop"
+                    role="presentation"
+                    onMouseDown={(event) => event.target === event.currentTarget && !eliminandoId && setAvisoEliminando(null)}
+                >
+                    <section className="aviso-modal" role="alertdialog" aria-modal="true" aria-labelledby="eliminar-aviso-titulo">
+                        <div className="aviso-modal-icon aviso-modal-icon-danger"><FaTrash aria-hidden="true" /></div>
+                        <h2 id="eliminar-aviso-titulo">¿Eliminar aviso?</h2>
+                        <p>Esta acción eliminará el aviso seleccionado y no se podrá deshacer.</p>
+                        {errorModal && <p className="aviso-modal-error" role="alert">{errorModal}</p>}
+                        <div className="aviso-modal-actions">
+                            <button type="button" className="aviso-modal-btn aviso-modal-cancel" onClick={() => setAvisoEliminando(null)} disabled={Boolean(eliminandoId)}>
+                                Cancelar
+                            </button>
+                            <button type="button" className="aviso-modal-btn aviso-modal-danger" onClick={confirmarEliminacion} disabled={Boolean(eliminandoId)}>
+                                {eliminandoId ? 'Eliminando...' : 'Sí, eliminar'}
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
+
+            {avisoEditando && (
+                <div
+                    className="aviso-modal-backdrop"
+                    role="presentation"
+                    onMouseDown={(event) => event.target === event.currentTarget && !guardandoEdicion && setAvisoEditando(null)}
+                >
+                    <form className="aviso-modal aviso-edit-modal" onSubmit={actualizarAviso} noValidate>
+                        <button type="button" className="aviso-modal-close" aria-label="Cerrar edición" onClick={() => setAvisoEditando(null)} disabled={guardandoEdicion}>
+                            <FaTimes aria-hidden="true" />
+                        </button>
+                        <div className="aviso-modal-icon aviso-modal-icon-edit"><FaEdit aria-hidden="true" /></div>
+                        <h2 id="editar-aviso-titulo">Editar aviso</h2>
+                        <p>Actualiza el mensaje y el público que recibirá este aviso.</p>
+
+                        <label className="aviso-modal-field" htmlFor="editar-aviso-mensaje">Mensaje
+                            <textarea id="editar-aviso-mensaje" value={formEdicion.mensaje} onChange={actualizarCampoEdicion('mensaje')} rows={5} disabled={guardandoEdicion} autoFocus />
+                        </label>
+                        <fieldset className="aviso-modal-field">
+                            <legend>Destinatario</legend>
+                            {DESTINATARIOS.map((destinatario) => (
+                                <label key={destinatario} className="aviso-radio">
+                                    <input type="radio" name="editar-destinatario" value={destinatario} checked={formEdicion.destinatario === destinatario} onChange={actualizarCampoEdicion('destinatario')} disabled={guardandoEdicion} />
+                                    {destinatario}
+                                </label>
+                            ))}
+                        </fieldset>
+                        {errorModal && <p className="aviso-modal-error" role="alert">{errorModal}</p>}
+                        <div className="aviso-modal-actions">
+                            <button type="button" className="aviso-modal-btn aviso-modal-cancel" onClick={() => setAvisoEditando(null)} disabled={guardandoEdicion}>Cancelar</button>
+                            <button type="submit" className="aviso-modal-btn aviso-modal-primary" disabled={guardandoEdicion}>
+                                {guardandoEdicion ? 'Actualizando...' : 'Actualizar aviso'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
         </main>
     );
 };
