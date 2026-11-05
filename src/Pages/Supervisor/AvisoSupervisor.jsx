@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { FaBullhorn, FaInbox, FaSyncAlt, FaTimes, FaTrash } from 'react-icons/fa';
+import { FaBullhorn, FaEdit, FaInbox, FaSyncAlt, FaTimes, FaTrash } from 'react-icons/fa';
 import { formatDateTime, getValue } from '../../utils/Solicitudesutils';
 import './AvisoSupervisor.css';
 
@@ -25,6 +25,11 @@ const Avisos = () => {
 
     const [form, setForm] = useState(FORM_INICIAL);
     const [guardando, setGuardando] = useState(false);
+    const [avisoEditando, setAvisoEditando] = useState(null);
+    const [formEdicion, setFormEdicion] = useState(FORM_INICIAL);
+    const [guardandoEdicion, setGuardandoEdicion] = useState(false);
+    const [errorModal, setErrorModal] = useState('');
+    const [avisoEliminando, setAvisoEliminando] = useState(null);
     const [errorForm, setErrorForm] = useState('');
     const [exito, setExito] = useState('');
 
@@ -92,13 +97,17 @@ const Avisos = () => {
     };
 
     const eliminarAviso = async (aviso) => {
-        if (!window.confirm(`¿Seguro que deseas eliminar el aviso "${aviso.mensaje}"?`)) return;
+        setAvisoEliminando(aviso);
+        setErrorModal('');
+    };
 
+    const confirmarEliminacion = async () => {
+        if (!avisoEliminando) return;
         setError('');
-        setEliminandoId(aviso.id);
+        setEliminandoId(avisoEliminando.id);
 
         try {
-            const response = await fetch(`${API_URL}/avisos/${aviso.id}`, {
+            const response = await fetch(`${API_URL}/avisos/${avisoEliminando.id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
@@ -107,9 +116,10 @@ const Avisos = () => {
                 throw new Error(`No se pudo eliminar el aviso (HTTP ${response.status}).`);
             }
 
-            setAvisos((actuales) => actuales.filter((actual) => actual.id !== aviso.id));
+            setAvisos((actuales) => actuales.filter((actual) => actual.id !== avisoEliminando.id));
+            setAvisoEliminando(null);
         } catch (requestError) {
-            setError(requestError.message || 'No se pudo eliminar el aviso.');
+            setErrorModal(requestError.message || 'No se pudo eliminar el aviso.');
         } finally {
             setEliminandoId(null);
         }
@@ -119,6 +129,52 @@ const Avisos = () => {
         setForm((actual) => ({ ...actual, [campo]: event.target.value }));
         setErrorForm('');
         setExito('');
+    };
+
+    const editarAviso = (aviso) => {
+        setAvisoEditando(aviso);
+        setFormEdicion({ mensaje: aviso.mensaje || '', destinatario: aviso.destinatario || 'TECNICO' });
+        setErrorModal('');
+    };
+
+    const actualizarCampoEdicion = (campo) => (event) => {
+        setFormEdicion((actual) => ({ ...actual, [campo]: event.target.value }));
+        setErrorModal('');
+    };
+
+    const actualizarAviso = async (event) => {
+        event.preventDefault();
+        const mensaje = formEdicion.mensaje.trim();
+        if (!mensaje || !avisoEditando) {
+            setErrorModal('El mensaje es obligatorio.');
+            return;
+        }
+
+        const idSupervisor = Number(localStorage.getItem('idSupervisor') || localStorage.getItem('userId'));
+        if (!Number.isInteger(idSupervisor) || idSupervisor <= 0) {
+            setErrorModal('No se encontró el ID del supervisor. Cierra sesión e inicia sesión nuevamente.');
+            return;
+        }
+
+        setGuardandoEdicion(true);
+        try {
+            const response = await fetch(`${API_URL}/avisos/${avisoEditando.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+                body: JSON.stringify({ idSupervisor, mensaje, destinatario: formEdicion.destinatario }),
+            });
+            if (!response.ok) throw new Error(`No se pudo actualizar el aviso (HTTP ${response.status}).`);
+
+            const actualizado = await response.json();
+            setAvisos((actuales) => actuales.map((aviso) => (aviso.id === actualizado.id ? actualizado : aviso)));
+            setAvisoEditando(null);
+            setErrorModal('');
+            setExito('Aviso actualizado correctamente.');
+        } catch (requestError) {
+            setErrorModal(requestError.message || 'No se pudo actualizar el aviso.');
+        } finally {
+            setGuardandoEdicion(false);
+        }
     };
 
     const limpiarFormulario = () => {
@@ -162,8 +218,8 @@ const Avisos = () => {
                 throw new Error(`No se pudo guardar el aviso (HTTP ${response.status}).`);
             }
 
-            const creado = await response.json();
-            setAvisos((actuales) => [creado, ...actuales]);
+            const guardado = await response.json();
+            setAvisos((actuales) => [guardado, ...actuales]);
             setForm(FORM_INICIAL);
             setExito('Aviso creado correctamente.');
         } catch (requestError) {
@@ -185,15 +241,6 @@ const Avisos = () => {
                     <h1>Avisos</h1>
                     <p>Publica avisos para técnicos y funcionarios y controla cuáles están activos.</p>
                 </div>
-                <button
-                    type="button"
-                    className={`at-refresh${loading ? ' is-spinning' : ''}`}
-                    onClick={() => cargar()}
-                    disabled={loading}
-                >
-                    <FaSyncAlt aria-hidden="true" />
-                    <span>Actualizar</span>
-                </button>
             </header>
 
             {error && (
@@ -217,7 +264,7 @@ const Avisos = () => {
                                     <th scope="col">Aviso</th>
                                     <th scope="col">Destinatarios</th>
                                     <th scope="col">Activo</th>
-                                    <th scope="col">Eliminar</th>
+                                    <th scope="col">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -251,14 +298,24 @@ const Avisos = () => {
                                                 disabled={cambiandoId === aviso.id || eliminandoId === aviso.id}
                                             />
                                         </td>
-                                        <td>
+                                        <td className="aviso-actions-cell">
+                                            <button
+                                                type="button"
+                                                className="aviso-edit"
+                                                aria-label={`Editar aviso ${aviso.id}`}
+                                                title="Editar aviso"
+                                                onClick={() => editarAviso(aviso)}
+                                                disabled={eliminandoId === aviso.id || cambiandoId === aviso.id || guardando}
+                                            >
+                                                <FaEdit aria-hidden="true" />
+                                            </button>
                                             <button
                                                 type="button"
                                                 className="aviso-delete"
                                                 aria-label={`Eliminar aviso ${aviso.id}`}
                                                 title="Eliminar aviso"
                                                 onClick={() => eliminarAviso(aviso)}
-                                                disabled={eliminandoId === aviso.id || cambiandoId === aviso.id}
+                                                disabled={eliminandoId === aviso.id || cambiandoId === aviso.id || guardando}
                                             >
                                                 <FaTrash aria-hidden="true" />
                                             </button>
@@ -336,6 +393,66 @@ const Avisos = () => {
                     </div>
                 </form>
             </div>
+
+            {avisoEliminando && (
+                <div
+                    className="aviso-modal-backdrop"
+                    role="presentation"
+                    onMouseDown={(event) => event.target === event.currentTarget && !eliminandoId && setAvisoEliminando(null)}
+                >
+                    <section className="aviso-modal" role="alertdialog" aria-modal="true" aria-labelledby="eliminar-aviso-titulo">
+                        <div className="aviso-modal-icon aviso-modal-icon-danger"><FaTrash aria-hidden="true" /></div>
+                        <h2 id="eliminar-aviso-titulo">¿Eliminar aviso?</h2>
+                        <p>Esta acción eliminará el aviso seleccionado y no se podrá deshacer.</p>
+                        {errorModal && <p className="aviso-modal-error" role="alert">{errorModal}</p>}
+                        <div className="aviso-modal-actions">
+                            <button type="button" className="aviso-modal-btn aviso-modal-cancel" onClick={() => setAvisoEliminando(null)} disabled={Boolean(eliminandoId)}>
+                                Cancelar
+                            </button>
+                            <button type="button" className="aviso-modal-btn aviso-modal-danger" onClick={confirmarEliminacion} disabled={Boolean(eliminandoId)}>
+                                {eliminandoId ? 'Eliminando...' : 'Sí, eliminar'}
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            )}
+
+            {avisoEditando && (
+                <div
+                    className="aviso-modal-backdrop"
+                    role="presentation"
+                    onMouseDown={(event) => event.target === event.currentTarget && !guardandoEdicion && setAvisoEditando(null)}
+                >
+                    <form className="aviso-modal aviso-edit-modal" onSubmit={actualizarAviso} noValidate>
+                        <button type="button" className="aviso-modal-close" aria-label="Cerrar edición" onClick={() => setAvisoEditando(null)} disabled={guardandoEdicion}>
+                            <FaTimes aria-hidden="true" />
+                        </button>
+                        <div className="aviso-modal-icon aviso-modal-icon-edit"><FaEdit aria-hidden="true" /></div>
+                        <h2 id="editar-aviso-titulo">Editar aviso</h2>
+                        <p>Actualiza el mensaje y el público que recibirá este aviso.</p>
+
+                        <label className="aviso-modal-field" htmlFor="editar-aviso-mensaje">Mensaje
+                            <textarea id="editar-aviso-mensaje" value={formEdicion.mensaje} onChange={actualizarCampoEdicion('mensaje')} rows={5} disabled={guardandoEdicion} autoFocus />
+                        </label>
+                        <fieldset className="aviso-modal-field">
+                            <legend>Destinatario</legend>
+                            {DESTINATARIOS.map((destinatario) => (
+                                <label key={destinatario} className="aviso-radio">
+                                    <input type="radio" name="editar-destinatario" value={destinatario} checked={formEdicion.destinatario === destinatario} onChange={actualizarCampoEdicion('destinatario')} disabled={guardandoEdicion} />
+                                    {destinatario}
+                                </label>
+                            ))}
+                        </fieldset>
+                        {errorModal && <p className="aviso-modal-error" role="alert">{errorModal}</p>}
+                        <div className="aviso-modal-actions">
+                            <button type="button" className="aviso-modal-btn aviso-modal-cancel" onClick={() => setAvisoEditando(null)} disabled={guardandoEdicion}>Cancelar</button>
+                            <button type="submit" className="aviso-modal-btn aviso-modal-primary" disabled={guardandoEdicion}>
+                                {guardandoEdicion ? 'Actualizando...' : 'Actualizar aviso'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
         </main>
     );
 };
