@@ -185,15 +185,6 @@ const Avisos = () => {
                     <h1>Avisos</h1>
                     <p>Publica avisos para técnicos y funcionarios y controla cuáles están activos.</p>
                 </div>
-                <button
-                    type="button"
-                    className={`at-refresh${loading ? ' is-spinning' : ''}`}
-                    onClick={() => cargar()}
-                    disabled={loading}
-                >
-                    <FaSyncAlt aria-hidden="true" />
-                    <span>Actualizar</span>
-                </button>
             </header>
 
             {error && (
