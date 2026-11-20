@@ -25,9 +25,8 @@ import {
 	toSearchText,
 } from '../../utils/Solicitudesutils';
 import { generarReportePdf } from '../../utils/Reportetrabajopdf';
+import API_URL from '../../utils/api';
 import './Reportes.css';
-
-const API_URL = 'http://localhost:8080/api';
 
 const Reportes = () => {
 	const [reportes, setReportes] = useState([]);

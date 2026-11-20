@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaClipboardCheck, FaFilePdf, FaUndo } from 'react-icons/fa';
 import { ESTADOS_FINALES, TIPOS_EQUIPO, generarReportePdf } from '../../utils/Reportetrabajopdf';
+import API_URL from '../../utils/api';
 import './Reportetrabajo.css';
-
-const API_URL = 'http://localhost:8080/api';
 
 // Escudos del encabezado del PDF (opcional). Importa tus imágenes y colócalas aquí:
 //   import escudoBolivia from '../../assets/escudo-bolivia.png';
@@ -85,7 +84,6 @@ const Campo = ({ id, etiqueta, autocompletado, requerido, error, ancho, grupo, c
 					{etiqueta}
 					{requerido && <span className="rt-req" aria-hidden="true"> *</span>}
 				</Etiqueta>
-				{autocompletado && <span className="rt-origen">Autocompletado</span>}
 			</div>
 			{grupo ? (
 				<div role="radiogroup" aria-labelledby={`${id}-etq`} className="rt-chips">{children}</div>
@@ -360,8 +358,7 @@ const ReporteTrabajo = () => {
 				<div className="rt-aviso" role="note">
 					<p>
 						<strong>Solicitud #{solicitud.codigo ?? solicitud.id}</strong>: los datos que ya tenemos
-						vienen cargados y marcados como <span className="rt-origen">Autocompletado</span>. Puedes
-						corregirlos. Completa lo que falta; los campos con * son obligatorios.
+						vienen cargados. Puedes corregirlos. Completa lo que falta; los campos con * son obligatorios.
 					</p>
 				</div>
 

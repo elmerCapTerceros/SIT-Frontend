@@ -27,9 +27,9 @@ import {
     toSearchText,
 } from '../../utils/Solicitudesutils';
 import { generarReportePdf } from '../../utils/Reportetrabajopdf';
+import API_URL from '../../utils/api';
 import './ReporteSupervisor.css';
 
-const API_URL = 'http://localhost:8080/api';
 const PAGE_SIZES = [8, 15, 25, 50];
 
 const claseEstado = (estado) => {

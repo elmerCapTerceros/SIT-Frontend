@@ -5,17 +5,6 @@ const MIN_CARACTERES = 10;
 const MAX_CARACTERES = 500;
 
 const RechazarSolicitudModal = ({ open, loading = false, error = '', onCancel, onConfirm }) => {
-	const [motivo, setMotivo] = useState('');
-	const [intentoEnvio, setIntentoEnvio] = useState(false);
-
-	// Cada vez que se abre, el formulario empieza limpio.
-	useEffect(() => {
-		if (open) {
-			setMotivo('');
-			setIntentoEnvio(false);
-		}
-	}, [open]);
-
 	useEffect(() => {
 		if (!open) return undefined;
 		const alPresionar = (event) => {
@@ -27,6 +16,19 @@ const RechazarSolicitudModal = ({ open, loading = false, error = '', onCancel, o
 
 	if (!open) return null;
 
+	return (
+		<FormularioRechazo
+			loading={loading}
+			error={error}
+			onCancel={onCancel}
+			onConfirm={onConfirm}
+		/>
+	);
+};
+
+const FormularioRechazo = ({ loading, error, onCancel, onConfirm }) => {
+	const [motivo, setMotivo] = useState('');
+	const [intentoEnvio, setIntentoEnvio] = useState(false);
 	const motivoLimpio = motivo.trim();
 	const motivoInvalido = motivoLimpio.length < MIN_CARACTERES;
 	const mostrarErrorMotivo = intentoEnvio && motivoInvalido;

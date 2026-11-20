@@ -15,9 +15,9 @@ import {
 	FaSpinner,
 	FaTimes,
 } from 'react-icons/fa';
+import API_URL from '../../utils/api';
 import SolicitudModal from '../../Components/Modlas/Solicitudmodal';
 import {
-	formatDate,
 	formatDateTime,
 	formatId,
 	getValue,
@@ -28,7 +28,6 @@ import {
 } from '../../utils/Solicitudesutils';
 import './SolicitudesRecividas.css';
 
-const API_URL = 'http://localhost:8080/api';
 const PAGE_SIZE_OPTIONS = [8, 15, 25];
 const SKELETON_ROWS = 6;
 const TECNICOS_ENDPOINT = '/usuarios/tecnicos'; // Backend: endpoint para obtener técnicos.

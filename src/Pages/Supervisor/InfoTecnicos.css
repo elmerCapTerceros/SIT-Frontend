@@ -709,7 +709,9 @@
 
 .it-copy:hover { color: var(--blue-800); background: var(--surface-tint); }
 .it-copy.is-copied { color: var(--ok); }
+.it-copy.is-error { color: #B42318; background: #FEF2F2; }
 .it-copy svg { width: 12px; height: 12px; }
+.it-copy-error { color: #B42318; font-size: 11px; }
 
 .it-request-list {
 	display: flex;

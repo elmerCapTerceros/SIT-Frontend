@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../../utils/api';
 import '../../Components/Login/Login.css';
 import '../../Components/Modlas/Modlas.css';
 import Modlas from '../../Components/Modlas/Modlas';
 import './RegistroDeUsuario.css';
-
-const API_URL = 'http://localhost:8080/api';
 
 const RegistroDeUsuario = () => {
   const navigate = useNavigate();

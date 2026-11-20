@@ -25,3 +25,10 @@ $ npm install
 ```bash
 $ npm run dev
 ```
+
+El frontend usa `http://localhost:8080/api` por defecto. Para apuntarlo a otro backend,
+define `VITE_API_BASE_URL` en un archivo `.env.local`, por ejemplo:
+
+```env
+VITE_API_BASE_URL=https://servidor.example/api
+```

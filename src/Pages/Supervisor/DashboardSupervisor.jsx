@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaChartBar, FaSyncAlt } from 'react-icons/fa';
+import API_URL from '../../utils/api';
 import { humanize } from '../../utils/Solicitudesutils';
 import './DashboardSupervisor.css';
 
 /* ───────────── Configuración ───────────── */
-
-const API_URL = 'http://localhost:8080/api';
 
 const COLORES = {
     exito: '#10b981',
@@ -212,17 +211,17 @@ const Dashboard = () => {
 
     return (
         <main className="at-page dash-page">
-            <header className="at-header">
+            <header className="at-header dash-header">
                 <span className="at-header-icon" aria-hidden="true">
                     <FaChartBar />
                 </span>
-                <div>
+                <div className="dash-header-copy">
                     <h1>Dashboard</h1>
                     <p>Consulta y revisa las estadísticas de los trabajos técnicos realizados.</p>
                 </div>
                 <button
                     type="button"
-                    className={`at-refresh${loading ? ' is-spinning' : ''}`}
+                    className={`at-refresh dash-refresh${loading ? ' is-spinning' : ''}`}
                     onClick={() => cargar()}
                     disabled={loading}
                 >

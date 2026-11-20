@@ -559,3 +559,169 @@
     font-size: 11px;
   }
 }
+
+.solicitud-extraordinaria-page {
+  display: flow-root;
+  width: 100%;
+  min-height: calc(100svh - 90px);
+  box-sizing: border-box;
+  background: #F1F5F9;
+}
+
+.extraordinaria-page-header {
+  margin: 0 0 24px;
+}
+
+.extraordinaria-header-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.solicitud-extraordinaria-page .extraordinaria-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.85fr);
+  align-items: start;
+  gap: 24px;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 28px;
+  box-sizing: border-box;
+  overflow: visible;
+  border: 1px solid #D7E2EA;
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 8px 26px rgba(23, 50, 77, 0.08);
+}
+
+.extraordinaria-form:not(.has-supervisor-assignment) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.extraordinaria-fields {
+  min-width: 0;
+}
+
+.solicitud-extraordinaria-page .form-field {
+  margin-bottom: 18px;
+}
+
+.solicitud-extraordinaria-page .form-label {
+  margin-bottom: 6px;
+  color: #17324D;
+  font-size: 14px;
+}
+
+.solicitud-extraordinaria-page .form-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #B8C8D3;
+  border-radius: 8px;
+  color: #17324D;
+  font-size: 14px;
+}
+
+.solicitud-extraordinaria-page .form-input:hover,
+.solicitud-extraordinaria-page .form-input:focus {
+  border-color: #0F766E;
+}
+
+.solicitud-extraordinaria-page .form-input:focus {
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.solicitud-extraordinaria-page .form-textarea {
+  min-height: 132px;
+  height: auto;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.solicitud-extraordinaria-page .hint-msg,
+.solicitud-extraordinaria-page .error-msg {
+  font-size: 12px;
+}
+
+.solicitud-extraordinaria-page .supervisor-assignment {
+  align-self: stretch;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid #B6DED5;
+  border-left: 5px solid #0F766E;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #F0FAF8 0%, #E6F4F1 100%);
+}
+
+.solicitud-extraordinaria-page .supervisor-assignment h2 {
+  margin: 0 0 8px;
+  color: #0F5F58;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.solicitud-extraordinaria-page .supervisor-assignment > p {
+  margin: 0 0 20px;
+  color: #42655F;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.solicitud-extraordinaria-page .supervisor-assignment .form-field {
+  margin-bottom: 18px;
+}
+
+.solicitud-extraordinaria-page .extraordinaria-api-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 13px;
+}
+
+.solicitud-extraordinaria-page .form-actions {
+  grid-column: 1 / -1;
+  gap: 12px;
+  margin: 0;
+  padding-top: 20px;
+  border-top: 1px solid #DCE7ED;
+}
+
+.solicitud-extraordinaria-page .btn {
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .solicitud-extraordinaria-page {
+    min-height: calc(100svh - 70px);
+  }
+
+  .solicitud-extraordinaria-page .extraordinaria-form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 22px;
+  }
+
+  .solicitud-extraordinaria-page .supervisor-assignment {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .solicitud-extraordinaria-page .extraordinaria-form {
+    padding: 18px;
+  }
+
+  .solicitud-extraordinaria-page .supervisor-assignment {
+    padding: 18px;
+  }
+
+  .solicitud-extraordinaria-page .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .solicitud-extraordinaria-page .form-actions .btn {
+    width: 100%;
+  }
+}

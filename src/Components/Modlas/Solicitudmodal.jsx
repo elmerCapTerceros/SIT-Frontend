@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaCheck, FaCopy, FaSearch, FaSpinner, FaTimes } from 'react-icons/fa';
 import { formatDateTime, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
-import './SolicitudModal.css';
+import './Solicitudmodal.css';
 
 const PRIORIDADES = [
 	{ key: 'alta', label: 'Alta' },
@@ -19,7 +19,7 @@ const getInitials = (name = '') =>
 
 const FOCUSABLE = 'button:not([disabled]), select:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-const SolicitudModal = ({ solicitud, tecnicos, onClose, onSave }) => {
+const Solicitudmodal = ({ solicitud, tecnicos, onClose, onSave }) => {
 	const dialogRef = useRef(null);
 	const fullId = formatId(solicitud.id);
 	const tecnicoAsignado = tecnicos.find((tecnico) => tecnico.id === String(solicitud.tecnicoId));
@@ -320,4 +320,4 @@ const SolicitudModal = ({ solicitud, tecnicos, onClose, onSave }) => {
 	);
 };
 
-export default SolicitudModal;
+export default Solicitudmodal;

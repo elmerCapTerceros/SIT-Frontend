@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import { FaClipboardList } from 'react-icons/fa';
+import API_URL from '../../utils/api';
+import './FuncionarioPageHeader.css';
 import './MisSolicitudes.css';
-
-const API_URL = 'http://localhost:8080/api';
 
 const MisSolicitudes = () => {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -54,14 +55,15 @@ const MisSolicitudes = () => {
 
   return (
     <main className="requests-page">
-      <section className="requests-header">
-        <div>
-          <p className="page-kicker">SEGUIMIENTO</p>
+      <header className="funcionario-page-header requests-header">
+        <span className="funcionario-page-header-icon" aria-hidden="true">
+          <FaClipboardList />
+        </span>
+        <div className="funcionario-page-header-copy">
           <h1>Mis solicitudes</h1>
-          <p>Revise el estado de los requerimientos que registró.</p>
+          <p>Revise el estado y el seguimiento de los requerimientos que registró.</p>
         </div>
-        
-      </section>
+      </header>
 
       {error && <div className="requests-error">{error}</div>}
       {loading ? <p className="requests-loading">Cargando solicitudes…</p> : (
@@ -71,8 +73,8 @@ const MisSolicitudes = () => {
               <h2>Aún no tiene solicitudes</h2>
               <p>Cuando registre una, podrá consultar su seguimiento aquí.</p>
             </div>
-          ) : solicitudes.map((solicitud) => (
-            <article className="request-item" key={solicitud.codigo}>
+          ) : solicitudes.map((solicitud, index) => (
+            <article className="request-item" key={solicitud.id ?? solicitud.codigo ?? index}>
               <div>
                 <p className="request-id">{solicitud.codigo}</p>
                 <h2>{solicitud.titulo}</h2>
