@@ -1,0 +1,151 @@
+:root {
+  --button-primary: #008ED6;
+  --button-primary-hover: #005B82;
+  --button-outline: #B8D9E5;
+  --button-outline-hover: #F0FAFE;
+  --button-danger: #B42318;
+  --button-danger-hover: #8F1D14;
+  --button-focus: 0 0 0 3px rgba(0, 142, 214, 0.3);
+}
+
+button {
+  font-family: inherit;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+button:focus-visible,
+button[class]:focus-visible,
+a.btn:focus-visible,
+a.vd-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--button-focus);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.btn-primary,
+.btn-solicitud,
+.btn-submit,
+.submit-btn,
+.new-request-button,
+.aviso-submit,
+.aviso-modal-primary,
+.success-modal-button,
+.confirmar-estado-confirmar,
+.it-btn-primary,
+.sm-btn-primary,
+.msol-btn-primario,
+.vd-btn-primario,
+.rt-btn-primario {
+  border-color: var(--button-primary);
+  border-radius: 8px;
+  background: var(--button-primary);
+  color: #FFFFFF;
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-solicitud:hover:not(:disabled),
+.btn-submit:hover:not(:disabled),
+.submit-btn:hover:not(:disabled),
+.new-request-button:hover:not(:disabled),
+.aviso-submit:hover:not(:disabled),
+.aviso-modal-primary:hover:not(:disabled),
+.success-modal-button:hover:not(:disabled),
+.confirmar-estado-confirmar:hover:not(:disabled),
+.it-btn-primary:hover:not(:disabled),
+.sm-btn-primary:hover:not(:disabled),
+.msol-btn-primario:hover:not(:disabled),
+.vd-btn-primario:hover:not(:disabled),
+.rt-btn-primario:hover:not(:disabled) {
+  border-color: var(--button-primary-hover);
+  background: var(--button-primary-hover);
+  color: #FFFFFF;
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(0, 91, 130, 0.2);
+}
+
+.btn-cancel,
+.btn-secondary,
+.btn-secondary-modal,
+.at-btn-outline,
+.at-refresh,
+.it-btn-outline,
+.sm-btn-ghost,
+.msol-btn-neutro,
+.confirmar-estado-cancelar,
+.vd-btn-secundario,
+.rt-btn-neutro,
+.aviso-edit,
+.logout-button,
+.mobile-logout-button,
+.aviso-modal-cancel,
+.report-pdf-button,
+.requests-error button,
+.empty-table-state button,
+button:not([class]) {
+  border-color: var(--button-outline);
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: var(--button-primary-hover);
+}
+
+.btn-cancel:hover:not(:disabled),
+.btn-secondary:hover:not(:disabled),
+.btn-secondary-modal:hover:not(:disabled),
+.at-btn-outline:hover:not(:disabled),
+.at-refresh:hover:not(:disabled),
+.it-btn-outline:hover:not(:disabled),
+.sm-btn-ghost:hover:not(:disabled),
+.msol-btn-neutro:hover:not(:disabled),
+.confirmar-estado-cancelar:hover:not(:disabled),
+.vd-btn-secundario:hover:not(:disabled),
+.rt-btn-neutro:hover:not(:disabled),
+.aviso-edit:hover:not(:disabled),
+.logout-button:hover:not(:disabled),
+.mobile-logout-button:hover:not(:disabled),
+.aviso-modal-cancel:hover:not(:disabled),
+.report-pdf-button:hover:not(:disabled),
+.requests-error button:hover:not(:disabled),
+.empty-table-state button:hover:not(:disabled),
+button:not([class]):hover:not(:disabled) {
+  border-color: var(--button-primary);
+  background: var(--button-outline-hover);
+  color: var(--button-primary-hover);
+}
+
+.btn-danger-modal,
+.aviso-modal-danger,
+.sm-btn-danger,
+.msol-btn-peligro,
+.vd-btn-peligro {
+  border-color: var(--button-danger);
+  border-radius: 8px;
+  background: var(--button-danger);
+  color: #FFFFFF;
+}
+
+.btn-danger-modal:hover:not(:disabled),
+.aviso-modal-danger:hover:not(:disabled),
+.sm-btn-danger:hover:not(:disabled),
+.msol-btn-peligro:hover:not(:disabled),
+.vd-btn-peligro:hover:not(:disabled) {
+  border-color: var(--button-danger-hover);
+  background: var(--button-danger-hover);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}

@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { FaFileAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
+import "./FuncionarioPageHeader.css";
 import Modlas from "../../Components/Modlas/Modlas";
 import {
   limpiarTituloSolicitud,
@@ -138,13 +140,15 @@ const NuevaSolicitud = () => {
       </aside>
 
       <main className="solicitud-right">
-        <section className="requests-header">
-          <div>
-            <p className="page-kicker">SOLICITUD</p>
+        <header className="funcionario-page-header solicitud-page-header">
+          <span className="funcionario-page-header-icon" aria-hidden="true">
+            <FaFileAlt />
+          </span>
+          <div className="funcionario-page-header-copy">
             <h1>Nueva Solicitud Técnica</h1>
             <p>Registre una nueva solicitud de soporte técnico para su equipo o departamento.</p>
           </div>
-        </section>
+        </header>
 
         <form className="form-card" onSubmit={handleSubmit} noValidate>
           <div className="form-field">

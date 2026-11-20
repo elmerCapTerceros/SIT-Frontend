@@ -31,25 +31,6 @@ const EyeIcon = ({ open }) => (
   </svg>
 );
 
-const CheckBadgeIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="badge-icon">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75l2.25 2.25 4.5-4.5m4.5 2.25a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-const ClockIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="badge-icon">
-    <circle cx="12" cy="12" r="9" strokeLinecap="round" strokeLinejoin="round" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5V12l3 1.5" />
-  </svg>
-);
-
-const ShieldIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="badge-icon">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l7.5 3v5.25c0 4.5-3.15 8.4-7.5 9.75-4.35-1.35-7.5-5.25-7.5-9.75V6L12 3z" />
-  </svg>
-);
-
 const institutionalLinks = [
   {
     number: '01',
