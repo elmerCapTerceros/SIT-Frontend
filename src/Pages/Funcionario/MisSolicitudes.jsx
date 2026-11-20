@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { FaClipboardList } from 'react-icons/fa';
 import './MisSolicitudes.css';
 
 const API_URL = 'http://localhost:8080/api';
@@ -54,14 +55,15 @@ const MisSolicitudes = () => {
 
   return (
     <main className="requests-page">
-      <section className="requests-header">
-        <div>
-          <p className="page-kicker">SEGUIMIENTO</p>
+      <header className="at-header requests-header">
+        <span className="at-header-icon" aria-hidden="true">
+          <FaClipboardList />
+        </span>
+        <div className="requests-header-copy">
           <h1>Mis solicitudes</h1>
-          <p>Revise el estado de los requerimientos que registró.</p>
+          <p>Revise el estado y el seguimiento de los requerimientos que registró.</p>
         </div>
-        
-      </section>
+      </header>
 
       {error && <div className="requests-error">{error}</div>}
       {loading ? <p className="requests-loading">Cargando solicitudes…</p> : (

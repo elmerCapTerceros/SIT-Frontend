@@ -5,6 +5,18 @@
     --fondo-pista: #eef2f6;
 }
 
+.dash-page .dash-header {
+    gap: 16px;
+}
+.dash-page .dash-header-copy {
+    flex: 1;
+    min-width: 0;
+}
+.dash-page .dash-refresh {
+    flex: none;
+    margin-left: auto;
+}
+
 .dash-layout { display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: start; }
 .dash-kpis { display: flex; flex-direction: column; gap: 16px; }
 .dash-charts {
@@ -21,6 +33,17 @@
     .dash-kpis { flex-direction: row; flex-wrap: wrap; }
     .dash-kpi { flex: 1 1 140px; }
     .dash-charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+    .dash-page .dash-header {
+        flex-wrap: wrap;
+    }
+    .dash-page .dash-header-copy {
+        flex-basis: calc(100% - 68px);
+    }
+    .dash-page .dash-refresh {
+        margin-left: auto;
+    }
 }
 
 /* Tarjetas */
