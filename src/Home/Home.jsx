@@ -17,23 +17,6 @@ import './Home.css';
 
 const API_URL = 'http://localhost:8080/api';
 const ROLES_CON_AVISOS = ['TECNICO', 'FUNCIONARIO'];
-const AVISO_VISTO_KEY = 'avisoHomeVisto';
-
-const yaVioElAviso = () => {
-  try {
-    return sessionStorage.getItem(AVISO_VISTO_KEY) === '1';
-  } catch {
-    return false;
-  }
-};
-
-const marcarAvisoVisto = () => {
-  try {
-    sessionStorage.setItem(AVISO_VISTO_KEY, '1');
-  } catch {
-    // Si el navegador bloquea el almacenamiento, el aviso simplemente puede repetirse.
-  }
-};
 
 const AvisosDestacados = () => {
   const [avisos, setAvisos] = useState([]);
@@ -56,8 +39,7 @@ const AvisosDestacados = () => {
         const avisosActivos = Array.isArray(data) ? data.filter((aviso) => aviso.activo) : [];
         if (!controller.signal.aborted) {
           setAvisos(avisosActivos);
-          // El modal aparece una sola vez por sesión; el tablero queda siempre visible.
-          setModalAbierto(avisosActivos.length > 0 && !yaVioElAviso());
+          setModalAbierto(avisosActivos.length > 0);
         }
       } catch {
         // El inicio continúa funcionando aunque el servicio de avisos no responda.
@@ -68,10 +50,7 @@ const AvisosDestacados = () => {
     return () => controller.abort();
   }, [rol]);
 
-  const cerrarModal = () => {
-    marcarAvisoVisto();
-    setModalAbierto(false);
-  };
+  const cerrarModal = () => setModalAbierto(false);
 
   // Cerrar con la tecla Escape
   useEffect(() => {
@@ -161,7 +140,7 @@ const Home = () => {
       <section className="hero-section" aria-labelledby="hero-title">
         <div className="hero-container">
           <div className="hero-content">
-            <p className="hero-subtitle">Gobierno Autónomo Departamental de Cochabamba</p>
+
 
             <h1 className="hero-title" id="hero-title">
               ¿Necesitas<br />
