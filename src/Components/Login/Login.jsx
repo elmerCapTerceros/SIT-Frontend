@@ -129,6 +129,7 @@ const Login = () => {
       localStorage.setItem('nombre', data.nombre || '');
       localStorage.setItem('apellido', data.apellido || '');
       localStorage.setItem('primerIngreso', String(Boolean(data.primerIngreso)));
+      sessionStorage.setItem('avisoHomePendiente', 'true');
       navigate(data.primerIngreso ? '/registro-usuario' : '/home', { replace: true });
     } catch (requestError) {
       setError(requestError.message || 'No se pudo iniciar sesión.');

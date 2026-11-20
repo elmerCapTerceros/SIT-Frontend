@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   FaArrowRight,
   FaBell,
@@ -17,13 +17,28 @@ import API_URL from '../utils/api';
 import './Home.css';
 
 const ROLES_CON_AVISOS = ['TECNICO', 'FUNCIONARIO'];
+const AVISO_HOME_LOGIN_KEY = 'avisoHomePendiente';
+let avisoHomePendientePorRecarga =
+  typeof window !== 'undefined' &&
+  window.location.pathname.replace(/\/+$/, '') === '/home' &&
+  window.performance?.getEntriesByType('navigation')?.[0]?.type === 'reload';
 
 const AvisosDestacados = () => {
   const [avisos, setAvisos] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const mostrarModalAlEntrar = useRef(null);
   const rol = (localStorage.getItem('rol') || '').trim().toUpperCase();
 
   useEffect(() => {
+    if (mostrarModalAlEntrar.current === null) {
+      const inicioSesionPendiente =
+        sessionStorage.getItem(AVISO_HOME_LOGIN_KEY) === 'true';
+      sessionStorage.removeItem(AVISO_HOME_LOGIN_KEY);
+      mostrarModalAlEntrar.current =
+        inicioSesionPendiente || avisoHomePendientePorRecarga;
+      avisoHomePendientePorRecarga = false;
+    }
+
     if (!ROLES_CON_AVISOS.includes(rol)) return undefined;
 
     const controller = new AbortController();
@@ -39,7 +54,9 @@ const AvisosDestacados = () => {
         const avisosActivos = Array.isArray(data) ? data.filter((aviso) => aviso.activo) : [];
         if (!controller.signal.aborted) {
           setAvisos(avisosActivos);
-          setModalAbierto(avisosActivos.length > 0);
+          setModalAbierto(
+            mostrarModalAlEntrar.current && avisosActivos.length > 0,
+          );
         }
       } catch {
         // El inicio continúa funcionando aunque el servicio de avisos no responda.

@@ -116,29 +116,8 @@ const NuevaSolicitud = () => {
   };
 
   return (
-    <div className="solicitud-container">
-      <aside className="solicitud-left">
-        <div className="logo-box">
-         
-        <img src="/Imagenes/Logo4.png" alt="Logo" className="logo-pic" />
-          <div className="logo-divider" />
-          <div className="logo-text">
-            <span className="logo-title logo-title-dark">
-              UNIDAD DE <br /> GOBIERNO
-            </span>
-            <span className="logo-title logo-title-cyan">ELECTRÓNICO</span>
-          </div>
-        </div>
-
-        <div className="tiempos-card">
-          <h3 className="tiempos-title">Tiempos estimados de respuesta</h3>
-          <p className="tiempos-item">Prioridad Alta - 4 horas hábiles</p>
-          <p className="tiempos-item">Prioridad Media - 24 horas hábiles</p>
-          <p className="tiempos-item">Prioridad Baja - 48 horas hábiles</p>
-        </div>
-      </aside>
-
-      <main className="solicitud-right">
+    <div className="nueva-solicitud-page">
+      <main className="nueva-solicitud-content">
         <header className="funcionario-page-header solicitud-page-header">
           <span className="funcionario-page-header-icon" aria-hidden="true">
             <FaFileAlt />

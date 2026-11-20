@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaFileAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import API_URL from "../../utils/api";
 import "./SolicitudExtraOrdinaria.css";
@@ -144,110 +145,97 @@ const SolicitudExtraOrdinaria = () => {
   };
 
   return (
-    <div className="solicitud-container">
-      <aside className="solicitud-left">
-        <div className="logo-box">
-         
-        <img src="/Imagenes/Logo4.png" alt="Logo" className="logo-pic" />
-          <div className="logo-divider" />
-          <div className="logo-text">
-            <span className="logo-title logo-title-dark">
-              UNIDAD DE <br /> GOBIERNO
-            </span>
-            <span className="logo-title logo-title-cyan">ELECTRÓNICO</span>
-          </div>
-        </div>
-
-        <div className="tiempos-card">
-          <h3 className="tiempos-title">Tiempos estimados de respuesta</h3>
-          <p className="tiempos-item">Prioridad Alta - 4 horas hábiles</p>
-          <p className="tiempos-item">Prioridad Media - 24 horas hábiles</p>
-          <p className="tiempos-item">Prioridad Baja - 48 horas hábiles</p>
-        </div>
-      </aside>
-
-      <main className="solicitud-right">
-        <section className="requests-header">
-          <div>
-            <p className="page-kicker">SOLICITUD EXTRAORDINARIA</p>
+    <div className="solicitud-extraordinaria-page">
+      <main className="at-page solicitud-extraordinaria-content">
+        <header className="at-header extraordinaria-page-header">
+          <span className="at-header-icon" aria-hidden="true">
+            <FaFileAlt />
+          </span>
+          <div className="extraordinaria-header-copy">
             <h1>Nueva Solicitud Extraordinaria</h1>
             <p>Registre una nueva solicitud de soporte técnico para su equipo o departamento.</p>
           </div>
-        </section>
+        </header>
 
-        <form className="form-card" onSubmit={handleSubmit} noValidate>
-          <div className="form-field">
-            <label className="form-label" htmlFor="titulo">
-              Título de la solicitud <span className="required">*</span>
-            </label>
-            <input
-              id="titulo"
-              name="titulo"
-              type="text"
-              className={`form-input ${errores.titulo ? "input-error" : ""}`}
-              placeholder="Ej. Error de conexión a la impresora de red"
-              value={form.titulo}
-              onChange={handleChange}
-              pattern="[A-Za-zÀ-ÿ ]+"
-              minLength={5}
-              maxLength={200}
-            />
-            {errores.titulo ? (
-              <span className="error-msg">{errores.titulo}</span>
-            ) : (
-              <span className="hint-msg">
-                Use un título descriptivo y conciso
-              </span>
-            )}
-          </div>
+        <form
+          className={`form-card extraordinaria-form ${esSupervisor ? "has-supervisor-assignment" : ""}`}
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <div className="extraordinaria-fields">
+            <div className="form-field">
+              <label className="form-label" htmlFor="titulo">
+                Título de la solicitud <span className="required">*</span>
+              </label>
+              <input
+                id="titulo"
+                name="titulo"
+                type="text"
+                className={`form-input ${errores.titulo ? "input-error" : ""}`}
+                placeholder="Ej. Error de conexión a la impresora de red"
+                value={form.titulo}
+                onChange={handleChange}
+                pattern="[A-Za-zÀ-ÿ ]+"
+                minLength={5}
+                maxLength={200}
+              />
+              {errores.titulo ? (
+                <span className="error-msg">{errores.titulo}</span>
+              ) : (
+                <span className="hint-msg">
+                  Use un título descriptivo y conciso
+                </span>
+              )}
+            </div>
 
-          <div className="form-field">
-            <label className="form-label" htmlFor="tipoEquipo">
-              Tipo de equipo <span className="required">*</span>
-            </label>
-            <select
-              id="tipoEquipo"
-              name="tipoEquipo"
-              className={`form-input ${errores.tipoEquipo ? "input-error" : ""}`}
-              value={form.tipoEquipo}
-              onChange={handleChange}
-            >
-              {TIPOS_EQUIPO.map((tipo) => (
-                <option key={tipo} value={tipo}>
-                  {tipo}
-                </option>
-              ))}
-            </select>
-            {errores.tipoEquipo && (
-              <span className="error-msg">{errores.tipoEquipo}</span>
-            )}
-          </div>
+            <div className="form-field">
+              <label className="form-label" htmlFor="tipoEquipo">
+                Tipo de equipo <span className="required">*</span>
+              </label>
+              <select
+                id="tipoEquipo"
+                name="tipoEquipo"
+                className={`form-input ${errores.tipoEquipo ? "input-error" : ""}`}
+                value={form.tipoEquipo}
+                onChange={handleChange}
+              >
+                {TIPOS_EQUIPO.map((tipo) => (
+                  <option key={tipo} value={tipo}>
+                    {tipo}
+                  </option>
+                ))}
+              </select>
+              {errores.tipoEquipo && (
+                <span className="error-msg">{errores.tipoEquipo}</span>
+              )}
+            </div>
 
-          <div className="form-field">
-            <label className="form-label" htmlFor="descripcion">
-              Descripción detallada
-            </label>
-            <textarea
-              id="descripcion"
-              name="descripcion"
-              className={`form-input form-textarea ${errores.descripcion ? "input-error" : ""}`}
-              placeholder="Ej. Al intentar enviar un documento a imprimir en la unidad del piso 3, el programa se congela y muestra un código de error 0x8821..."
-              rows={4}
-              maxLength={500}
-              value={form.descripcion}
-              onChange={handleChange}
-            />
-            {errores.descripcion ? (
-              <span className="error-msg">{errores.descripcion}</span>
-            ) : (
-              <span className="hint-msg">
-                Opcional. Máximo 500 caracteres.
-              </span>
-            )}
+            <div className="form-field">
+              <label className="form-label" htmlFor="descripcion">
+                Descripción detallada
+              </label>
+              <textarea
+                id="descripcion"
+                name="descripcion"
+                className={`form-input form-textarea ${errores.descripcion ? "input-error" : ""}`}
+                placeholder="Ej. Al intentar enviar un documento a imprimir en la unidad del piso 3, el programa se congela y muestra un código de error 0x8821..."
+                rows={4}
+                maxLength={500}
+                value={form.descripcion}
+                onChange={handleChange}
+              />
+              {errores.descripcion ? (
+                <span className="error-msg">{errores.descripcion}</span>
+              ) : (
+                <span className="hint-msg">
+                  Opcional. Máximo 500 caracteres.
+                </span>
+              )}
+            </div>
           </div>
 
           {esSupervisor && (
-            <section className="supervisor-assignment" aria-labelledby="supervisor-assignment-title">
+            <aside className="supervisor-assignment" aria-labelledby="supervisor-assignment-title">
               <h2 id="supervisor-assignment-title">Asignación de supervisión</h2>
               <p>Asigna un técnico y define la prioridad al registrar esta solicitud.</p>
               <div className="form-field">
@@ -269,10 +257,10 @@ const SolicitudExtraOrdinaria = () => {
                 {errores.tecnicoId && <span className="error-msg">{errores.tecnicoId}</span>}
                 {tecnicos.length === 0 && <span className="hint-msg">No hay técnicos disponibles para asignar.</span>}
               </div>
-            </section>
+            </aside>
           )}
 
-          {errorApi && <div className="error-msg api-error">{errorApi}</div>}
+          {errorApi && <div className="error-msg api-error extraordinaria-api-error">{errorApi}</div>}
 
           <div className="form-actions">
             <button
