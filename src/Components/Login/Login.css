@@ -177,6 +177,85 @@
   flex-shrink: 0;
 }
 
+.side-shortcuts {
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 16px;
+  background: rgba(4, 89, 145, 0.52);
+  box-shadow: 0 14px 35px rgba(0, 72, 122, 0.22);
+}
+
+.side-shortcuts-title {
+  margin: 0 0 12px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.side-shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.side-shortcut {
+  min-width: 0;
+  min-height: 62px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 2px solid #FBE9A6;
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: #075A8D;
+  text-decoration: none;
+  text-align: left;
+  box-shadow: 0 5px 16px rgba(0, 65, 105, 0.16);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.side-shortcut:hover,
+.side-shortcut:focus-visible {
+  background: #FFF8DB;
+  border-color: #FFD84D;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 65, 105, 0.28);
+  outline: none;
+}
+
+.side-shortcut-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #F7C843;
+  color: #064F7A;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.side-shortcut-label {
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.side-shortcut-action {
+  font-size: 10px;
+  font-weight: 800;
+  color: #0A6FB0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ============ PANEL DERECHO ============ */
 .login-main {
   flex: 1;
@@ -408,6 +487,12 @@
   .side-badge {
     justify-content: center;
     width: 100%;
+  }
+  .side-shortcuts-grid {
+    grid-template-columns: 1fr;
+  }
+  .side-shortcut {
+    min-height: 52px;
   }
 }
 

@@ -50,6 +50,49 @@ const ShieldIcon = () => (
   </svg>
 );
 
+const institutionalLinks = [
+  {
+    number: '01',
+    label: 'Portal oficial de la Gobernación',
+    url: 'https://gobernaciondecochabamba.bo/',
+  },
+  {
+    number: '02',
+    label: 'Gobernación en Gob.bo',
+    url: 'https://www.gob.bo/entidades/gobierno-autonomo-departamental-de-cochabamba',
+  },
+  {
+    number: '03',
+    label: 'Organigrama institucional',
+    url: 'https://gobernaciondecochabamba.bo/storage/uploads/170657095665b834ccdf986.pdf',
+  },
+  {
+    number: '04',
+    label: 'SICOES',
+    url: 'https://www.sicoes.gob.bo/',
+  },
+  {
+    number: '05',
+    label: 'Contraloría',
+    url: 'https://www.contraloria.gob.bo/',
+  },
+  {
+    number: '06',
+    label: 'SEDES Cochabamba',
+    url: 'https://www.sedescochabamba.gob.bo/',
+  },
+  {
+    number: '07',
+    label: 'Dirección Departamental de Educación',
+    url: 'https://www.ddecochabamba.gob.bo/',
+  },
+  {
+    number: '08',
+    label: 'Portal de trámites del Estado',
+    url: 'https://www.gob.bo/',
+  },
+];
+
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -142,23 +185,23 @@ const Login = () => {
 
           <div className="side-middle">
             <h1 className="side-title">Sistema de Solicitudes TI</h1>
-            <p className="side-subtitle">
-              Plataforma centralizada de gestión de solicitudes y soporte técnico para
-              funcionarios de la Gobernación.
-            </p>
 
-            <div className="side-badges">
-              <div className="side-badge">
-                <CheckBadgeIcon />
-                Registro de incidencias
-              </div>
-              <div className="side-badge">
-                <ClockIcon />
-                Seguimiento en tiempo real
-              </div>
-              <div className="side-badge">
-                <ShieldIcon />
-                Acceso seguro institucional
+            <div className="side-shortcuts" aria-label="Accesos rápidos institucionales">
+              <p className="side-shortcuts-title">Accesos rápidos</p>
+              <div className="side-shortcuts-grid">
+                {institutionalLinks.map((link) => (
+                  <a
+                    key={link.number}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="side-shortcut"
+                  >
+                    <span className="side-shortcut-number">{link.number}</span>
+                    <span className="side-shortcut-label">{link.label}</span>
+                    <span className="side-shortcut-action">Abrir</span>
+                  </a>
+                ))}
               </div>
             </div>
           </div>
