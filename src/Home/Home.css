@@ -12,6 +12,7 @@
   --c-100: #d8edf5;   /* bordes suaves */
   --c-50:  #e6f7fe;   /* fondos de sección */
   --white: #ffffff;
+  --page-background: #F3F7FA;
 
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -19,6 +20,7 @@
   --shadow-sm: 0 4px 14px rgba(0, 91, 130, 0.08);
   --shadow-md: 0 14px 32px rgba(0, 91, 130, 0.18);
 
+  background-color: var(--page-background);
   font-family: 'Inter', sans-serif;
   color: var(--c-900);
 }
@@ -169,7 +171,7 @@
   justify-content: center;
   align-items: center;
   padding: 60px 20px;
-  background-color: var(--c-50);
+  background-color: var(--page-background);
 }
 
 .hero-container {
@@ -447,7 +449,7 @@
 .important-section {
   width: 100%;
   padding: 70px 20px;
-  background-color: var(--white);
+  background-color: var(--page-background);
 }
 
 .important-container {
@@ -456,6 +458,11 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
+}
+
+.important-container .important-title {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
 }
 
 /* La tarjeta NO se mueve al pasar el mouse: solo su botón es interactivo */
@@ -507,7 +514,7 @@
 .channels-section {
   width: 100%;
   padding: 60px 20px;
-  background-color: var(--c-50);
+  background-color: var(--page-background);
 }
 
 .channels-container {

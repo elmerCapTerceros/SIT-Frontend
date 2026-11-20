@@ -89,7 +89,6 @@ button:disabled {
 .logout-button,
 .mobile-logout-button,
 .aviso-modal-cancel,
-.report-pdf-button,
 .requests-error button,
 .empty-table-state button,
 button:not([class]) {
@@ -114,7 +113,6 @@ button:not([class]) {
 .logout-button:hover:not(:disabled),
 .mobile-logout-button:hover:not(:disabled),
 .aviso-modal-cancel:hover:not(:disabled),
-.report-pdf-button:hover:not(:disabled),
 .requests-error button:hover:not(:disabled),
 .empty-table-state button:hover:not(:disabled),
 button:not([class]):hover:not(:disabled) {
@@ -125,6 +123,7 @@ button:not([class]):hover:not(:disabled) {
 
 .btn-danger-modal,
 .aviso-modal-danger,
+.report-pdf-button,
 .sm-btn-danger,
 .msol-btn-peligro,
 .vd-btn-peligro {
@@ -136,6 +135,7 @@ button:not([class]):hover:not(:disabled) {
 
 .btn-danger-modal:hover:not(:disabled),
 .aviso-modal-danger:hover:not(:disabled),
+.report-pdf-button:hover:not(:disabled),
 .sm-btn-danger:hover:not(:disabled),
 .msol-btn-peligro:hover:not(:disabled),
 .vd-btn-peligro:hover:not(:disabled) {

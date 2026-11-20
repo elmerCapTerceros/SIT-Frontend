@@ -81,15 +81,6 @@
 
 .rt-req { color: #b42318; }
 
-.rt-origen {
-	padding: 1px 8px;
-	border-radius: 999px;
-	background: #dbeafe;
-	color: #1e40af;
-	font-size: 0.75rem;
-	font-weight: 600;
-}
-
 .rt-campo input[type='text'],
 .rt-campo input[type='date'],
 .rt-campo input[type='time'],

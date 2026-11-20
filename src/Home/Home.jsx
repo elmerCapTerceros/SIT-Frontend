@@ -184,51 +184,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ACCESOS IMPORTANTES */}
-      <section className="important-section" aria-label="Accesos importantes">
-        <div className="important-container">
-          <div className="info-card">
-            <div className="card-icon">
-              <FaFileAlt aria-hidden="true" />
-            </div>
-            <div className="card-content">
-              <h2>Normativas</h2>
-              <p>Consulta las normativas y documentos oficiales relacionados con la asistencia técnica.</p>
-              <a
-                href="https://gobernaciondecochabamba.bo/web/gaceta/5"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-              >
-                Ver normativas
-                <FaExternalLinkAlt aria-hidden="true" />
-                <span className="sr-only">(se abre en una pestaña nueva)</span>
-              </a>
-            </div>
-          </div>
-
-          <div className="info-card">
-            <div className="card-icon">
-              <FaPhone aria-hidden="true" />
-            </div>
-            <div className="card-content">
-              <h2>Información de contacto</h2>
-              <p>Encuentra nuestros datos de contacto y canales oficiales de comunicación.</p>
-              <a
-                href="/Documentos/1728268694.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-              >
-                Ver información
-                <FaExternalLinkAlt aria-hidden="true" />
-                <span className="sr-only">(se abre en una pestaña nueva)</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CANALES DE COMUNICACIÓN */}
       <section className="channels-section" aria-labelledby="channels-heading">
         <div className="channels-container">
@@ -270,6 +225,57 @@ const Home = () => {
               </div>
               <span className="sr-only">(se abre en una pestaña nueva)</span>
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ACCESOS IMPORTANTES */}
+      <section className="important-section" aria-labelledby="important-heading">
+        <div className="important-container">
+          <div className="channels-title important-title">
+            <span aria-hidden="true"></span>
+            <h2 id="important-heading">Normativas y teléfonos</h2>
+            <span aria-hidden="true"></span>
+          </div>
+
+          <div className="info-card">
+            <div className="card-icon">
+              <FaFileAlt aria-hidden="true" />
+            </div>
+            <div className="card-content">
+              <h2>Normativas</h2>
+              <p>Consulta las normativas y documentos oficiales relacionados con la asistencia técnica.</p>
+              <a
+                href="https://gobernaciondecochabamba.bo/web/gaceta/5"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                Ver normativas
+                <FaExternalLinkAlt aria-hidden="true" />
+                <span className="sr-only">(se abre en una pestaña nueva)</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="info-card">
+            <div className="card-icon">
+              <FaPhone aria-hidden="true" />
+            </div>
+            <div className="card-content">
+              <h2>Teléfonos</h2>
+              <p>Consulta nuestros teléfonos y canales oficiales de contacto.</p>
+              <a
+                href="/Documentos/1728268694.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                Ver teléfonos
+                <FaExternalLinkAlt aria-hidden="true" />
+                <span className="sr-only">(se abre en una pestaña nueva)</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

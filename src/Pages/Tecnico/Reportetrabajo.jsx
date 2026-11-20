@@ -84,7 +84,6 @@ const Campo = ({ id, etiqueta, autocompletado, requerido, error, ancho, grupo, c
 					{etiqueta}
 					{requerido && <span className="rt-req" aria-hidden="true"> *</span>}
 				</Etiqueta>
-				{autocompletado && <span className="rt-origen">Autocompletado</span>}
 			</div>
 			{grupo ? (
 				<div role="radiogroup" aria-labelledby={`${id}-etq`} className="rt-chips">{children}</div>
@@ -359,8 +358,7 @@ const ReporteTrabajo = () => {
 				<div className="rt-aviso" role="note">
 					<p>
 						<strong>Solicitud #{solicitud.codigo ?? solicitud.id}</strong>: los datos que ya tenemos
-						vienen cargados y marcados como <span className="rt-origen">Autocompletado</span>. Puedes
-						corregirlos. Completa lo que falta; los campos con * son obligatorios.
+						vienen cargados. Puedes corregirlos. Completa lo que falta; los campos con * son obligatorios.
 					</p>
 				</div>
 
