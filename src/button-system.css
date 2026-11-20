@@ -1,8 +1,9 @@
 :root {
   --button-primary: #008ED6;
   --button-primary-hover: #005B82;
-  --button-outline: #B8D9E5;
-  --button-outline-hover: #F0FAFE;
+  --button-secondary-bg: #E6F7FE;
+  --button-outline: #8ED4EE;
+  --button-outline-hover: #D3F0FB;
   --button-danger: #B42318;
   --button-danger-hover: #8F1D14;
   --button-focus: 0 0 0 3px rgba(0, 142, 214, 0.3);
@@ -94,7 +95,7 @@ button:disabled {
 button:not([class]) {
   border-color: var(--button-outline);
   border-radius: 8px;
-  background: #FFFFFF;
+  background: var(--button-secondary-bg);
   color: var(--button-primary-hover);
 }
 

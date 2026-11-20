@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FaBullhorn, FaEdit, FaInbox, FaSyncAlt, FaTimes, FaTrash } from 'react-icons/fa';
 import { formatDateTime, getValue } from '../../utils/Solicitudesutils';
+import API_URL from '../../utils/api';
 import './AvisoSupervisor.css';
 
-const API_URL = 'http://localhost:8080/api';
 const DESTINATARIOS = ['TECNICO', 'FUNCIONARIO', 'AMBOS'];
 const FORM_INICIAL = { mensaje: '', destinatario: 'TECNICO' };
 

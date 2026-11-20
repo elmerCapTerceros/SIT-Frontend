@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FaClipboardList } from 'react-icons/fa';
+import API_URL from '../../utils/api';
 import './FuncionarioPageHeader.css';
 import './MisSolicitudes.css';
-
-const API_URL = 'http://localhost:8080/api';
 
 const MisSolicitudes = () => {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -74,8 +73,8 @@ const MisSolicitudes = () => {
               <h2>Aún no tiene solicitudes</h2>
               <p>Cuando registre una, podrá consultar su seguimiento aquí.</p>
             </div>
-          ) : solicitudes.map((solicitud) => (
-            <article className="request-item" key={solicitud.codigo}>
+          ) : solicitudes.map((solicitud, index) => (
+            <article className="request-item" key={solicitud.id ?? solicitud.codigo ?? index}>
               <div>
                 <p className="request-id">{solicitud.codigo}</p>
                 <h2>{solicitud.titulo}</h2>

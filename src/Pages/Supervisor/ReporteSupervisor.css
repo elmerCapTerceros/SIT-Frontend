@@ -84,7 +84,9 @@
 /* Tabla */
 
 .report-table-card {
+	min-width: 0;
 	overflow: hidden;
+	contain: paint;
 	border: 1px solid var(--line-soft);
 	border-radius: 12px;
 	background: #FFFFFF;
@@ -92,6 +94,9 @@
 }
 
 .report-table-scroll {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
 	overflow-x: auto;
 }
 

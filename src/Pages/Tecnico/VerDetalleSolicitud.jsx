@@ -10,13 +10,12 @@ import {
 	FaFilePdf,
 	FaArrowLeft,
 } from 'react-icons/fa';
+import API_URL from '../../utils/api';
 import ConfirmarCambioEstado from '../../Components/Modlas/ConfirmarCambioEstado';
 import AtenderSolicitudModal from '../../Components/Modlas/Atendersolicitudmodal';
 import RechazarSolicitudModal from '../../Components/Modlas/Rechazarsolicitudmodal';
 import { formatDate, formatId, getValue, humanize } from '../../utils/Solicitudesutils';
 import './VerDetalleSolicitud.css';
-
-const API_URL = 'http://localhost:8080/api';
 
 // Flujo normal de una solicitud. RECHAZADA es una salida aparte (solo desde PENDIENTE).
 const FLUJO = ['PENDIENTE', 'EN_PROCESO', 'CONCLUIDA'];

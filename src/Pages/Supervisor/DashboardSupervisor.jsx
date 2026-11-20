@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaChartBar, FaSyncAlt } from 'react-icons/fa';
+import API_URL from '../../utils/api';
 import { humanize } from '../../utils/Solicitudesutils';
 import './DashboardSupervisor.css';
 
 /* ───────────── Configuración ───────────── */
-
-const API_URL = 'http://localhost:8080/api';
 
 const COLORES = {
     exito: '#10b981',

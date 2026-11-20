@@ -13,10 +13,10 @@ import {
 	FaTimes,
 	FaUsers,
 } from 'react-icons/fa';
+import API_URL from '../../utils/api';
 import { formatDate, formatId, getValue, humanize, normalize, statusClass, toSearchText } from '../../utils/Solicitudesutils';
 import './InfoTecnicos.css';
 
-const API_URL = 'http://localhost:8080/api';
 const TECNICOS_ENDPOINT = '/usuarios/tecnicos'; // Backend: endpoint para obtener técnicos.
 const SOLICITUDES_ENDPOINT = '/solicitudes/SolicitudesTecnicas';
 
@@ -213,6 +213,7 @@ const LoadMeter = ({ activas, finalizadas }) => {
 
 const CopyButton = ({ value, label }) => {
 	const [copied, setCopied] = useState(false);
+	const [copyError, setCopyError] = useState(false);
 
 	useEffect(() => {
 		if (!copied) return undefined;
@@ -221,23 +222,28 @@ const CopyButton = ({ value, label }) => {
 	}, [copied]);
 
 	const copy = async () => {
+		setCopyError(false);
 		try {
 			await navigator.clipboard.writeText(value);
 			setCopied(true);
 		} catch {
+			setCopyError(true);
 		}
 	};
 
 	return (
-		<button
-			type="button"
-			className={`it-copy${copied ? ' is-copied' : ''}`}
-			onClick={copy}
-			aria-label={copied ? `${label} copiado` : `Copiar ${label}`}
-			title={copied ? 'Copiado' : `Copiar ${label}`}
-		>
-			{copied ? <FaCheck aria-hidden="true" /> : <FaRegCopy aria-hidden="true" />}
-		</button>
+		<>
+			<button
+				type="button"
+				className={`it-copy${copied ? ' is-copied' : ''}${copyError ? ' is-error' : ''}`}
+				onClick={copy}
+				aria-label={copied ? `${label} copiado` : copyError ? `No se pudo copiar ${label}` : `Copiar ${label}`}
+				title={copied ? 'Copiado' : copyError ? 'No se pudo copiar' : `Copiar ${label}`}
+			>
+				{copied ? <FaCheck aria-hidden="true" /> : <FaRegCopy aria-hidden="true" />}
+			</button>
+			{copyError && <span className="it-copy-error" role="status">No se pudo copiar</span>}
+		</>
 	);
 };
 

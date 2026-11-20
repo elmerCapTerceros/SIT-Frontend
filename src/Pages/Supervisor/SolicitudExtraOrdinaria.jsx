@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../../utils/api";
 import "./SolicitudExtraOrdinaria.css";
 import Modlas from "../../Components/Modlas/Modlas";
 import {
@@ -7,7 +8,6 @@ import {
   TITULO_SOLO_LETRAS_Y_ESPACIOS,
 } from "../../utils/validacionesSolicitud";
 
-const API_URL = "http://localhost:8080/api";
 const INITIAL_FORM = { titulo: "", tipoEquipo: "PC", descripcion: "", prioridad: "", tecnicoId: "" };
 
 const SolicitudExtraOrdinaria = () => {

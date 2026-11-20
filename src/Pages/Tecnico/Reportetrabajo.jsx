@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaClipboardCheck, FaFilePdf, FaUndo } from 'react-icons/fa';
 import { ESTADOS_FINALES, TIPOS_EQUIPO, generarReportePdf } from '../../utils/Reportetrabajopdf';
+import API_URL from '../../utils/api';
 import './Reportetrabajo.css';
-
-const API_URL = 'http://localhost:8080/api';
 
 // Escudos del encabezado del PDF (opcional). Importa tus imágenes y colócalas aquí:
 //   import escudoBolivia from '../../assets/escudo-bolivia.png';

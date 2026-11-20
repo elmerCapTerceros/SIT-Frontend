@@ -8,8 +8,7 @@ import {
   limpiarTituloSolicitud,
   TITULO_SOLO_LETRAS_Y_ESPACIOS,
 } from "../../utils/validacionesSolicitud";
-
-const API_URL = "http://localhost:8080/api";
+import API_URL from "../../utils/api";
 
 const NuevaSolicitud = () => {
   const navigate = useNavigate();

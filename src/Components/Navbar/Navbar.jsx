@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaBell, FaTimes } from 'react-icons/fa';
+import API_URL from '../../utils/api';
 import './Navbar.css';
 
-const API_URL = 'http://localhost:8080/api';
 const DISMISSED_NOTIFICATIONS_KEY = 'dismissedNotifications';
 
 const getNotificationKey = (notification) =>

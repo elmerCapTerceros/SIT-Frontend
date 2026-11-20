@@ -13,9 +13,9 @@ import {
   FaTimes,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../utils/api';
 import './Home.css';
 
-const API_URL = 'http://localhost:8080/api';
 const ROLES_CON_AVISOS = ['TECNICO', 'FUNCIONARIO'];
 
 const AvisosDestacados = () => {
